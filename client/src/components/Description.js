@@ -3,7 +3,8 @@ import React from 'react';
 function Description() {
   return (
     <div
-      className="bg-white rounded-2xl shadow-lg w-full lg:w-[450px] h-auto lg:h-[300px]"
+      className="rounded-2xl shadow-lg w-full lg:w-[450px] h-auto lg:h-[300px]"
+      style={{backgroundColor: '#8CA083'}}
     >
       {/* Description Container */}
       <div className="p-4 lg:p-6">

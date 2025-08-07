@@ -5,11 +5,11 @@ const Navbar = () => {
 
   return (
     <div className="fixed w-full z-50 p-2">
-      <nav className="bg-white rounded-2xl max-w-[89rem] mx-auto">
+      <nav className="rounded-2xl max-w-[89rem] mx-auto" style={{ backgroundColor: '#8CA083' }}>
         <div className="px-6 py-1">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <span className="text-xl font-bold text-gray-800">Yuvaan Vithlani</span>
+              <span className="text-4xl font-bold text-gray-800">Yuvaan Vithlani</span>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">

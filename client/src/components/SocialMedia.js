@@ -3,7 +3,8 @@ import React from 'react';
 function SocialMedia() {
   return (
     <div
-      className="bg-white rounded-2xl shadow-lg w-full lg:w-[500px] h-auto lg:h-[70px]"
+      className="rounded-2xl shadow-lg w-full lg:w-[500px] h-auto lg:h-[70px]"
+      style={{backgroundColor: '#8CA083'}}
     >
       {/* Social Media Container */}
       <div className="p-4 flex items-center justify-center">

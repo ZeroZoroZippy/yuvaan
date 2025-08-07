@@ -3,7 +3,8 @@ import React from 'react';
 function WhoAmI() {
   return (
     <div
-      className="bg-white rounded-2xl shadow-lg w-full lg:w-[570px] h-auto lg:h-[400px]"
+      className="rounded-2xl shadow-lg w-full lg:w-[570px] h-auto lg:h-[400px]"
+      style={{backgroundColor: '#8CA083'}}
     >
       {/* Main Content Container - WhoAmI */}
       <div className="p-4 lg:p-6">
