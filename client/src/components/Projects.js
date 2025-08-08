@@ -189,20 +189,7 @@ function Projects() {
             />
           </AnimatePresence>
 
-          {/* Carousel Indicators */}
-          <div className="absolute bottom-3 left-1/2 transform -translate-x-1/2 flex space-x-2">
-            {projectImages.map((_, index) => (
-              <button
-                key={index}
-                onClick={() => setCurrentImageIndex(index)}
-                className={`w-2 h-2 rounded-full transition-all duration-300 ${index === currentImageIndex
-                  ? 'bg-[#A8977A] scale-125'
-                  : 'bg-white/50 hover:bg-white/75'
-                  }`}
-                aria-label={`Go to slide ${index + 1}`}
-              />
-            ))}
-          </div>
+
         </div>
 
         <div className="space-y-4 pb-20">
