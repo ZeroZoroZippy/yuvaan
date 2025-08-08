@@ -4,6 +4,192 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
 
+/* ===== OPTION 1: Fade & Scale (Current Default) ===== */
+@keyframes fadeScaleIn {
+  0% {
+    opacity: 0;
+    transform: scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+/* ===== OPTION 2: Slide Up & Fade (Mobile) ===== */
+@keyframes slideUpFade {
+  0% {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== OPTION 3: Blur Reveal ===== */
+@keyframes blurReveal {
+  0% {
+    opacity: 0;
+    filter: blur(10px);
+    transform: scale(0.95);
+  }
+  100% {
+    opacity: 1;
+    filter: blur(0);
+    transform: scale(1);
+  }
+}
+
+/* ===== OPTION 4: Glitch/Tech Reveal ===== */
+@keyframes glitchReveal {
+  0% {
+    opacity: 0;
+    transform: translateX(-2px);
+  }
+  20% {
+    opacity: 0.3;
+    transform: translateX(2px);
+  }
+  40% {
+    opacity: 0.6;
+    transform: translateX(-1px);
+  }
+  60% {
+    opacity: 0.8;
+    transform: translateX(1px);
+  }
+  80% {
+    opacity: 0.9;
+    transform: translateX(-0.5px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+/* ===== OPTION 5: Rotate In ===== */
+@keyframes rotateIn {
+  0% {
+    opacity: 0;
+    transform: rotate(-5deg) scale(0.9);
+  }
+  100% {
+    opacity: 1;
+    transform: rotate(0) scale(1);
+  }
+}
+
+/* ===== OPTION 6: Clip Path Reveal ===== */
+@keyframes clipReveal {
+  0% {
+    opacity: 0;
+    clip-path: polygon(0 0, 0 0, 0 100%, 0 100%);
+  }
+  100% {
+    opacity: 1;
+    clip-path: polygon(0 0, 100% 0, 100% 100%, 0 100%);
+  }
+}
+
+/* ===== OPTION 7: Typewriter Effect (for text components) ===== */
+@keyframes typewriter {
+  0% {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  50% {
+    opacity: 0.5;
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+/* ===== Animation Classes ===== */
+
+/* Default animations */
+.animate-fade-scale-in {
+  animation: fadeScaleIn 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+.animate-slide-up-fade {
+  animation: slideUpFade 0.8s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+
+/* Alternative animations - uncomment to use */
+
+/* Blur effect - gives a modern depth feel */
+/* .animate-fade-scale-in {
+  animation: blurReveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+} */
+
+/* Tech/Glitch effect - for a more digital feel */
+/* .animate-fade-scale-in {
+  animation: glitchReveal 0.5s ease-out forwards;
+} */
+
+/* Rotate in - adds playful movement */
+/* .animate-fade-scale-in {
+  animation: rotateIn 0.8s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+} */
+
+/* Clip path reveal - creates a wipe effect */
+/* .animate-fade-scale-in {
+  animation: clipReveal 1s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+} */
+
+/* Initial hidden state */
+.animate-hidden {
+  opacity: 0;
+  visibility: hidden;
+}
+
+/* Page transition overlay (optional) */
+.page-transition {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background: linear-gradient(90deg, 
+    transparent,
+    #667eea 20%,
+    #764ba2 50%,
+    #667eea 80%,
+    transparent
+  );
+  transform: scaleX(0);
+  transform-origin: left;
+  transition: transform 2s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 9999;
+}
+
+.page-transition.loaded {
+  transform: scaleX(1);
+}
+
+/* Optional: Add hover effects for components */
+@media (min-width: 1024px) {
+  [class*="animate-fade-scale-in"] {
+    transition: transform 0.3s ease;
+  }
+  
+  [class*="animate-fade-scale-in"]:hover {
+    transform: scale(1.02);
+  }
+}
+
+/* Stagger delay classes (optional - add to components for cascade effect) */
+.delay-100 { animation-delay: 100ms; }
+.delay-200 { animation-delay: 200ms; }
+.delay-300 { animation-delay: 300ms; }
+.delay-400 { animation-delay: 400ms; }
+.delay-500 { animation-delay: 500ms; }
+
 body {
   margin: 0;
   font-family: 'Kaushan Script', cursive;

@@ -6,7 +6,7 @@ function SocialMedia() {
 
     return (
         <div
-            className="rounded-2xl shadow-lg w-full lg:w-[465px] h-16 lg:h-[70px] mb-8 lg:mb-0"
+            className="rounded-2xl shadow-lg w-full lg:w-[465px] h-16 lg:h-[70px] mb-2 lg:mb-0"
             style={{ backgroundColor: '#161711' }}
         >
             {/* Social Media Container */}
