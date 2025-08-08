@@ -37,7 +37,7 @@ function HeroPage() {
         </div>
 
         {/* Mobile Layout */}
-        <div className="lg:hidden px-4 space-y-4">
+        <div className="lg:hidden px-4 space-y-4 pb-4">
           <WhoAmI />
           <HeroImage />
           <Description />

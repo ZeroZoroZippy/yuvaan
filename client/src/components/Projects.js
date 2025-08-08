@@ -160,7 +160,7 @@ function Projects() {
 
   return (
     <div
-      className="rounded-2xl shadow-lg w-full lg:w-[465px] h-auto lg:h-[630px] overflow-hidden"
+      className="rounded-2xl shadow-lg w-full lg:w-[465px] h-[600px] lg:h-[630px] overflow-hidden"
       style={{ backgroundColor: '#161711' }}
     >
       {/* Sidebar Container - Projects */}
@@ -181,7 +181,7 @@ function Projects() {
               key={currentImageIndex}
               src={projectImages[currentImageIndex]}
               alt={`Project ${currentImageIndex + 1}`}
-              className="w-full h-32 lg:h-64 object-cover"
+              className="w-full h-64 lg:h-60 object-cover"
               initial={{ opacity: 0, x: 50 }}
               animate={{ opacity: 1, x: 0 }}
               exit={{ opacity: 0, x: -50 }}
