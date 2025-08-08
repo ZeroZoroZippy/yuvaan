@@ -6,10 +6,20 @@ import Projects from '../components/Projects';
 import Description from '../components/Description';
 import Contact from '../components/Contact';
 import SocialMedia from '../components/SocialMedia';
+import ContactModal from '../components/ContactModal';
 
 function HeroPage() {
   const [animationStage, setAnimationStage] = useState(0);
   const [showContent, setShowContent] = useState(false);
+  const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
+  const openContactModal = () => {
+    setIsContactModalOpen(true);
+  };
+
+  const closeContactModal = () => {
+    setIsContactModalOpen(false);
+  };
 
   useEffect(() => {
     // Clean staggered reveal animation
@@ -63,7 +73,7 @@ function HeroPage() {
             </div>
             <div className="flex flex-col gap-4">
               <div className={`${animationStage >= 5 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
-                <Contact />
+                <Contact onOpenModal={openContactModal} />
               </div>
             </div>
           </div>
@@ -84,13 +94,19 @@ function HeroPage() {
             <Projects />
           </div>
           <div className={`${animationStage >= 5 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
-            <Contact />
+            <Contact onOpenModal={openContactModal} />
           </div>
           <div className={`${animationStage >= 6 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
             <SocialMedia />
           </div>
         </div>
       </div>
+
+      {/* Contact Modal - positioned at page level for full-screen centering */}
+      <ContactModal 
+        isOpen={isContactModalOpen} 
+        onClose={closeContactModal} 
+      />
     </>
   );
 }
