@@ -3,23 +3,34 @@ import React from 'react';
 function Contact() {
   return (
     <div
-      className="rounded-2xl shadow-lg w-full lg:w-[470px] h-auto lg:h-[300px]"
-      style={{backgroundColor: '#A8977A'}}
+      className="rounded-2xl shadow-lg w-full lg:w-[470px] h-auto lg:h-[300px] relative"
+      style={{ backgroundColor: '#A8977A' }}
     >
-      {/* Contact Container */}
-      <div className="p-4 lg:p-6">
-        <h2 className="text-xl lg:text-2xl font-bold mb-4 text-[#45372B]">Contact</h2>
-        <div className="space-y-3">
-          <div>
-            <p className="text-gray-600 text-sm lg:text-base text-[#45372B]">Email: your.email@example.com</p>
-          </div>
-          <div>
-            <p className="text-gray-600 text-sm lg:text-base text-[#45372B]">Phone: +1 (555) 123-4567</p>
-          </div>
-          <div>
-            <p className="text-gray-600 text-sm lg:text-base text-[#45372B]">Location: Your City, Country</p>
-          </div>
-        </div>
+      {/* "Have some questions?" text at top left */}
+      <div className="absolute top-3 left-3 sm:top-4 sm:left-4 lg:top-6 lg:left-6">
+        <p className="text-sm sm:text-base lg:text-lg text-[#45372B]">Have some questions?</p>
+      </div>
+
+      {/* Diagonal Arrow at top right - slightly bigger than Description */}
+      <div className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-2 lg:right-4 cursor-pointer">
+        <svg
+          className="w-8 h-8 sm:w-10 sm:h-10 lg:w-14 lg:h-14 text-[#45372B] transition-transform duration-300 ease-in-out hover:scale-110"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={1}
+            d="M7 17L17 7M17 7H7M17 7V17"
+          />
+        </svg>
+      </div>
+
+      {/* "Contact Me" heading at bottom left */}
+      <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 lg:bottom-6 lg:left-6">
+        <h2 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-[#45372B]">Contact Me</h2>
       </div>
     </div>
   );
