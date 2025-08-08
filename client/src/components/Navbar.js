@@ -4,18 +4,18 @@ const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="fixed w-full z-50 p-2">
-      <nav className="rounded-2xl max-w-[89rem] mx-auto" style={{ backgroundColor: '#8CA083' }}>
+    <div className="fixed w-full z-50 p-3">
+      <nav className="rounded-2xl max-w-[90rem] mx-auto" style={{ backgroundColor: '#161711' }}>
         <div className="px-6 py-1">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <span className="text-4xl font-bold text-gray-800">Yuvaan Vithlani</span>
+              <span className="text-[1.5rem] font-bold text-[#A8977A]">Yuvaan Vithlani</span>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#projects" className="text-gray-700 hover:text-primary-600 transition-colors">Projects</a>
-              <a href="#about" className="text-gray-700 hover:text-primary-600 transition-colors">About</a>
-              <a href="#contact" className="text-gray-700 hover:text-primary-600 transition-colors">Contact</a>
+              <a href="#projects" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors">Projects</a>
+              <a href="#about" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors">About</a>
+              <a href="#contact" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors">Contact</a>
             </div>
 
             <div className="md:hidden flex items-center">

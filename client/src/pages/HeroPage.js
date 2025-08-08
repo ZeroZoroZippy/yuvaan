@@ -14,7 +14,7 @@ function HeroPage() {
       <div className="pt-24">
         {/* Desktop Layout */}
         <div className="hidden lg:block">
-          <div className="flex justify-start mx-6 mt-0 gap-4">
+          <div className="flex justify-start mx-4 mt-0 gap-4">
             <div className="flex flex-col gap-4">
               <WhoAmI />
             </div>
@@ -26,7 +26,7 @@ function HeroPage() {
               <SocialMedia />
             </div>
           </div>
-          <div className="flex justify-start mx-6 -mt-[18.75rem] gap-4">
+          <div className="flex justify-start mx-4 -mt-[18.75rem] gap-4">
             <div className="flex flex-col gap-4">
               <Description />
             </div>
