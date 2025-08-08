@@ -4,8 +4,8 @@ import Hero from '../assets/Hero.jpg'
 function HeroImage() {
   return (
     <div
-      className="rounded-2xl shadow-lg w-full lg:w-[350px] h-auto lg:h-[400px] overflow-hidden"
-      style={{backgroundColor: '#161711'}}
+      className="rounded-2xl shadow-lg w-full lg:w-[350px] h-[450px] lg:h-[400px] overflow-hidden"
+      style={{ backgroundColor: '#161711' }}
     >
       <img
         src={Hero}
