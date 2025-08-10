@@ -1,15 +1,22 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const navigate = useNavigate();
 
   return (
-    <div className="fixed w-full z-50 p-3">
-      <nav className="rounded-2xl max-w-[90rem] mx-auto" style={{ backgroundColor: '#161711' }}>
+    <div className="fixed w-full z-50 p-3 backdrop-blur-lg">
+      <nav className="rounded-2xl max-w-[90rem] mx-auto shadow-lg" style={{ backgroundColor: '#161711' }}>
         <div className="px-6 py-1">
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
-              <span className="text-[1.5rem] font-bold text-[#A8977A]">Yuvaan Vithlani</span>
+              <button
+                onClick={() => navigate('/')}
+                className="text-[1.5rem] font-bold text-[#A8977A] hover:text-white transition-colors duration-300 cursor-pointer"
+              >
+                Yuvaan Vithlani
+              </button>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
