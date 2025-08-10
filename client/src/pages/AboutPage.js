@@ -319,11 +319,11 @@ function AboutPage() {
                                 {/* Container Grid - Responsive */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
                                     {/* Process Step 01 */}
-                                    <div className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start">01.</h2>
+                                    <div className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
+                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start">01.</h2>
                                         <div className="self-start">
-                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Research & Strategy</h3>
-                                            <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed">
+                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3">Research & Strategy</h3>
+                                            <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed">
                                                 In this phase, I dive deep into understanding your business, target audience, and project goals. Through research and strategic planning, I create a clear roadmap to guide the entire design process.
                                             </p>
                                         </div>
@@ -362,7 +362,7 @@ function AboutPage() {
                                     </div>
 
                                     {/* Process Step 04 */}
-                                    <div className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
+                                    <div className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
                                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start">04.</h2>
                                         <div className="self-start">
                                             <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Testing & Optimization</h3>
@@ -378,11 +378,11 @@ function AboutPage() {
                                     </div>
 
                                     {/* Process Step 05 */}
-                                    <div className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start">05.</h2>
+                                    <div className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
+                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start">05.</h2>
                                         <div className="self-start">
-                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Launch & Delivery</h3>
-                                            <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed">
+                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3">Launch & Delivery</h3>
+                                            <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed">
                                                 Once everything is finalized, the project is launched and delivered to you. I also provide guidance or support for ongoing maintenance to ensure long-term success.
                                             </p>
                                         </div>
