@@ -23,8 +23,12 @@ function AboutPage() {
     const [submitStatus, setSubmitStatus] = useState('');
     const [showThankYou, setShowThankYou] = useState(false);
 
+    // Animation state
+    const [animatedElements, setAnimatedElements] = useState(new Set());
+
     // Lenis smooth scroll ref
     const lenisRef = useRef();
+    const observerRef = useRef();
 
     const toggleSection = (section) => {
         setToggleStates(prev => ({
@@ -81,24 +85,39 @@ function AboutPage() {
             id: 0,
             content: (
                 <div>
-                    <h1 className="text-3xl sm:text-4xl lg:text-6xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-10">
+                    <h1
+                        className="text-3xl sm:text-4xl lg:text-6xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-10"
+                        data-animation="fade-scale-in"
+                        data-delay="0"
+                    >
                         About Me
                     </h1>
-                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-light text-[#A8977A] mb-3 sm:mb-4 lg:mb-6">
+                    <h3
+                        className="text-xl sm:text-2xl lg:text-3xl font-light text-[#A8977A] mb-3 sm:mb-4 lg:mb-6"
+                        data-animation="slide-up-fade"
+                        data-delay="200"
+                    >
                         Hi, I'm Yuvaan
                     </h3>
-                    <p className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-20">
+                    <p
+                        className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-20"
+                        data-animation="slide-up-fade"
+                        data-delay="400"
+                    >
                         I make digital experiences feel natural and effortless. I focus on what matters: clear design, smooth interactions, and details that quietly make everything work better. Every project starts with understanding your goals and ends with something people genuinely enjoy using.
                     </p>
-                    <div>
+                    <div
+                        data-animation="slide-up-fade"
+                        data-delay="600"
+                    >
                         <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-6">
                             <a
                                 href="https://linkedin.com/in/yuvaanvithlani"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group flex items-center space-x-2 text-[#A8977A] hover:text-white transition-colors duration-300"
+                                className="group flex items-center space-x-2 text-[#A8977A] hover:text-white transition-all duration-500 hover:scale-105 hover:translate-x-2"
                             >
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:rotate-12" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                                 </svg>
                                 <span className="text-base sm:text-lg">LinkedIn</span>
@@ -108,9 +127,9 @@ function AboutPage() {
                                 href="https://instagram.com/yuv.aaaan"
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="group flex items-center space-x-2 text-[#A8977A] hover:text-white transition-colors duration-300"
+                                className="group flex items-center space-x-2 text-[#A8977A] hover:text-white transition-all duration-500 hover:scale-105 hover:translate-x-2"
                             >
-                                <svg className="w-5 h-5 sm:w-6 sm:h-6" fill="currentColor" viewBox="0 0 24 24">
+                                <svg className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:rotate-12" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                                 </svg>
                                 <span className="text-base sm:text-lg">Instagram</span>
@@ -126,27 +145,43 @@ function AboutPage() {
             id: 1,
             content: (
                 <div>
-                    <h2 className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-4 sm:mb-6 lg:mb-8">
+                    <h2
+                        className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-4 sm:mb-6 lg:mb-8"
+                        data-animation="fade-scale-in"
+                        data-delay="0"
+                    >
                         What I Can Do For You
                     </h2>
-                    <p className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-4 sm:mb-6">
+                    <p
+                        className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-4 sm:mb-6"
+                        data-animation="slide-up-fade"
+                        data-delay="200"
+                    >
                         The best work happens when creativity and collaboration meet — every project is a conversation, not just a checklist.
                     </p>
-                    <p className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-6 sm:mb-8 lg:mb-12">
+                    <p
+                        className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-6 sm:mb-8 lg:mb-12"
+                        data-animation="slide-up-fade"
+                        data-delay="400"
+                    >
                         I design or refine websites that are enjoyable to use and easy to maintain. Interfaces stay clear, interactions feel smooth, and decisions remain practical.
                     </p>
-                    <div className="space-y-3 sm:space-y-4 lg:space-y-5 mb-6">
+                    <div
+                        className="space-y-3 sm:space-y-4 lg:space-y-5 mb-6"
+                        data-animation="slide-up-fade"
+                        data-delay="600"
+                    >
                         {/* Web Design */}
-                        <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4">
+                        <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
                                 className="flex items-center justify-between cursor-pointer group"
                                 onClick={() => toggleSection('webDesign')}
                             >
-                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-colors duration-300">
+                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2">
                                     Web Design
                                 </h3>
                                 <svg
-                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-transform duration-300 ${toggleStates.webDesign ? 'rotate-180' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.webDesign ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -155,9 +190,9 @@ function AboutPage() {
                                 </svg>
                             </div>
                             {toggleStates.webDesign && (
-                                <div className="mt-3 sm:mt-4 animate-fadeIn">
+                                <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
-                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-0.5 animate-fade-scale-in">
                                             <svg className="w-2.5 h-2.5 text-[#45372B]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -171,16 +206,16 @@ function AboutPage() {
                         </div>
 
                         {/* Web Development */}
-                        <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4">
+                        <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
                                 className="flex items-center justify-between cursor-pointer group"
                                 onClick={() => toggleSection('webDevelopment')}
                             >
-                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-colors duration-300">
+                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2">
                                     Web Development
                                 </h3>
                                 <svg
-                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-transform duration-300 ${toggleStates.webDevelopment ? 'rotate-180' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.webDevelopment ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -189,9 +224,9 @@ function AboutPage() {
                                 </svg>
                             </div>
                             {toggleStates.webDevelopment && (
-                                <div className="mt-3 sm:mt-4 animate-fadeIn">
+                                <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
-                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-0.5 animate-fade-scale-in">
                                             <svg className="w-2.5 h-2.5 text-[#45372B]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -205,16 +240,16 @@ function AboutPage() {
                         </div>
 
                         {/* Brand Experience */}
-                        <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4">
+                        <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
                                 className="flex items-center justify-between cursor-pointer group"
                                 onClick={() => toggleSection('brandExperience')}
                             >
-                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-colors duration-300">
+                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2">
                                     Brand Experience
                                 </h3>
                                 <svg
-                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-transform duration-300 ${toggleStates.brandExperience ? 'rotate-180' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.brandExperience ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -223,9 +258,9 @@ function AboutPage() {
                                 </svg>
                             </div>
                             {toggleStates.brandExperience && (
-                                <div className="mt-3 sm:mt-4 animate-fadeIn">
+                                <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
-                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-0.5 animate-fade-scale-in">
                                             <svg className="w-2.5 h-2.5 text-[#45372B]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -239,16 +274,16 @@ function AboutPage() {
                         </div>
 
                         {/* Creative Problem-Solving */}
-                        <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4">
+                        <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
                                 className="flex items-center justify-between cursor-pointer group"
                                 onClick={() => toggleSection('creativeProblemSolving')}
                             >
-                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-colors duration-300">
+                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2">
                                     Creative Problem-Solving
                                 </h3>
                                 <svg
-                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-transform duration-300 ${toggleStates.creativeProblemSolving ? 'rotate-180' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.creativeProblemSolving ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -257,9 +292,9 @@ function AboutPage() {
                                 </svg>
                             </div>
                             {toggleStates.creativeProblemSolving && (
-                                <div className="mt-3 sm:mt-4 animate-fadeIn">
+                                <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
-                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-0.5">
+                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-0.5 animate-fade-scale-in">
                                             <svg className="w-2.5 h-2.5 text-[#45372B]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -279,7 +314,36 @@ function AboutPage() {
         }
     ];
 
-    // Initialize Lenis smooth scroll
+    // Animation utility functions
+    const createIntersectionObserver = () => {
+        return new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting) {
+                        const element = entry.target;
+                        const animationType = element.dataset.animation || 'fade-scale-in';
+                        const delay = element.dataset.delay || '0';
+
+                        // Add animation class with delay
+                        setTimeout(() => {
+                            element.classList.add(`animate-${animationType}`);
+                            element.classList.remove('animate-hidden');
+                            setAnimatedElements(prev => new Set([...prev, element]));
+                        }, parseInt(delay));
+
+                        // Stop observing this element
+                        observerRef.current?.unobserve(element);
+                    }
+                });
+            },
+            {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            }
+        );
+    };
+
+    // Initialize Lenis smooth scroll and animations
     useEffect(() => {
         // Initialize Lenis
         const lenis = new Lenis({
@@ -295,6 +359,16 @@ function AboutPage() {
         });
 
         lenisRef.current = lenis;
+
+        // Initialize Intersection Observer for animations
+        observerRef.current = createIntersectionObserver();
+
+        // Observe all elements with animation data attributes
+        const animatedElements = document.querySelectorAll('[data-animation]');
+        animatedElements.forEach(el => {
+            el.classList.add('animate-hidden');
+            observerRef.current?.observe(el);
+        });
 
         // Animation frame loop for Lenis
         function raf(time) {
@@ -327,6 +401,7 @@ function AboutPage() {
         // Cleanup
         return () => {
             lenis.destroy();
+            observerRef.current?.disconnect();
         };
     }, []);
 
@@ -393,18 +468,30 @@ function AboutPage() {
                         {/* Design with Strategy and Creativity Section */}
                         <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
                             <div className="w-full max-w-6xl mx-auto">
-                                <h2 className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12">
+                                <h2
+                                    className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
+                                    data-animation="fade-scale-in"
+                                    data-delay="0"
+                                >
                                     Design with Strategy and Creativity
                                 </h2>
-                                <p className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20">
+                                <p
+                                    className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
+                                    data-animation="slide-up-fade"
+                                    data-delay="200"
+                                >
                                     Every great digital experience starts with understanding the why behind the what. I combine strategic thinking with creative execution to build solutions that not only look exceptional but solve real problems for real people.
                                 </p>
 
                                 {/* Container Grid - Responsive */}
                                 <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
                                     {/* Process Step 01 */}
-                                    <div className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start">01.</h2>
+                                    <div
+                                        className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                        data-animation="fade-scale-in"
+                                        data-delay="400"
+                                    >
+                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110">01.</h2>
                                         <div className="self-start">
                                             <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3">Research & Strategy</h3>
                                             <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed">
@@ -414,13 +501,21 @@ function AboutPage() {
                                     </div>
 
                                     {/* Image 1 */}
-                                    <div className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden">
-                                        <img src="https://picsum.photos/seed/research/300/300" alt="Research process" className="w-full h-full object-cover" />
+                                    <div
+                                        className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                        data-animation="fade-scale-in"
+                                        data-delay="500"
+                                    >
+                                        <img src="https://picsum.photos/seed/research/300/300" alt="Research process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                                     </div>
 
                                     {/* Process Step 02 */}
-                                    <div className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start">02.</h2>
+                                    <div
+                                        className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                        data-animation="fade-scale-in"
+                                        data-delay="600"
+                                    >
+                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110">02.</h2>
                                         <div className="self-start">
                                             <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Concept & Ideation</h3>
                                             <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed">
@@ -430,13 +525,21 @@ function AboutPage() {
                                     </div>
 
                                     {/* Image 2 */}
-                                    <div className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden">
-                                        <img src="https://picsum.photos/seed/ideation/300/300" alt="Ideation process" className="w-full h-full object-cover" />
+                                    <div
+                                        className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                        data-animation="fade-scale-in"
+                                        data-delay="700"
+                                    >
+                                        <img src="https://picsum.photos/seed/ideation/300/300" alt="Ideation process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                                     </div>
 
                                     {/* Process Step 03 - Spans 2 columns on larger screens */}
-                                    <div className="md:col-span-2 bg-[#A8977A] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#45372B] self-start">03.</h2>
+                                    <div
+                                        className="md:col-span-2 bg-[#A8977A] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                        data-animation="fade-scale-in"
+                                        data-delay="800"
+                                    >
+                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#45372B] self-start transition-transform duration-300 hover:scale-110">03.</h2>
                                         <div className="self-start max-w-2xl">
                                             <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#45372B] mb-2 sm:mb-3">Feedback & Refinement</h3>
                                             <p className="text-sm sm:text-base lg:text-lg text-[#45372B] leading-relaxed">
@@ -446,8 +549,12 @@ function AboutPage() {
                                     </div>
 
                                     {/* Process Step 04 */}
-                                    <div className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start">04.</h2>
+                                    <div
+                                        className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                        data-animation="fade-scale-in"
+                                        data-delay="900"
+                                    >
+                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110">04.</h2>
                                         <div className="self-start">
                                             <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Testing & Optimization</h3>
                                             <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed">
@@ -457,13 +564,21 @@ function AboutPage() {
                                     </div>
 
                                     {/* Image 3 */}
-                                    <div className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden">
-                                        <img src="https://picsum.photos/seed/testing/300/300" alt="Testing process" className="w-full h-full object-cover" />
+                                    <div
+                                        className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                        data-animation="fade-scale-in"
+                                        data-delay="1000"
+                                    >
+                                        <img src="https://picsum.photos/seed/testing/300/300" alt="Testing process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                                     </div>
 
                                     {/* Process Step 05 */}
-                                    <div className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between">
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start">05.</h2>
+                                    <div
+                                        className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                        data-animation="fade-scale-in"
+                                        data-delay="1100"
+                                    >
+                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110">05.</h2>
                                         <div className="self-start">
                                             <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3">Launch & Delivery</h3>
                                             <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed">
@@ -478,14 +593,27 @@ function AboutPage() {
                         {/* When I'm not working Section */}
                         <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
                             <div className="w-full max-w-6xl mx-auto">
-                                <h2 className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12">
+                                <h2
+                                    className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
+                                    data-animation="fade-scale-in"
+                                    data-delay="0"
+                                >
                                     When I'm Not Working
                                 </h2>
-                                <p className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20">
+                                <p
+                                    className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
+                                    data-animation="slide-up-fade"
+                                    data-delay="200"
+                                >
                                     When I'm not building or designing, you'll probably find me with a good book and freshly brewed coffee, cheering for my favorite football team, experimenting with new recipes in the kitchen, or curled up with my dog for a cozy movie night.
                                 </p>
 
-                                <ScrollingGallery />
+                                <div
+                                    data-animation="fade-scale-in"
+                                    data-delay="400"
+                                >
+                                    <ScrollingGallery />
+                                </div>
                             </div>
                         </section>
 
@@ -495,10 +623,18 @@ function AboutPage() {
                                 <div className="grid grid-cols-1 lg:grid-cols-[50%_35%] gap-8 lg:gap-[15%]">
                                     {/* Left Side - Contact Form */}
                                     <div>
-                                        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12">
+                                        <h2
+                                            className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
+                                            data-animation="fade-scale-in"
+                                            data-delay="0"
+                                        >
                                             Let's Work Together
                                         </h2>
-                                        <p className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16">
+                                        <p
+                                            className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16"
+                                            data-animation="slide-up-fade"
+                                            data-delay="200"
+                                        >
                                             Let's build something impactful together—whether it's your brand, your website, or your next big idea.
                                         </p>
 
@@ -565,9 +701,13 @@ function AboutPage() {
                                             </div>
                                         ) : (
                                             /* Contact Form */
-                                            <div className="bg-transparent">
+                                            <div
+                                                className="bg-transparent"
+                                                data-animation="slide-up-fade"
+                                                data-delay="400"
+                                            >
                                                 {submitStatus === 'error' && (
-                                                    <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6">
+                                                    <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6 animate-slide-up-fade">
                                                         Failed to send message. Please try again.
                                                     </div>
                                                 )}
@@ -585,7 +725,7 @@ function AboutPage() {
                                                                 value={formData.name}
                                                                 onChange={handleInputChange}
                                                                 required
-                                                                className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50"
+                                                                className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
                                                                 placeholder="Your name"
                                                             />
                                                         </div>
@@ -601,7 +741,7 @@ function AboutPage() {
                                                                 value={formData.email}
                                                                 onChange={handleInputChange}
                                                                 required
-                                                                className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50"
+                                                                className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
                                                                 placeholder="your.email@example.com"
                                                             />
                                                         </div>
@@ -618,7 +758,7 @@ function AboutPage() {
                                                             onChange={handleInputChange}
                                                             required
                                                             rows="5"
-                                                            className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 resize-none"
+                                                            className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 resize-none transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
                                                             placeholder="Tell me about your project..."
                                                         />
                                                     </div>
@@ -626,7 +766,7 @@ function AboutPage() {
                                                     <button
                                                         type="submit"
                                                         disabled={isSubmitting}
-                                                        className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                                        className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:scale-105 hover:shadow-xl transform active:scale-95"
                                                     >
                                                         {isSubmitting ? 'Sending...' : 'Send Message'}
                                                     </button>
