@@ -1,4 +1,5 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import Lenis from 'lenis';
 import Navbar from '../components/Navbar';
 import ScrollingGallery from '../components/ui/ScrollingGallery';
 import Footer from '../components/Footer';
@@ -21,6 +22,9 @@ function AboutPage() {
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [submitStatus, setSubmitStatus] = useState('');
     const [showThankYou, setShowThankYou] = useState(false);
+
+    // Lenis smooth scroll ref
+    const lenisRef = useRef();
 
     const toggleSection = (section) => {
         setToggleStates(prev => ({
@@ -275,13 +279,36 @@ function AboutPage() {
         }
     ];
 
-    // Handle scroll to detect which section is in view (desktop only)
+    // Initialize Lenis smooth scroll
     useEffect(() => {
-        const handleScroll = () => {
+        // Initialize Lenis
+        const lenis = new Lenis({
+            duration: 1.2,
+            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+            direction: 'vertical',
+            gestureDirection: 'vertical',
+            smooth: true,
+            mouseMultiplier: 1,
+            smoothTouch: false,
+            touchMultiplier: 2,
+            infinite: false,
+        });
+
+        lenisRef.current = lenis;
+
+        // Animation frame loop for Lenis
+        function raf(time) {
+            lenis.raf(time);
+            requestAnimationFrame(raf);
+        }
+        requestAnimationFrame(raf);
+
+        // Handle scroll to detect which section is in view (desktop only)
+        const handleScroll = (e) => {
             // Only apply scroll-based image switching on larger screens
             if (window.innerWidth >= 1024) {
                 const sections = document.querySelectorAll('.content-section');
-                const scrollPosition = window.scrollY + window.innerHeight / 2;
+                const scrollPosition = e.scroll + window.innerHeight / 2;
 
                 sections.forEach((section, index) => {
                     const sectionTop = section.offsetTop;
@@ -294,8 +321,13 @@ function AboutPage() {
             }
         };
 
-        window.addEventListener('scroll', handleScroll);
-        return () => window.removeEventListener('scroll', handleScroll);
+        // Listen to Lenis scroll events
+        lenis.on('scroll', handleScroll);
+
+        // Cleanup
+        return () => {
+            lenis.destroy();
+        };
     }, []);
 
     return (
