@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
+import ScrollingGallery from '../components/ui/ScrollingGallery';
+import Footer from '../components/Footer';
 
 function AboutPage() {
     const [activeSection, setActiveSection] = useState(0);
@@ -10,11 +12,63 @@ function AboutPage() {
         creativeProblemSolving: false
     });
 
+    // Contact form state
+    const [formData, setFormData] = useState({
+        name: '',
+        email: '',
+        message: ''
+    });
+    const [isSubmitting, setIsSubmitting] = useState(false);
+    const [submitStatus, setSubmitStatus] = useState('');
+    const [showThankYou, setShowThankYou] = useState(false);
+
     const toggleSection = (section) => {
         setToggleStates(prev => ({
             ...prev,
             [section]: !prev[section]
         }));
+    };
+
+    // Contact form handlers
+    const handleInputChange = (e) => {
+        setFormData({
+            ...formData,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        setIsSubmitting(true);
+        setSubmitStatus('');
+
+        try {
+            const response = await fetch('http://localhost:8000/api/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData),
+            });
+
+            if (response.ok) {
+                setSubmitStatus('success');
+                setShowThankYou(true);
+            } else {
+                setSubmitStatus('error');
+            }
+        } catch (error) {
+            console.error('Error sending email:', error);
+            setSubmitStatus('error');
+        } finally {
+            setIsSubmitting(false);
+        }
+    };
+
+    const handleBackToForm = () => {
+        setShowThankYou(false);
+        setSubmitStatus('');
+        setFormData({ name: '', email: '', message: '' });
     };
 
     // Content sections with corresponding images
@@ -251,7 +305,7 @@ function AboutPage() {
                 <div className="w-full max-w-6xl mx-auto">
 
                     {/* Main content */}
-                    <div className="space-y-16 sm:space-y-24 lg:space-y-60">
+                    <div className="space-y-12 sm:space-y-16 lg:space-y-40">
                         {/* Split Screen Content Section */}
                         <section className="px-0 sm:px-2 lg:px-4">
                             <div className="w-full max-w-6xl mx-auto">
@@ -273,13 +327,12 @@ function AboutPage() {
                                         {contentSections.map((section, index) => (
                                             <div
                                                 key={section.id}
-                                                className={`content-section min-h-[52vh] sm:min-h-[50vh] lg:min-h-[60vh] flex ${
-                                                    index === 0
-                                                        ? 'items-start pt-8 lg:pt-24'
-                                                        : index === 1
-                                                            ? 'items-center mt-16 sm:mt-24 lg:mt-40'
-                                                            : 'items-center'
-                                                }`}
+                                                className={`content-section min-h-[52vh] sm:min-h-[50vh] lg:min-h-[60vh] flex ${index === 0
+                                                    ? 'items-start pt-8 lg:pt-24'
+                                                    : index === 1
+                                                        ? 'items-center mt-16 sm:mt-24 lg:mt-40'
+                                                        : 'items-center'
+                                                    }`}
                                             >
                                                 {section.content}
                                             </div>
@@ -294,9 +347,8 @@ function AboutPage() {
                                                     key={section.id}
                                                     src={section.image}
                                                     alt={section.alt}
-                                                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${
-                                                        activeSection === index ? 'opacity-100' : 'opacity-0'
-                                                    }`}
+                                                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${activeSection === index ? 'opacity-100' : 'opacity-0'
+                                                        }`}
                                                 />
                                             ))}
                                             <div className="absolute inset-0 bg-black/10"></div>
@@ -390,9 +442,185 @@ function AboutPage() {
                                 </div>
                             </div>
                         </section>
+
+                        {/* When I'm not working Section */}
+                        <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
+                            <div className="w-full max-w-6xl mx-auto">
+                                <h2 className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12">
+                                    When I'm Not Working
+                                </h2>
+                                <p className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20">
+                                    When I'm not building or designing, you'll probably find me with a good book and freshly brewed coffee, cheering for my favorite football team, experimenting with new recipes in the kitchen, or curled up with my dog for a cozy movie night.
+                                </p>
+
+                                <ScrollingGallery />
+                            </div>
+                        </section>
+
+                        {/* Contact Form Section */}
+                        <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
+                            <div className="w-full max-w-6xl mx-auto">
+                                <div className="grid grid-cols-1 lg:grid-cols-[50%_35%] gap-8 lg:gap-[15%]">
+                                    {/* Left Side - Contact Form */}
+                                    <div>
+                                        <h2 className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12">
+                                            Let's Work Together
+                                        </h2>
+                                        <p className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16">
+                                            Let's build something impactful together—whether it's your brand, your website, or your next big idea.
+                                        </p>
+
+                                        {showThankYou ? (
+                                            /* Thank You Message */
+                                            <div className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8">
+                                                <div className="text-center">
+                                                    {/* Success Icon */}
+                                                    <div className="mx-auto mb-6 w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                                        <svg
+                                                            className="w-8 h-8 text-blue-900"
+                                                            fill="none"
+                                                            stroke="currentColor"
+                                                            viewBox="0 0 24 24"
+                                                        >
+                                                            <path
+                                                                strokeLinecap="round"
+                                                                strokeLinejoin="round"
+                                                                strokeWidth={2}
+                                                                d="M5 13l4 4L19 7"
+                                                            />
+                                                        </svg>
+                                                    </div>
+
+                                                    <h3 className="text-2xl font-bold text-[#161711] mb-4">Thank You!</h3>
+
+                                                    <p className="text-[#161711]/80 mb-6 leading-relaxed">
+                                                        Your message has been sent successfully. I'll get back to you as soon as possible!
+                                                    </p>
+
+                                                    <div className="bg-[#BAE1EE] border border-[#161711]/30 rounded-lg p-4 mb-6">
+                                                        <div className="flex items-start">
+                                                            <svg
+                                                                className="w-5 h-5 text-[#161711] mt-0.5 mr-3 flex-shrink-0"
+                                                                fill="none"
+                                                                stroke="currentColor"
+                                                                viewBox="0 0 24 24"
+                                                            >
+                                                                <path
+                                                                    strokeLinecap="round"
+                                                                    strokeLinejoin="round"
+                                                                    strokeWidth={2}
+                                                                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                                                />
+                                                            </svg>
+                                                            <div className="text-left">
+                                                                <p className="text-sm font-medium text-[#161711] mb-1">
+                                                                    Check your email
+                                                                </p>
+                                                                <p className="text-sm text-[#161711]/90">
+                                                                    You'll receive a confirmation email shortly with details about next steps.
+                                                                </p>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+
+                                                    <button
+                                                        onClick={handleBackToForm}
+                                                        className="bg-[#BAE1EE] text-[#161711] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 font-medium"
+                                                    >
+                                                        Send Another Message
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        ) : (
+                                            /* Contact Form */
+                                            <div className="bg-transparent">
+                                                {submitStatus === 'error' && (
+                                                    <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6">
+                                                        Failed to send message. Please try again.
+                                                    </div>
+                                                )}
+
+                                                <form onSubmit={handleSubmit} className="space-y-6">
+                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                                        <div>
+                                                            <label htmlFor="name" className="block text-sm font-medium text-[#A8977A] mb-2">
+                                                                Name
+                                                            </label>
+                                                            <input
+                                                                type="text"
+                                                                id="name"
+                                                                name="name"
+                                                                value={formData.name}
+                                                                onChange={handleInputChange}
+                                                                required
+                                                                className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50"
+                                                                placeholder="Your name"
+                                                            />
+                                                        </div>
+
+                                                        <div>
+                                                            <label htmlFor="email" className="block text-sm font-medium text-[#A8977A] mb-2">
+                                                                Email
+                                                            </label>
+                                                            <input
+                                                                type="email"
+                                                                id="email"
+                                                                name="email"
+                                                                value={formData.email}
+                                                                onChange={handleInputChange}
+                                                                required
+                                                                className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50"
+                                                                placeholder="your.email@example.com"
+                                                            />
+                                                        </div>
+                                                    </div>
+
+                                                    <div>
+                                                        <label htmlFor="message" className="block text-sm font-medium text-[#A8977A] mb-2">
+                                                            Message
+                                                        </label>
+                                                        <textarea
+                                                            id="message"
+                                                            name="message"
+                                                            value={formData.message}
+                                                            onChange={handleInputChange}
+                                                            required
+                                                            rows="5"
+                                                            className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 resize-none"
+                                                            placeholder="Tell me about your project..."
+                                                        />
+                                                    </div>
+
+                                                    <button
+                                                        type="submit"
+                                                        disabled={isSubmitting}
+                                                        className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
+                                                    >
+                                                        {isSubmitting ? 'Sending...' : 'Send Message'}
+                                                    </button>
+                                                </form>
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {/* Right Side - Fixed Image Container */}
+                                    <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh]">
+                                        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
+                                            <img
+                                                src="https://picsum.photos/seed/contact/600/800"
+                                                alt="Let's work together"
+                                                className="w-full h-full object-cover"
+                                            />
+                                            <div className="absolute inset-0 bg-black/10"></div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
                     </div>
                 </div>
             </div>
+            <Footer />
         </div>
     );
 }

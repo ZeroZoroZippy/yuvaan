@@ -11,8 +11,8 @@ function ScrollingGallery() {
     ];
 
     return (
-        <section className="flex justify-center px-2 sm:px-4">
-            <div className="w-full max-w-[900px] overflow-hidden">
+        <section className="w-full overflow-hidden">
+            <div className="w-full overflow-hidden">
                 <div className="flex animate-scroll space-x-4 sm:space-x-6" style={{ width: '200%' }}>
                     {/* First set of images */}
                     <div className="flex space-x-4 sm:space-x-6 shrink-0">
