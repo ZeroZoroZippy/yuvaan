@@ -22,6 +22,31 @@ function HeroPage() {
   };
 
   useEffect(() => {
+    // Smooth scroll to top when component mounts with animation
+    const smoothScrollToTop = () => {
+      const startPosition = window.pageYOffset;
+      const startTime = performance.now();
+      const duration = 800; // 800ms for smooth transition
+
+      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+      const animateScroll = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+        
+        window.scrollTo(0, startPosition * (1 - easedProgress));
+        
+        if (progress < 1) {
+          requestAnimationFrame(animateScroll);
+        }
+      };
+      
+      requestAnimationFrame(animateScroll);
+    };
+
+    smoothScrollToTop();
+    
     // Clean staggered reveal animation
     const timeouts = [
       setTimeout(() => setShowContent(true), 100),         // Start revealing content

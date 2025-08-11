@@ -345,17 +345,43 @@ function AboutPage() {
 
     // Initialize Lenis smooth scroll and animations
     useEffect(() => {
-        // Initialize Lenis
+        // Smooth scroll to top when component mounts with animation
+        const smoothScrollToTop = () => {
+            const startPosition = window.pageYOffset;
+            const startTime = performance.now();
+            const duration = 800; // 800ms for smooth transition
+
+            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+            const animateScroll = (currentTime) => {
+                const elapsed = currentTime - startTime;
+                const progress = Math.min(elapsed / duration, 1);
+                const easedProgress = easeOutCubic(progress);
+
+                window.scrollTo(0, startPosition * (1 - easedProgress));
+
+                if (progress < 1) {
+                    requestAnimationFrame(animateScroll);
+                }
+            };
+
+            requestAnimationFrame(animateScroll);
+        };
+
+        smoothScrollToTop();
+
+        // Initialize Lenis with enhanced settings
         const lenis = new Lenis({
-            duration: 1.2,
+            duration: 1.8,
             easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
             direction: 'vertical',
             gestureDirection: 'vertical',
             smooth: true,
-            mouseMultiplier: 1,
+            mouseMultiplier: 1.2,
             smoothTouch: false,
             touchMultiplier: 2,
             infinite: false,
+            normalizeWheel: true,
         });
 
         lenisRef.current = lenis;
@@ -406,7 +432,7 @@ function AboutPage() {
     }, []);
 
     return (
-        <div className="min-h-screen relative z-10" style={{ backgroundColor: '#45372B' }}>
+        <div className="min-h-screen relative z-10 animate-fade-in" style={{ backgroundColor: '#45372B' }}>
             <Navbar />
             <div className="text-[#A8977A] px-4 sm:px-8 lg:px-16 py-6 pt-20 sm:pt-24 lg:pt-28 relative z-10">
                 <div className="w-full max-w-6xl mx-auto">
@@ -416,15 +442,17 @@ function AboutPage() {
                         {/* Split Screen Content Section */}
                         <section className="px-0 sm:px-2 lg:px-4">
                             <div className="w-full max-w-6xl mx-auto">
-                                {/* Mobile Image - Shows on small screens at the top */}
-                                <div className="block lg:hidden mb-8 sm:mb-12 pt-12">
-                                    <div className="relative w-full h-[50vh] sm:h-[50vh] rounded-2xl overflow-hidden shadow-lg">
+                                {/* Enhanced Mobile Image - Shows on small screens at the top */}
+                                <div className="block lg:hidden mb-8 sm:mb-12 pt-12" data-animation="slide-up-fade" data-delay="300">
+                                    <div className="relative w-full h-[50vh] sm:h-[50vh] rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl">
                                         <img
                                             src={contentSections[0].image}
                                             alt={contentSections[0].alt}
-                                            className="w-full h-full object-cover"
+                                            className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110"
                                         />
-                                        <div className="absolute inset-0 bg-black/10"></div>
+                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+                                        {/* Subtle border glow */}
+                                        <div className="absolute inset-0 rounded-2xl border-2 border-[#A8977A]/20 hover:border-[#A8977A]/40 transition-all duration-500"></div>
                                     </div>
                                 </div>
 
@@ -446,19 +474,43 @@ function AboutPage() {
                                         ))}
                                     </div>
 
-                                    {/* Right Side - Fixed Image Container (hidden on mobile, shown on desktop) */}
-                                    <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh]">
-                                        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
+                                    {/* Right Side - Enhanced Fixed Image Container (hidden on mobile, shown on desktop) */}
+                                    <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh] group">
+                                        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl hover:-translate-y-2">
+                                            {/* Background blur effect */}
+                                            <div className="absolute inset-0 bg-gradient-to-br from-[#A8977A]/20 to-transparent backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+
                                             {contentSections.map((section, index) => (
-                                                <img
+                                                <div
                                                     key={section.id}
-                                                    src={section.image}
-                                                    alt={section.alt}
-                                                    className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-500 ${activeSection === index ? 'opacity-100' : 'opacity-0'
+                                                    className={`absolute inset-0 transition-all duration-1000 ease-out ${activeSection === index
+                                                        ? 'opacity-100 scale-100 rotate-0'
+                                                        : 'opacity-0 scale-110 rotate-1'
                                                         }`}
-                                                />
+                                                >
+                                                    <img
+                                                        src={section.image}
+                                                        alt={section.alt}
+                                                        className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
+                                                        style={{
+                                                            filter: activeSection === index ? 'brightness(1) contrast(1.05)' : 'brightness(0.8) contrast(0.9)'
+                                                        }}
+                                                    />
+                                                    {/* Animated overlay */}
+                                                    <div className={`absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent transition-opacity duration-1000 ${activeSection === index ? 'opacity-100' : 'opacity-60'
+                                                        }`}></div>
+                                                </div>
                                             ))}
-                                            <div className="absolute inset-0 bg-black/10"></div>
+
+                                            {/* Floating particles effect */}
+                                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                                                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-[#A8977A]/40 rounded-full animate-pulse"></div>
+                                                <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-[#A8977A]/60 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                                                <div className="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-[#A8977A]/30 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                                            </div>
+
+                                            {/* Border glow effect */}
+                                            <div className="absolute inset-0 rounded-2xl border-2 border-[#A8977A]/0 group-hover:border-[#A8977A]/30 transition-all duration-700"></div>
                                         </div>
                                     </div>
                                 </div>

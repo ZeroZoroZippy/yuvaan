@@ -279,6 +279,60 @@
   animation: gentleScale 0.6s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
 }
 
+/* Buttery smooth page entrance */
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in {
+  animation: fadeIn 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Smooth image reveal with parallax effect */
+@keyframes imageReveal {
+  0% {
+    opacity: 0;
+    transform: scale(1.1) translateY(20px);
+    filter: blur(8px);
+  }
+  50% {
+    opacity: 0.7;
+    transform: scale(1.05) translateY(10px);
+    filter: blur(4px);
+  }
+  100% {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+    filter: blur(0);
+  }
+}
+
+.animate-image-reveal {
+  animation: imageReveal 1.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+/* Smooth container hover effects */
+.smooth-hover {
+  transition: all 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.smooth-hover:hover {
+  transform: translateY(-8px) scale(1.02);
+  box-shadow: 0 25px 50px rgba(0, 0, 0, 0.3);
+}
+
+/* Enhanced shadow effects */
+.shadow-3xl {
+  box-shadow: 0 35px 60px -12px rgba(0, 0, 0, 0.4);
+}
+
 /* Stagger delay classes (optional - add to components for cascade effect) */
 .delay-100 { animation-delay: 100ms; }
 .delay-200 { animation-delay: 200ms; }
