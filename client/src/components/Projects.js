@@ -6,12 +6,9 @@ import dental from '../assets/Projects/Dental.png'
 
 function Projects() {
   const [toggleStates, setToggleStates] = useState({
-    project1: false,
+    project1: true,  // First project open by default
     project2: false
   });
-
-  const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const projectImages = [dental, wellness];
 
   const scrollContainerRef = useRef(null);
   const project1Ref = useRef(null);
@@ -20,16 +17,7 @@ function Projects() {
   // Check if any project is open
   const isAnyProjectOpen = Object.values(toggleStates).some(state => state);
 
-  // Autoplay carousel for project images
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setCurrentImageIndex((prevIndex) =>
-        (prevIndex + 1) % projectImages.length
-      );
-    }, 3000); // Change image every 3 seconds
 
-    return () => clearInterval(interval);
-  }, [projectImages.length]);
 
   // Reset scroll position when all projects are closed
   useEffect(() => {
@@ -54,49 +42,59 @@ function Projects() {
     }
   }, [isAnyProjectOpen]);
 
-  const handleToggle = (projectKey) => {
-    const isOpening = !toggleStates[projectKey];
+  const handleOpenProject = (projectKey) => {
+    const isCurrentlyOpen = toggleStates[projectKey];
 
-    // If closing the last open project, prepare for reset
+    // If already open, do nothing
+    if (isCurrentlyOpen) {
+      return;
+    }
+
+    // Close all others and open the clicked one
     const updatedStates = {
-      ...toggleStates,
-      [projectKey]: isOpening
+      project1: projectKey === 'project1',
+      project2: projectKey === 'project2'
     };
 
     setToggleStates(updatedStates);
 
-    // Auto-scroll only when opening a project
-    if (isOpening) {
-      // First ensure scroll is enabled
-      if (scrollContainerRef.current) {
-        scrollContainerRef.current.style.overflowY = 'auto';
-      }
-
-      setTimeout(() => {
-        const projectRefs = {
-          project1: project1Ref,
-          project2: project2Ref
-        };
-
-        const targetRef = projectRefs[projectKey];
-
-        if (targetRef?.current && scrollContainerRef.current) {
-          const container = scrollContainerRef.current;
-          const target = targetRef.current;
-          const containerRect = container.getBoundingClientRect();
-          const targetRect = target.getBoundingClientRect();
-
-          // Calculate optimal scroll position
-          const scrollTop = container.scrollTop + targetRect.top - containerRect.top - 20;
-
-          // Smooth scroll with easing
-          container.scrollTo({
-            top: scrollTop,
-            behavior: 'smooth'
-          });
-        }
-      }, 100);
+    // Auto-scroll when opening a project
+    // First ensure scroll is enabled
+    if (scrollContainerRef.current) {
+      scrollContainerRef.current.style.overflowY = 'auto';
     }
+
+    setTimeout(() => {
+      const projectRefs = {
+        project1: project1Ref,
+        project2: project2Ref
+      };
+
+      const targetRef = projectRefs[projectKey];
+
+      if (targetRef?.current && scrollContainerRef.current) {
+        const container = scrollContainerRef.current;
+        const target = targetRef.current;
+        const containerRect = container.getBoundingClientRect();
+        const targetRect = target.getBoundingClientRect();
+
+        // Calculate optimal scroll position
+        const scrollTop = container.scrollTop + targetRect.top - containerRect.top - 20;
+
+        // Smooth scroll with easing
+        container.scrollTo({
+          top: scrollTop,
+          behavior: 'smooth'
+        });
+      }
+    }, 100);
+  };
+
+  const handleCloseProject = (projectKey) => {
+    setToggleStates({
+      project1: false,
+      project2: false
+    });
   };
 
   const expandVariants = {
@@ -168,50 +166,54 @@ function Projects() {
           scrollBehavior: 'smooth'
         }}
       >
-        <h2 className="text-3xl font-bold mb-4 text-[#A8977A]">Projects</h2>
-
-        {/* Image Container with Autoplay Carousel */}
-        <div className="mb-6 rounded-2xl overflow-hidden bg-gray-100 flex-shrink-0 relative">
-          <AnimatePresence mode="wait">
-            <motion.img
-              key={currentImageIndex}
-              src={projectImages[currentImageIndex]}
-              alt={`Project ${currentImageIndex + 1}`}
-              className="w-full h-64 lg:h-60 object-cover"
-              initial={{ opacity: 0, x: 50 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -50 }}
-              transition={{ duration: 0.5, ease: "easeInOut" }}
-            />
-          </AnimatePresence>
+        <h2 className="text-3xl font-bold mb-4 text-[#A8977A]">Work</h2>
 
 
-        </div>
 
         <div className="space-y-4 pb-20">
           {projects.map((project) => (
             <div key={project.key} className="p-3 lg:p-4 rounded-lg" ref={project.ref}>
               <div className="flex justify-between items-center">
-                <h3 className="font-semibold text-[#A8977A]" style={{ fontSize: '1.25rem' }}>
-                  {project.title}
-                </h3>
-                <button
-                  onClick={() => handleToggle(project.key)}
-                  className="text-[#A8977A] hover:text-[#45372B] transition-colors focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-opacity-50 rounded"
-                  aria-label={`Toggle ${project.title}`}
+                <h3
+                  className="font-semibold text-[#A8977A] cursor-pointer hover:text-[#45372B] transition-colors"
+                  style={{ fontSize: '1.25rem' }}
+                  onClick={() => handleOpenProject(project.key)}
+                  role="button"
+                  tabIndex={0}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault();
+                      handleOpenProject(project.key);
+                    }
+                  }}
                   aria-expanded={toggleStates[project.key]}
                 >
-                  <motion.svg
-                    className="w-5 h-5"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                    animate={{ rotate: toggleStates[project.key] ? 180 : 0 }}
-                    transition={{ duration: 0.3, ease: "easeInOut" }}
+                  {project.title}
+                </h3>
+                {toggleStates[project.key] && (
+                  <motion.div
+                    initial={{ opacity: 0, scale: 0.8 }}
+                    animate={{ opacity: 1, scale: 1 }}
+                    exit={{ opacity: 0, scale: 0.8 }}
+                    transition={{ duration: 0.2 }}
+                    className="cursor-pointer"
+                    onClick={() => handleCloseProject(project.key)}
                   >
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                  </motion.svg>
-                </button>
+                    <svg
+                      className="w-6 h-6 text-[#A8977A] transition-transform duration-300 ease-in-out hover:scale-110 hover:text-[#45372B]"
+                      fill="none"
+                      stroke="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        strokeWidth={1}
+                        d="M7 17L17 7M17 7H7M17 7V17"
+                      />
+                    </svg>
+                  </motion.div>
+                )}
               </div>
               <AnimatePresence>
                 {toggleStates[project.key] && (
@@ -230,7 +232,7 @@ function Projects() {
                           alt={project.title}
                           className="w-full h-56 object-cover"
                         />
-                        <Link 
+                        <Link
                           to={`/projects/${project.key === 'project1' ? 'dental' : 'wellness'}`}
                           className="absolute bottom-3 right-3 bg-[#A8977A] text-[#161711] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#45372B] hover:text-[#A8977A] transition-colors shadow-lg"
                         >

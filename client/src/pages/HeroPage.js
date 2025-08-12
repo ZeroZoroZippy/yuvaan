@@ -3,7 +3,7 @@ import Navbar from '../components/Navbar';
 import WhoAmI from '../components/WhoAmI';
 import HeroImage from '../components/HeroImage';
 import Projects from '../components/Projects';
-import Description from '../components/Description';
+import Testimonial from '../components/Testimonial';
 import Contact from '../components/Contact';
 import SocialMedia from '../components/SocialMedia';
 import ContactModal from '../components/ContactModal';
@@ -34,19 +34,19 @@ function HeroPage() {
         const elapsed = currentTime - startTime;
         const progress = Math.min(elapsed / duration, 1);
         const easedProgress = easeOutCubic(progress);
-        
+
         window.scrollTo(0, startPosition * (1 - easedProgress));
-        
+
         if (progress < 1) {
           requestAnimationFrame(animateScroll);
         }
       };
-      
+
       requestAnimationFrame(animateScroll);
     };
 
     smoothScrollToTop();
-    
+
     // Clean staggered reveal animation
     const timeouts = [
       setTimeout(() => setShowContent(true), 100),         // Start revealing content
@@ -65,7 +65,7 @@ function HeroPage() {
     <>
       {/* Optional: Subtle loading transition */}
       <div className={`page-transition ${showContent ? 'loaded' : ''}`} />
-      
+
       <Navbar />
       <div className="pt-24">
         {/* Desktop Layout */}
@@ -93,7 +93,7 @@ function HeroPage() {
           <div className="flex justify-start mx-4 -mt-[18.75rem] gap-4">
             <div className="flex flex-col gap-4">
               <div className={`${animationStage >= 4 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
-                <Description />
+                <Testimonial />
               </div>
             </div>
             <div className="flex flex-col gap-4">
@@ -112,11 +112,11 @@ function HeroPage() {
           <div className={`${animationStage >= 1 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
             <HeroImage />
           </div>
-          <div className={`${animationStage >= 4 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
-            <Description />
-          </div>
           <div className={`${animationStage >= 3 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
             <Projects />
+          </div>
+          <div className={`${animationStage >= 4 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
+            <Testimonial />
           </div>
           <div className={`${animationStage >= 5 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
             <Contact onOpenModal={openContactModal} />
@@ -128,9 +128,9 @@ function HeroPage() {
       </div>
 
       {/* Contact Modal - positioned at page level for full-screen centering */}
-      <ContactModal 
-        isOpen={isContactModalOpen} 
-        onClose={closeContactModal} 
+      <ContactModal
+        isOpen={isContactModalOpen}
+        onClose={closeContactModal}
       />
     </>
   );
