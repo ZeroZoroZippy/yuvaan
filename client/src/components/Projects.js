@@ -1,24 +1,21 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import saarth from '../assets/Projects/Saarth.png'
 import wellness from '../assets/Projects/mental-wellness.png'
 import dental from '../assets/Projects/Dental.png'
 
 function Projects() {
   const [toggleStates, setToggleStates] = useState({
     project1: false,
-    project2: false,
-    project3: false
+    project2: false
   });
 
   const [currentImageIndex, setCurrentImageIndex] = useState(0);
-  const projectImages = [saarth, dental, wellness];
+  const projectImages = [dental, wellness];
 
   const scrollContainerRef = useRef(null);
   const project1Ref = useRef(null);
   const project2Ref = useRef(null);
-  const project3Ref = useRef(null);
 
   // Check if any project is open
   const isAnyProjectOpen = Object.values(toggleStates).some(state => state);
@@ -78,8 +75,7 @@ function Projects() {
       setTimeout(() => {
         const projectRefs = {
           project1: project1Ref,
-          project2: project2Ref,
-          project3: project3Ref
+          project2: project2Ref
         };
 
         const targetRef = projectRefs[projectKey];
@@ -154,9 +150,8 @@ function Projects() {
 
   // Project data for cleaner code
   const projects = [
-    { key: 'project1', title: 'Saarth - AI Companion', ref: project1Ref, image: saarth },
-    { key: 'project2', title: 'Dental Website', ref: project2Ref, image: dental },
-    { key: 'project3', title: 'Wellness Website', ref: project3Ref, image: wellness }
+    { key: 'project1', title: 'Dental Website', ref: project1Ref, image: dental },
+    { key: 'project2', title: 'Wellness Website', ref: project2Ref, image: wellness }
   ];
 
   return (
@@ -236,7 +231,7 @@ function Projects() {
                           className="w-full h-56 object-cover"
                         />
                         <Link 
-                          to={`/projects/${project.key === 'project1' ? 'saarth' : project.key === 'project2' ? 'dental' : 'wellness'}`}
+                          to={`/projects/${project.key === 'project1' ? 'dental' : 'wellness'}`}
                           className="absolute bottom-3 right-3 bg-[#A8977A] text-[#161711] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#45372B] hover:text-[#A8977A] transition-colors shadow-lg"
                         >
                           View More

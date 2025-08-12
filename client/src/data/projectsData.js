@@ -1,98 +1,125 @@
-import saarth from '../assets/Projects/Saarth.png';
-import wellness from '../assets/Projects/mental-wellness.png';
 import dental from '../assets/Projects/Dental.png';
+import wellness from '../assets/Projects/mental-wellness.png';
 
 export const projectsData = {
-    saarth: {
-        id: 'saarth',
-        title: 'Saarth - AI Companion',
-        description: 'An intelligent AI companion designed to provide personalized mental health support and wellness guidance through natural conversations.',
-        year: '2024',
-        industry: 'Healthcare',
-        client: 'Personal Project',
-        duration: '4 months',
-        mainImage: saarth,
-        problem: {
-            title: 'The Problem',
-            description: 'Mental health support is often inaccessible, expensive, and stigmatized. Many people struggle to find immediate, judgment-free guidance when they need it most.',
-            image: saarth
-        },
-        solution: {
-            title: 'The Solution',
-            description: 'Saarth provides 24/7 AI-powered mental health support through empathetic conversations, personalized coping strategies, and wellness tracking.',
-            images: [saarth, saarth, saarth]
-        },
-        challenge: {
-            title: 'Key Challenge',
-            description: 'Creating an AI that could provide genuinely helpful mental health support while maintaining ethical boundaries and user safety.',
-            image: saarth
-        },
-        summary: {
-            title: 'Project Summary',
-            description: 'Successfully developed an AI companion that combines natural language processing with mental health best practices, resulting in a supportive tool for wellness.',
-            image: saarth
-        }
-    },
     dental: {
         id: 'dental',
-        title: 'Dental Practice Website',
-        description: 'A modern, user-friendly website for a dental practice featuring online appointment booking and patient portal functionality.',
+        title: 'Modern Dental Practice Website',
+        description: 'Transformed an outdated dental website into a professional, patient-friendly digital presence with integrated appointment booking.',
         year: '2024',
         industry: 'Healthcare',
-        client: 'Private Practice',
-        duration: '3 months',
+        client: 'Local Dental Practice',
+        duration: '6 weeks',
         mainImage: dental,
+        
         problem: {
-            title: 'The Problem',
-            description: 'The dental practice had an outdated website that didn\'t reflect their modern approach and made it difficult for patients to book appointments.',
+            title: 'The Professional Image Problem',
+            description: 'The dental practice was using an outdated website that didn\'t reflect their modern approach to patient care. Potential patients couldn\'t easily find basic information like services offered, insurance accepted, or office hours. Without online booking, patients had to call during business hours or wait for a callback - creating friction in the appointment process.',
+            challenges: [
+                'Outdated design undermined professional credibility',
+                'No online appointment booking system',
+                'Difficult to find essential practice information',
+                'Not optimized for mobile devices'
+            ],
             image: dental
         },
+        
         solution: {
-            title: 'The Solution',
-            description: 'Designed and developed a responsive website with integrated booking system, patient portal, and modern UI that reflects the practice\'s professionalism.',
+            title: 'The Patient-Centered Design',
+            description: 'I created a modern, professional website that puts patient needs first. The new design clearly presents services, makes insurance information easy to find, and includes an integrated booking system. Every page is designed to reduce dental anxiety through calming visuals and clear, jargon-free language.',
+            features: [
+                'Integrated online appointment booking',
+                'Mobile-responsive design for all devices',
+                'Clear service descriptions and pricing transparency',
+                'HIPAA-compliant contact forms'
+            ],
             images: [dental, dental, dental]
         },
+        
         challenge: {
-            title: 'Key Challenge',
-            description: 'Integrating the appointment booking system with existing practice management software while ensuring HIPAA compliance.',
+            title: 'The Technical Integration Challenge',
+            description: 'The biggest challenge was integrating a modern booking system while maintaining HIPAA compliance and ensuring the design worked seamlessly across all devices. Healthcare websites require special attention to privacy regulations and professional presentation standards.',
             image: dental
         },
-        summary: {
-            title: 'Project Summary',
-            description: 'Delivered a comprehensive web solution that increased online bookings by 60% and improved patient satisfaction scores.',
+        
+        results: {
+            title: 'Professional Digital Presence',
+            description: 'The practice now has a website that matches the quality of their patient care. Patients can book appointments 24/7, find information easily, and feel confident about the practice before their first visit. The professional appearance reinforces trust and credibility.',
+            improvements: [
+                'Professional appearance that builds patient trust',
+                '24/7 online appointment booking capability',
+                'Mobile-friendly experience for all visitors',
+                'Clear, accessible information about services and policies'
+            ],
             image: dental
         }
     },
+    
     wellness: {
         id: 'wellness',
-        title: 'Mental Wellness Platform',
-        description: 'A comprehensive wellness platform offering mood tracking, meditation guides, and community support for mental health.',
+        title: 'Mental Wellness Practice Website',
+        description: 'Created a welcoming, approachable website that makes seeking mental health support feel safe and judgment-free.',
         year: '2024',
-        industry: 'Wellness',
-        client: 'Startup',
-        duration: '5 months',
+        industry: 'Mental Health',
+        client: 'Mental Wellness Practitioner',
+        duration: '8 weeks',
         mainImage: wellness,
+        
         problem: {
-            title: 'The Problem',
-            description: 'People struggle to maintain consistent wellness routines and often lack the tools to track their mental health progress effectively.',
+            title: 'The Accessibility Barrier',
+            description: 'The mental health practitioner needed a website that would make potential clients feel comfortable reaching out. Many people seeking therapy already feel vulnerable, so the website needed to reduce barriers rather than create them. The previous site used clinical language and formal presentation that could feel intimidating to someone taking their first step toward mental health support.',
+            challenges: [
+                'Clinical language felt intimidating to potential clients',
+                'Unclear about what therapy actually involves',
+                'No easy way to take the first step toward booking',
+                'Design didn\'t convey warmth and approachability'
+            ],
             image: wellness
         },
+        
         solution: {
-            title: 'The Solution',
-            description: 'Built a comprehensive platform with mood tracking, guided meditations, progress analytics, and community features to support mental wellness.',
+            title: 'The Empathy-First Approach',
+            description: 'I designed the website around the visitor\'s emotional journey, using warm, welcoming visuals and accessible language. The site explains the therapy process clearly, addresses common concerns, and provides multiple low-pressure ways to connect. Every element is designed to reduce anxiety about taking that first step.',
+            features: [
+                'Warm, approachable design that reduces anxiety',
+                'Clear explanation of the therapy process',
+                'Multiple contact options with varying commitment levels',
+                'FAQ section addressing common therapy concerns'
+            ],
             images: [wellness, wellness, wellness]
         },
+        
         challenge: {
-            title: 'Key Challenge',
-            description: 'Creating an engaging user experience that encourages daily use while handling sensitive mental health data securely.',
+            title: 'The Trust and Credibility Balance',
+            description: 'Mental health websites must balance approachability with professionalism. The design needed to feel welcoming and safe while still conveying the practitioner\'s expertise and credentials. Finding the right tone and visual approach required understanding both the client\'s needs and the visitor\'s emotional state.',
             image: wellness
         },
-        summary: {
-            title: 'Project Summary',
-            description: 'Launched a successful wellness platform with over 1,000 active users and positive feedback on user engagement and mental health outcomes.',
+        
+        results: {
+            title: 'Welcoming Digital Gateway',
+            description: 'The new website serves as a comfortable first step for people considering therapy. Visitors can learn about the process, understand what to expect, and reach out when they\'re ready - all in an environment that feels supportive rather than clinical.',
+            improvements: [
+                'Approachable design that reduces therapy stigma',
+                'Clear information about the therapeutic process',
+                'Multiple ways for visitors to connect at their comfort level',
+                'Professional credibility combined with personal warmth'
+            ],
             image: wellness
         }
     }
+};
+
+// Portfolio positioning (honest)
+export const portfolioFocus = {
+    specialization: 'Healthcare & Wellness Websites',
+    approach: 'Patient-centered design that builds trust and reduces barriers',
+    understanding: 'HIPAA compliance, patient psychology, and professional credibility requirements'
+};
+
+export const nextSteps = {
+    cta: 'Discuss Your Healthcare Website Needs',
+    offer: 'Free consultation to review your current digital presence',
+    value: 'Get specific recommendations for improving patient experience on your website'
 };
 
 export const getProjectById = (id) => {
