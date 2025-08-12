@@ -1,5 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Link } from 'react-router-dom';
 import saarth from '../assets/Projects/Saarth.png'
 import wellness from '../assets/Projects/mental-wellness.png'
 import dental from '../assets/Projects/Dental.png'
@@ -234,9 +235,12 @@ function Projects() {
                           alt={project.title}
                           className="w-full h-56 object-cover"
                         />
-                        <button className="absolute bottom-3 right-3 bg-[#A8977A] text-[#161711] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#45372B] hover:text-[#A8977A] transition-colors shadow-lg">
+                        <Link 
+                          to={`/projects/${project.key === 'project1' ? 'saarth' : project.key === 'project2' ? 'dental' : 'wellness'}`}
+                          className="absolute bottom-3 right-3 bg-[#A8977A] text-[#161711] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#45372B] hover:text-[#A8977A] transition-colors shadow-lg"
+                        >
                           View More
-                        </button>
+                        </Link>
                       </div>
                     </div>
                   </motion.div>
