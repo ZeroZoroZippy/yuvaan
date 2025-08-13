@@ -1,9 +1,9 @@
 import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { usePageNavigation } from '../hooks/usePageNavigation';
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const navigate = useNavigate();
+  const { navigateWithTransition } = usePageNavigation();
 
   return (
     <div className="fixed w-full z-50 p-3 backdrop-blur-lg">
@@ -12,7 +12,10 @@ const Navbar = () => {
           <div className="flex justify-between h-16 items-center">
             <div className="flex items-center">
               <button
-                onClick={() => navigate('/')}
+                onClick={() => {
+                  console.log('Name clicked - navigating to home');
+                  navigateWithTransition('/', 'down');
+                }}
                 className="text-[1.5rem] font-bold text-[#A8977A] hover:text-white transition-colors duration-300 cursor-pointer"
               >
                 Yuvaan Vithlani

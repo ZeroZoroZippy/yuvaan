@@ -1,9 +1,9 @@
 import React from 'react';
-import { useNavigate } from 'react-router-dom';
+import { usePageNavigation } from '../hooks/usePageNavigation';
 import Orb from './ui/orb'
 
 function WhoAmI() {
-  const navigate = useNavigate();
+  const { navigateWithTransition } = usePageNavigation();
 
   return (
     <div
@@ -20,10 +20,10 @@ function WhoAmI() {
       {/* Diagonal Arrow at top right */}
       <div
         className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-2 lg:right-4 cursor-pointer"
-        onClick={() => navigate('/about')}
+        onClick={() => navigateWithTransition('/about', 'up')}
       >
         <svg
-          className="w-6 h-6 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-[#A8977A] transition-transform duration-300 ease-in-out hover:scale-110"
+          className="w-6 h-6 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-[#A8977A] transition-all duration-300 ease-in-out hover:scale-110 hover:text-white hover:rotate-12 active:scale-95"
           fill="none"
           stroke="currentColor"
           viewBox="0 0 24 24"

@@ -1,10 +1,12 @@
 import React, { useState, useEffect, useRef } from 'react';
 import Lenis from 'lenis';
+import { usePageTransition } from '../contexts/PageTransitionContext';
 import Navbar from '../components/Navbar';
 import ScrollingGallery from '../components/ui/ScrollingGallery';
 import Footer from '../components/Footer';
 
 function AboutPage() {
+    const { isTransitioning } = usePageTransition();
     const [activeSection, setActiveSection] = useState(0);
     const [toggleStates, setToggleStates] = useState({
         webDesign: false,
@@ -23,8 +25,10 @@ function AboutPage() {
     const [submitStatus, setSubmitStatus] = useState('');
     const [showThankYou, setShowThankYou] = useState(false);
 
-    // Animation state
+    // Animation and content loading state
     const [animatedElements, setAnimatedElements] = useState(new Set());
+    const [contentLoaded, setContentLoaded] = useState(false);
+    const [showContent, setShowContent] = useState(false);
 
     // Lenis smooth scroll ref
     const lenisRef = useRef();
@@ -343,8 +347,29 @@ function AboutPage() {
         );
     };
 
+    // Handle content loading after page transition
+    useEffect(() => {
+        if (!isTransitioning) {
+            // Wait for page transition to complete, then start loading content
+            const loadContentTimer = setTimeout(() => {
+                setContentLoaded(true);
+
+                // Show content immediately after loading
+                const showContentTimer = setTimeout(() => {
+                    setShowContent(true);
+                }, 100);
+
+                return () => clearTimeout(showContentTimer);
+            }, 200); // Shorter delay after transition ends
+
+            return () => clearTimeout(loadContentTimer);
+        }
+    }, [isTransitioning]);
+
     // Initialize Lenis smooth scroll and animations
     useEffect(() => {
+        if (!showContent) return;
+
         // Smooth scroll to top when component mounts with animation
         const smoothScrollToTop = () => {
             const startPosition = window.pageYOffset;
@@ -429,422 +454,429 @@ function AboutPage() {
             lenis.destroy();
             observerRef.current?.disconnect();
         };
-    }, []);
+    }, [showContent]);
 
     return (
-        <div className="min-h-screen relative z-10 animate-fade-in" style={{ backgroundColor: '#45372B' }}>
-            <Navbar />
-            <div className="text-[#A8977A] px-4 sm:px-8 lg:px-16 py-6 pt-20 sm:pt-24 lg:pt-28 relative z-10">
-                <div className="w-full max-w-6xl mx-auto">
+        <div className="min-h-screen relative z-10" style={{ backgroundColor: '#45372B' }}>
+            {/* Show content with smooth slide-in animation */}
+            {contentLoaded && (
+                <div className={`${showContent ? 'animate-slide-in-bottom' : 'opacity-0 translate-y-12'}`}>
+                    <div className={`${showContent ? 'animate-slide-in-stagger delay-200' : 'opacity-0'}`} style={{ pointerEvents: showContent ? 'auto' : 'none', position: 'relative', zIndex: 100 }}>
+                        <Navbar />
+                    </div>
+                    <div className={`text-[#A8977A] px-4 sm:px-8 lg:px-16 py-6 pt-20 sm:pt-24 lg:pt-28 relative z-0 ${showContent ? 'animate-slide-in-stagger delay-400' : 'opacity-0'}`}>
+                        <div className="w-full max-w-6xl mx-auto">
 
-                    {/* Main content */}
-                    <div className="space-y-12 sm:space-y-16 lg:space-y-40">
-                        {/* Split Screen Content Section */}
-                        <section className="px-0 sm:px-2 lg:px-4">
-                            <div className="w-full max-w-6xl mx-auto">
-                                {/* Enhanced Mobile Image - Shows on small screens at the top */}
-                                <div className="block lg:hidden mb-8 sm:mb-12 pt-12" data-animation="slide-up-fade" data-delay="300">
-                                    <div className="relative w-full h-[50vh] sm:h-[50vh] rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl">
-                                        <img
-                                            src={contentSections[0].image}
-                                            alt={contentSections[0].alt}
-                                            className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110"
-                                        />
-                                        <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-                                        {/* Subtle border glow */}
-                                        <div className="absolute inset-0 rounded-2xl border-2 border-[#A8977A]/20 hover:border-[#A8977A]/40 transition-all duration-500"></div>
-                                    </div>
-                                </div>
-
-                                <div className="grid grid-cols-1 lg:grid-cols-[50%_35%] gap-8 lg:gap-[15%] min-h-screen">
-                                    {/* Left Side - Scrollable Text Content */}
-                                    <div className="space-y-16 sm:space-y-24 lg:space-y-60">
-                                        {contentSections.map((section, index) => (
-                                            <div
-                                                key={section.id}
-                                                className={`content-section min-h-[52vh] sm:min-h-[50vh] lg:min-h-[60vh] flex ${index === 0
-                                                    ? 'items-start pt-8 lg:pt-24'
-                                                    : index === 1
-                                                        ? 'items-center mt-16 sm:mt-24 lg:mt-40'
-                                                        : 'items-center'
-                                                    }`}
-                                            >
-                                                {section.content}
+                            {/* Main content */}
+                            <div className="space-y-12 sm:space-y-16 lg:space-y-40">
+                                {/* Split Screen Content Section */}
+                                <section className="px-0 sm:px-2 lg:px-4">
+                                    <div className="w-full max-w-6xl mx-auto">
+                                        {/* Enhanced Mobile Image - Shows on small screens at the top */}
+                                        <div className="block lg:hidden mb-8 sm:mb-12 pt-12" data-animation="slide-up-fade" data-delay="300">
+                                            <div className="relative w-full h-[50vh] sm:h-[50vh] rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl">
+                                                <img
+                                                    src={contentSections[0].image}
+                                                    alt={contentSections[0].alt}
+                                                    className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110"
+                                                />
+                                                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
+                                                {/* Subtle border glow */}
+                                                <div className="absolute inset-0 rounded-2xl border-2 border-[#A8977A]/20 hover:border-[#A8977A]/40 transition-all duration-500"></div>
                                             </div>
-                                        ))}
-                                    </div>
+                                        </div>
 
-                                    {/* Right Side - Enhanced Fixed Image Container (hidden on mobile, shown on desktop) */}
-                                    <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh] group">
-                                        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl hover:-translate-y-2">
-                                            {/* Background blur effect */}
-                                            <div className="absolute inset-0 bg-gradient-to-br from-[#A8977A]/20 to-transparent backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+                                        <div className="grid grid-cols-1 lg:grid-cols-[50%_35%] gap-8 lg:gap-[15%] min-h-screen">
+                                            {/* Left Side - Scrollable Text Content */}
+                                            <div className="space-y-16 sm:space-y-24 lg:space-y-60">
+                                                {contentSections.map((section, index) => (
+                                                    <div
+                                                        key={section.id}
+                                                        className={`content-section min-h-[52vh] sm:min-h-[50vh] lg:min-h-[60vh] flex ${index === 0
+                                                            ? 'items-start pt-8 lg:pt-24'
+                                                            : index === 1
+                                                                ? 'items-center mt-16 sm:mt-24 lg:mt-40'
+                                                                : 'items-center'
+                                                            }`}
+                                                    >
+                                                        {section.content}
+                                                    </div>
+                                                ))}
+                                            </div>
 
-                                            {contentSections.map((section, index) => (
-                                                <div
-                                                    key={section.id}
-                                                    className={`absolute inset-0 transition-all duration-1000 ease-out ${activeSection === index
-                                                        ? 'opacity-100 scale-100 rotate-0'
-                                                        : 'opacity-0 scale-110 rotate-1'
-                                                        }`}
-                                                >
-                                                    <img
-                                                        src={section.image}
-                                                        alt={section.alt}
-                                                        className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
-                                                        style={{
-                                                            filter: activeSection === index ? 'brightness(1) contrast(1.05)' : 'brightness(0.8) contrast(0.9)'
-                                                        }}
-                                                    />
-                                                    {/* Animated overlay */}
-                                                    <div className={`absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent transition-opacity duration-1000 ${activeSection === index ? 'opacity-100' : 'opacity-60'
-                                                        }`}></div>
+                                            {/* Right Side - Enhanced Fixed Image Container (hidden on mobile, shown on desktop) */}
+                                            <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh] group">
+                                                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl hover:-translate-y-2">
+                                                    {/* Background blur effect */}
+                                                    <div className="absolute inset-0 bg-gradient-to-br from-[#A8977A]/20 to-transparent backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
+
+                                                    {contentSections.map((section, index) => (
+                                                        <div
+                                                            key={section.id}
+                                                            className={`absolute inset-0 transition-all duration-1000 ease-out ${activeSection === index
+                                                                ? 'opacity-100 scale-100 rotate-0'
+                                                                : 'opacity-0 scale-110 rotate-1'
+                                                                }`}
+                                                        >
+                                                            <img
+                                                                src={section.image}
+                                                                alt={section.alt}
+                                                                className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
+                                                                style={{
+                                                                    filter: activeSection === index ? 'brightness(1) contrast(1.05)' : 'brightness(0.8) contrast(0.9)'
+                                                                }}
+                                                            />
+                                                            {/* Animated overlay */}
+                                                            <div className={`absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent transition-opacity duration-1000 ${activeSection === index ? 'opacity-100' : 'opacity-60'
+                                                                }`}></div>
+                                                        </div>
+                                                    ))}
+
+                                                    {/* Floating particles effect */}
+                                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
+                                                        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-[#A8977A]/40 rounded-full animate-pulse"></div>
+                                                        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-[#A8977A]/60 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
+                                                        <div className="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-[#A8977A]/30 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
+                                                    </div>
+
+                                                    {/* Border glow effect */}
+                                                    <div className="absolute inset-0 rounded-2xl border-2 border-[#A8977A]/0 group-hover:border-[#A8977A]/30 transition-all duration-700"></div>
                                                 </div>
-                                            ))}
-
-                                            {/* Floating particles effect */}
-                                            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                                                <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-[#A8977A]/40 rounded-full animate-pulse"></div>
-                                                <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-[#A8977A]/60 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                                                <div className="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-[#A8977A]/30 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
                                             </div>
-
-                                            {/* Border glow effect */}
-                                            <div className="absolute inset-0 rounded-2xl border-2 border-[#A8977A]/0 group-hover:border-[#A8977A]/30 transition-all duration-700"></div>
                                         </div>
                                     </div>
-                                </div>
-                            </div>
-                        </section>
+                                </section>
 
-                        {/* Design with Strategy and Creativity Section */}
-                        <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
-                            <div className="w-full max-w-6xl mx-auto">
-                                <h2
-                                    className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
-                                    data-animation="fade-scale-in"
-                                    data-delay="0"
-                                >
-                                    Design with Strategy and Creativity
-                                </h2>
-                                <p
-                                    className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
-                                    data-animation="slide-up-fade"
-                                    data-delay="200"
-                                >
-                                    Every great digital experience starts with understanding the why behind the what. I combine strategic thinking with creative execution to build solutions that not only look exceptional but solve real problems for real people.
-                                </p>
-
-                                {/* Container Grid - Responsive */}
-                                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
-                                    {/* Process Step 01 */}
-                                    <div
-                                        className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                                        data-animation="fade-scale-in"
-                                        data-delay="400"
-                                    >
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110">01.</h2>
-                                        <div className="self-start">
-                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3">Research & Strategy</h3>
-                                            <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed">
-                                                In this phase, I dive deep into understanding your business, target audience, and project goals. Through research and strategic planning, I create a clear roadmap to guide the entire design process.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Image 1 */}
-                                    <div
-                                        className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                                        data-animation="fade-scale-in"
-                                        data-delay="500"
-                                    >
-                                        <img src="https://picsum.photos/seed/research/300/300" alt="Research process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
-                                    </div>
-
-                                    {/* Process Step 02 */}
-                                    <div
-                                        className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                                        data-animation="fade-scale-in"
-                                        data-delay="600"
-                                    >
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110">02.</h2>
-                                        <div className="self-start">
-                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Concept & Ideation</h3>
-                                            <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed">
-                                                Here, I brainstorm and develop creative concepts that align with your vision. Initial sketches and ideas are refined into tangible wireframes, setting the direction for design and functionality.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Image 2 */}
-                                    <div
-                                        className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                                        data-animation="fade-scale-in"
-                                        data-delay="700"
-                                    >
-                                        <img src="https://picsum.photos/seed/ideation/300/300" alt="Ideation process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
-                                    </div>
-
-                                    {/* Process Step 03 - Spans 2 columns on larger screens */}
-                                    <div
-                                        className="md:col-span-2 bg-[#A8977A] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                                        data-animation="fade-scale-in"
-                                        data-delay="800"
-                                    >
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#45372B] self-start transition-transform duration-300 hover:scale-110">03.</h2>
-                                        <div className="self-start max-w-2xl">
-                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#45372B] mb-2 sm:mb-3">Feedback & Refinement</h3>
-                                            <p className="text-sm sm:text-base lg:text-lg text-[#45372B] leading-relaxed">
-                                                Collaboration is key. I review the design with you, gather feedback, and refine the work to align with your expectations and goals. This ensures the design reflects your vision.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Process Step 04 */}
-                                    <div
-                                        className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                                        data-animation="fade-scale-in"
-                                        data-delay="900"
-                                    >
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110">04.</h2>
-                                        <div className="self-start">
-                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Testing & Optimization</h3>
-                                            <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed">
-                                                I conduct thorough testing to identify and resolve any performance or usability issues. This phase ensures the design works seamlessly across devices and meets user experience standards.
-                                            </p>
-                                        </div>
-                                    </div>
-
-                                    {/* Image 3 */}
-                                    <div
-                                        className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                                        data-animation="fade-scale-in"
-                                        data-delay="1000"
-                                    >
-                                        <img src="https://picsum.photos/seed/testing/300/300" alt="Testing process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
-                                    </div>
-
-                                    {/* Process Step 05 */}
-                                    <div
-                                        className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                                        data-animation="fade-scale-in"
-                                        data-delay="1100"
-                                    >
-                                        <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110">05.</h2>
-                                        <div className="self-start">
-                                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3">Launch & Delivery</h3>
-                                            <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed">
-                                                Once everything is finalized, the project is launched and delivered to you. I also provide guidance or support for ongoing maintenance to ensure long-term success.
-                                            </p>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* When I'm not working Section */}
-                        <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
-                            <div className="w-full max-w-6xl mx-auto">
-                                <h2
-                                    className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
-                                    data-animation="fade-scale-in"
-                                    data-delay="0"
-                                >
-                                    When I'm Not Working
-                                </h2>
-                                <p
-                                    className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
-                                    data-animation="slide-up-fade"
-                                    data-delay="200"
-                                >
-                                    When I'm not building or designing, you'll probably find me with a good book and freshly brewed coffee, cheering for my favorite football team, experimenting with new recipes in the kitchen, or curled up with my dog for a cozy movie night.
-                                </p>
-
-                                <div
-                                    data-animation="fade-scale-in"
-                                    data-delay="400"
-                                >
-                                    <ScrollingGallery />
-                                </div>
-                            </div>
-                        </section>
-
-                        {/* Contact Form Section */}
-                        <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
-                            <div className="w-full max-w-6xl mx-auto">
-                                <div className="grid grid-cols-1 lg:grid-cols-[50%_35%] gap-8 lg:gap-[15%]">
-                                    {/* Left Side - Contact Form */}
-                                    <div>
+                                {/* Design with Strategy and Creativity Section */}
+                                <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
+                                    <div className="w-full max-w-6xl mx-auto">
                                         <h2
                                             className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
                                             data-animation="fade-scale-in"
                                             data-delay="0"
                                         >
-                                            Let's Work Together
+                                            Design with Strategy and Creativity
                                         </h2>
                                         <p
-                                            className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16"
+                                            className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
                                             data-animation="slide-up-fade"
                                             data-delay="200"
                                         >
-                                            Let's build something impactful together—whether it's your brand, your website, or your next big idea.
+                                            Every great digital experience starts with understanding the why behind the what. I combine strategic thinking with creative execution to build solutions that not only look exceptional but solve real problems for real people.
                                         </p>
 
-                                        {showThankYou ? (
-                                            /* Thank You Message */
-                                            <div className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8">
-                                                <div className="text-center">
-                                                    {/* Success Icon */}
-                                                    <div className="mx-auto mb-6 w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center">
-                                                        <svg
-                                                            className="w-8 h-8 text-blue-900"
-                                                            fill="none"
-                                                            stroke="currentColor"
-                                                            viewBox="0 0 24 24"
-                                                        >
-                                                            <path
-                                                                strokeLinecap="round"
-                                                                strokeLinejoin="round"
-                                                                strokeWidth={2}
-                                                                d="M5 13l4 4L19 7"
-                                                            />
-                                                        </svg>
-                                                    </div>
-
-                                                    <h3 className="text-2xl font-bold text-[#161711] mb-4">Thank You!</h3>
-
-                                                    <p className="text-[#161711]/80 mb-6 leading-relaxed">
-                                                        Your message has been sent successfully. I'll get back to you as soon as possible!
-                                                    </p>
-
-                                                    <div className="bg-[#BAE1EE] border border-[#161711]/30 rounded-lg p-4 mb-6">
-                                                        <div className="flex items-start">
-                                                            <svg
-                                                                className="w-5 h-5 text-[#161711] mt-0.5 mr-3 flex-shrink-0"
-                                                                fill="none"
-                                                                stroke="currentColor"
-                                                                viewBox="0 0 24 24"
-                                                            >
-                                                                <path
-                                                                    strokeLinecap="round"
-                                                                    strokeLinejoin="round"
-                                                                    strokeWidth={2}
-                                                                    d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                                                                />
-                                                            </svg>
-                                                            <div className="text-left">
-                                                                <p className="text-sm font-medium text-[#161711] mb-1">
-                                                                    Check your email
-                                                                </p>
-                                                                <p className="text-sm text-[#161711]/90">
-                                                                    You'll receive a confirmation email shortly with details about next steps.
-                                                                </p>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-
-                                                    <button
-                                                        onClick={handleBackToForm}
-                                                        className="bg-[#BAE1EE] text-[#161711] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 font-medium"
-                                                    >
-                                                        Send Another Message
-                                                    </button>
-                                                </div>
-                                            </div>
-                                        ) : (
-                                            /* Contact Form */
+                                        {/* Container Grid - Responsive */}
+                                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4 sm:gap-6 lg:gap-7">
+                                            {/* Process Step 01 */}
                                             <div
-                                                className="bg-transparent"
-                                                data-animation="slide-up-fade"
+                                                className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                                data-animation="fade-scale-in"
                                                 data-delay="400"
                                             >
-                                                {submitStatus === 'error' && (
-                                                    <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6 animate-slide-up-fade">
-                                                        Failed to send message. Please try again.
-                                                    </div>
-                                                )}
-
-                                                <form onSubmit={handleSubmit} className="space-y-6">
-                                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
-                                                        <div>
-                                                            <label htmlFor="name" className="block text-sm font-medium text-[#A8977A] mb-2">
-                                                                Name
-                                                            </label>
-                                                            <input
-                                                                type="text"
-                                                                id="name"
-                                                                name="name"
-                                                                value={formData.name}
-                                                                onChange={handleInputChange}
-                                                                required
-                                                                className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
-                                                                placeholder="Your name"
-                                                            />
-                                                        </div>
-
-                                                        <div>
-                                                            <label htmlFor="email" className="block text-sm font-medium text-[#A8977A] mb-2">
-                                                                Email
-                                                            </label>
-                                                            <input
-                                                                type="email"
-                                                                id="email"
-                                                                name="email"
-                                                                value={formData.email}
-                                                                onChange={handleInputChange}
-                                                                required
-                                                                className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
-                                                                placeholder="your.email@example.com"
-                                                            />
-                                                        </div>
-                                                    </div>
-
-                                                    <div>
-                                                        <label htmlFor="message" className="block text-sm font-medium text-[#A8977A] mb-2">
-                                                            Message
-                                                        </label>
-                                                        <textarea
-                                                            id="message"
-                                                            name="message"
-                                                            value={formData.message}
-                                                            onChange={handleInputChange}
-                                                            required
-                                                            rows="5"
-                                                            className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 resize-none transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
-                                                            placeholder="Tell me about your project..."
-                                                        />
-                                                    </div>
-
-                                                    <button
-                                                        type="submit"
-                                                        disabled={isSubmitting}
-                                                        className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:scale-105 hover:shadow-xl transform active:scale-95"
-                                                    >
-                                                        {isSubmitting ? 'Sending...' : 'Send Message'}
-                                                    </button>
-                                                </form>
+                                                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110">01.</h2>
+                                                <div className="self-start">
+                                                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3">Research & Strategy</h3>
+                                                    <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed">
+                                                        In this phase, I dive deep into understanding your business, target audience, and project goals. Through research and strategic planning, I create a clear roadmap to guide the entire design process.
+                                                    </p>
+                                                </div>
                                             </div>
-                                        )}
-                                    </div>
 
-                                    {/* Right Side - Fixed Image Container */}
-                                    <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh]">
-                                        <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
-                                            <img
-                                                src="https://picsum.photos/seed/contact/600/800"
-                                                alt="Let's work together"
-                                                className="w-full h-full object-cover"
-                                            />
-                                            <div className="absolute inset-0 bg-black/10"></div>
+                                            {/* Image 1 */}
+                                            <div
+                                                className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                                data-animation="fade-scale-in"
+                                                data-delay="500"
+                                            >
+                                                <img src="https://picsum.photos/seed/research/300/300" alt="Research process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                            </div>
+
+                                            {/* Process Step 02 */}
+                                            <div
+                                                className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                                data-animation="fade-scale-in"
+                                                data-delay="600"
+                                            >
+                                                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110">02.</h2>
+                                                <div className="self-start">
+                                                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Concept & Ideation</h3>
+                                                    <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed">
+                                                        Here, I brainstorm and develop creative concepts that align with your vision. Initial sketches and ideas are refined into tangible wireframes, setting the direction for design and functionality.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Image 2 */}
+                                            <div
+                                                className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                                data-animation="fade-scale-in"
+                                                data-delay="700"
+                                            >
+                                                <img src="https://picsum.photos/seed/ideation/300/300" alt="Ideation process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                            </div>
+
+                                            {/* Process Step 03 - Spans 2 columns on larger screens */}
+                                            <div
+                                                className="md:col-span-2 bg-[#A8977A] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                                data-animation="fade-scale-in"
+                                                data-delay="800"
+                                            >
+                                                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#45372B] self-start transition-transform duration-300 hover:scale-110">03.</h2>
+                                                <div className="self-start max-w-2xl">
+                                                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#45372B] mb-2 sm:mb-3">Feedback & Refinement</h3>
+                                                    <p className="text-sm sm:text-base lg:text-lg text-[#45372B] leading-relaxed">
+                                                        Collaboration is key. I review the design with you, gather feedback, and refine the work to align with your expectations and goals. This ensures the design reflects your vision.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Process Step 04 */}
+                                            <div
+                                                className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                                data-animation="fade-scale-in"
+                                                data-delay="900"
+                                            >
+                                                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110">04.</h2>
+                                                <div className="self-start">
+                                                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3">Testing & Optimization</h3>
+                                                    <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed">
+                                                        I conduct thorough testing to identify and resolve any performance or usability issues. This phase ensures the design works seamlessly across devices and meets user experience standards.
+                                                    </p>
+                                                </div>
+                                            </div>
+
+                                            {/* Image 3 */}
+                                            <div
+                                                className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                                data-animation="fade-scale-in"
+                                                data-delay="1000"
+                                            >
+                                                <img src="https://picsum.photos/seed/testing/300/300" alt="Testing process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                            </div>
+
+                                            {/* Process Step 05 */}
+                                            <div
+                                                className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
+                                                data-animation="fade-scale-in"
+                                                data-delay="1100"
+                                            >
+                                                <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110">05.</h2>
+                                                <div className="self-start">
+                                                    <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3">Launch & Delivery</h3>
+                                                    <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed">
+                                                        Once everything is finalized, the project is launched and delivered to you. I also provide guidance or support for ongoing maintenance to ensure long-term success.
+                                                    </p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
+                                </section>
+
+                                {/* When I'm not working Section */}
+                                <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
+                                    <div className="w-full max-w-6xl mx-auto">
+                                        <h2
+                                            className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
+                                            data-animation="fade-scale-in"
+                                            data-delay="0"
+                                        >
+                                            When I'm Not Working
+                                        </h2>
+                                        <p
+                                            className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
+                                            data-animation="slide-up-fade"
+                                            data-delay="200"
+                                        >
+                                            When I'm not building or designing, you'll probably find me with a good book and freshly brewed coffee, cheering for my favorite football team, experimenting with new recipes in the kitchen, or curled up with my dog for a cozy movie night.
+                                        </p>
+
+                                        <div
+                                            data-animation="fade-scale-in"
+                                            data-delay="400"
+                                        >
+                                            <ScrollingGallery />
+                                        </div>
+                                    </div>
+                                </section>
+
+                                {/* Contact Form Section */}
+                                <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
+                                    <div className="w-full max-w-6xl mx-auto">
+                                        <div className="grid grid-cols-1 lg:grid-cols-[50%_35%] gap-8 lg:gap-[15%]">
+                                            {/* Left Side - Contact Form */}
+                                            <div>
+                                                <h2
+                                                    className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
+                                                    data-animation="fade-scale-in"
+                                                    data-delay="0"
+                                                >
+                                                    Let's Work Together
+                                                </h2>
+                                                <p
+                                                    className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16"
+                                                    data-animation="slide-up-fade"
+                                                    data-delay="200"
+                                                >
+                                                    Let's build something impactful together—whether it's your brand, your website, or your next big idea.
+                                                </p>
+
+                                                {showThankYou ? (
+                                                    /* Thank You Message */
+                                                    <div className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8">
+                                                        <div className="text-center">
+                                                            {/* Success Icon */}
+                                                            <div className="mx-auto mb-6 w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center">
+                                                                <svg
+                                                                    className="w-8 h-8 text-blue-900"
+                                                                    fill="none"
+                                                                    stroke="currentColor"
+                                                                    viewBox="0 0 24 24"
+                                                                >
+                                                                    <path
+                                                                        strokeLinecap="round"
+                                                                        strokeLinejoin="round"
+                                                                        strokeWidth={2}
+                                                                        d="M5 13l4 4L19 7"
+                                                                    />
+                                                                </svg>
+                                                            </div>
+
+                                                            <h3 className="text-2xl font-bold text-[#161711] mb-4">Thank You!</h3>
+
+                                                            <p className="text-[#161711]/80 mb-6 leading-relaxed">
+                                                                Your message has been sent successfully. I'll get back to you as soon as possible!
+                                                            </p>
+
+                                                            <div className="bg-[#BAE1EE] border border-[#161711]/30 rounded-lg p-4 mb-6">
+                                                                <div className="flex items-start">
+                                                                    <svg
+                                                                        className="w-5 h-5 text-[#161711] mt-0.5 mr-3 flex-shrink-0"
+                                                                        fill="none"
+                                                                        stroke="currentColor"
+                                                                        viewBox="0 0 24 24"
+                                                                    >
+                                                                        <path
+                                                                            strokeLinecap="round"
+                                                                            strokeLinejoin="round"
+                                                                            strokeWidth={2}
+                                                                            d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+                                                                        />
+                                                                    </svg>
+                                                                    <div className="text-left">
+                                                                        <p className="text-sm font-medium text-[#161711] mb-1">
+                                                                            Check your email
+                                                                        </p>
+                                                                        <p className="text-sm text-[#161711]/90">
+                                                                            You'll receive a confirmation email shortly with details about next steps.
+                                                                        </p>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+
+                                                            <button
+                                                                onClick={handleBackToForm}
+                                                                className="bg-[#BAE1EE] text-[#161711] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 font-medium"
+                                                            >
+                                                                Send Another Message
+                                                            </button>
+                                                        </div>
+                                                    </div>
+                                                ) : (
+                                                    /* Contact Form */
+                                                    <div
+                                                        className="bg-transparent"
+                                                        data-animation="slide-up-fade"
+                                                        data-delay="400"
+                                                    >
+                                                        {submitStatus === 'error' && (
+                                                            <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6 animate-slide-up-fade">
+                                                                Failed to send message. Please try again.
+                                                            </div>
+                                                        )}
+
+                                                        <form onSubmit={handleSubmit} className="space-y-6">
+                                                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
+                                                                <div>
+                                                                    <label htmlFor="name" className="block text-sm font-medium text-[#A8977A] mb-2">
+                                                                        Name
+                                                                    </label>
+                                                                    <input
+                                                                        type="text"
+                                                                        id="name"
+                                                                        name="name"
+                                                                        value={formData.name}
+                                                                        onChange={handleInputChange}
+                                                                        required
+                                                                        className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
+                                                                        placeholder="Your name"
+                                                                    />
+                                                                </div>
+
+                                                                <div>
+                                                                    <label htmlFor="email" className="block text-sm font-medium text-[#A8977A] mb-2">
+                                                                        Email
+                                                                    </label>
+                                                                    <input
+                                                                        type="email"
+                                                                        id="email"
+                                                                        name="email"
+                                                                        value={formData.email}
+                                                                        onChange={handleInputChange}
+                                                                        required
+                                                                        className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
+                                                                        placeholder="your.email@example.com"
+                                                                    />
+                                                                </div>
+                                                            </div>
+
+                                                            <div>
+                                                                <label htmlFor="message" className="block text-sm font-medium text-[#A8977A] mb-2">
+                                                                    Message
+                                                                </label>
+                                                                <textarea
+                                                                    id="message"
+                                                                    name="message"
+                                                                    value={formData.message}
+                                                                    onChange={handleInputChange}
+                                                                    required
+                                                                    rows="5"
+                                                                    className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 resize-none transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
+                                                                    placeholder="Tell me about your project..."
+                                                                />
+                                                            </div>
+
+                                                            <button
+                                                                type="submit"
+                                                                disabled={isSubmitting}
+                                                                className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:scale-105 hover:shadow-xl transform active:scale-95"
+                                                            >
+                                                                {isSubmitting ? 'Sending...' : 'Send Message'}
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                )}
+                                            </div>
+
+                                            {/* Right Side - Fixed Image Container */}
+                                            <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh]">
+                                                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
+                                                    <img
+                                                        src="https://picsum.photos/seed/contact/600/800"
+                                                        alt="Let's work together"
+                                                        className="w-full h-full object-cover"
+                                                    />
+                                                    <div className="absolute inset-0 bg-black/10"></div>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </section>
                             </div>
-                        </section>
+                        </div>
+                        <Footer />
                     </div>
                 </div>
-            </div>
-            <Footer />
+            )}
         </div>
     );
 }
