@@ -17,15 +17,16 @@ const Navbar = () => {
                   navigateWithTransition('/', 'down');
                 }}
                 className="text-[1.5rem] font-bold text-[#A8977A] hover:text-white transition-colors duration-300 cursor-pointer"
+                style={{ fontFamily: 'Syne, sans-serif' }}
               >
                 Yuvaan Vithlani
               </button>
             </div>
 
             <div className="hidden md:flex items-center space-x-8">
-              <a href="#projects" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors">Projects</a>
-              <a href="#about" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors">About</a>
-              <a href="#contact" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors">Contact</a>
+              <a href="#projects" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors" style={{ fontFamily: 'Neuton, serif' }}>Projects</a>
+              <a href="#about" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors" style={{ fontFamily: 'Neuton, serif' }}>About</a>
+              <a href="#contact" className="text-[#A8977A] hover:text-primary-[#45372B] transition-colors" style={{ fontFamily: 'Neuton, serif' }}>Contact</a>
             </div>
 
             <div className="md:hidden flex items-center">
@@ -47,9 +48,9 @@ const Navbar = () => {
           {isOpen && (
             <div className="md:hidden mt-4">
               <div className="px-2 pt-2 pb-3 space-y-1 sm:px-3">
-                <a href="#projects" className="block px-3 py-2 text-gray-700 hover:text-primary-600">Projects</a>
-                <a href="#about" className="block px-3 py-2 text-gray-700 hover:text-primary-600">About</a>
-                <a href="#contact" className="block px-3 py-2 text-gray-700 hover:text-primary-600">Contact</a>
+                <a href="#projects" className="block px-3 py-2 text-gray-700 hover:text-primary-600" style={{ fontFamily: 'Neuton, serif' }}>Projects</a>
+                <a href="#about" className="block px-3 py-2 text-gray-700 hover:text-primary-600" style={{ fontFamily: 'Neuton, serif' }}>About</a>
+                <a href="#contact" className="block px-3 py-2 text-gray-700 hover:text-primary-600" style={{ fontFamily: 'Neuton, serif' }}>Contact</a>
               </div>
             </div>
           )}

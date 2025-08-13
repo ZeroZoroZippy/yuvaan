@@ -8,7 +8,7 @@ function Contact({ onOpenModal }) {
     >
       {/* "Got an idea?" text at top left */}
       <div className="absolute top-3 left-3 sm:top-4 sm:left-4 lg:top-6 lg:left-6">
-        <p className="text-[1.25rem] sm:text-sm lg:text-[1.25rem] text-[#45372B]">Got an idea?</p>
+        <p className="text-[1.25rem] sm:text-sm lg:text-[1.25rem] text-[#45372B]" style={{ fontFamily: 'Neuton, serif' }}>Got an idea?</p>
       </div>
 
       {/* Diagonal Arrow at top right - slightly bigger than Description */}
@@ -33,7 +33,7 @@ function Contact({ onOpenModal }) {
 
       {/* "Contact Me" heading at bottom left */}
       <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 lg:bottom-6 lg:left-6">
-        <h2 className="text-[2rem] sm:text-2xl lg:text-4xl font-bold text-[#45372B]">Contact Me</h2>
+        <h2 className="text-[2rem] sm:text-2xl lg:text-4xl font-bold text-[#45372B]" style={{ fontFamily: 'Syne, sans-serif' }}>Contact Me</h2>
       </div>
     </div>
   );

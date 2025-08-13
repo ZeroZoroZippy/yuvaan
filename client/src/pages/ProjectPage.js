@@ -16,8 +16,8 @@ function ProjectPage() {
     return (
       <div className="min-h-screen bg-[#161711] flex items-center justify-center">
         <div className="text-center">
-          <h1 className="text-4xl font-bold text-[#A8977A] mb-4">Project Not Found</h1>
-          <Link to="/projects" className="text-[#A8977A] hover:text-white">
+          <h1 className="text-4xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>Project Not Found</h1>
+          <Link to="/projects" className="text-[#A8977A] hover:text-white" style={{ fontFamily: 'Neuton, serif' }}>
             ← Back to Projects
           </Link>
         </div>
@@ -56,40 +56,40 @@ function ProjectPage() {
           animate="animate"
           className="pt-24 mb-12"
         >
-          <h1 className="text-4xl md:text-6xl font-bold text-[#A8977A] mb-6">
+          <h1 className="text-4xl md:text-6xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
             {project.title}
           </h1>
-          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl leading-relaxed">
+          <p className="text-xl md:text-2xl text-gray-300 mb-8 max-w-4xl leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
             {project.description}
           </p>
 
           {/* Project Details */}
           <div className="flex flex-wrap gap-8 text-[#A8977A] text-lg">
             <div className="flex items-center gap-2">
-              <span className="font-semibold">Year:</span>
-              <span className="text-gray-300">{project.year}</span>
+              <span className="font-semibold" style={{ fontFamily: 'Neuton, serif' }}>Year:</span>
+              <span className="text-gray-300" style={{ fontFamily: 'Neuton, serif' }}>{project.year}</span>
             </div>
             <div className="hidden md:block text-[#45372B]">|</div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold">Industry:</span>
-              <span className="text-gray-300">{project.industry}</span>
+              <span className="font-semibold" style={{ fontFamily: 'Neuton, serif' }}>Industry:</span>
+              <span className="text-gray-300" style={{ fontFamily: 'Neuton, serif' }}>{project.industry}</span>
             </div>
             <div className="hidden md:block text-[#45372B]">|</div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold">Client:</span>
-              <span className="text-gray-300">{project.client}</span>
+              <span className="font-semibold" style={{ fontFamily: 'Neuton, serif' }}>Client:</span>
+              <span className="text-gray-300" style={{ fontFamily: 'Neuton, serif' }}>{project.client}</span>
             </div>
             <div className="hidden md:block text-[#45372B]">|</div>
             <div className="flex items-center gap-2">
-              <span className="font-semibold">Duration:</span>
-              <span className="text-gray-300">{project.duration}</span>
+              <span className="font-semibold" style={{ fontFamily: 'Neuton, serif' }}>Duration:</span>
+              <span className="text-gray-300" style={{ fontFamily: 'Neuton, serif' }}>{project.duration}</span>
             </div>
             {project.roi && (
               <>
                 <div className="hidden md:block text-[#45372B]">|</div>
                 <div className="flex items-center gap-2">
-                  <span className="font-semibold">Impact:</span>
-                  <span className="text-gray-300">{project.roi}</span>
+                  <span className="font-semibold" style={{ fontFamily: 'Neuton, serif' }}>Impact:</span>
+                  <span className="text-gray-300" style={{ fontFamily: 'Neuton, serif' }}>{project.roi}</span>
                 </div>
               </>
             )}
@@ -122,22 +122,22 @@ function ProjectPage() {
           className="mb-20"
         >
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               {project.problem.title}
             </h2>
-            <p className="text-lg text-gray-300 leading-relaxed mb-8">
+            <p className="text-lg text-gray-300 leading-relaxed mb-8" style={{ fontFamily: 'Neuton, serif' }}>
               {project.problem.description}
             </p>
 
             {/* Challenges/Metrics List */}
             {(project.problem.challenges || project.problem.metrics) && (
               <div className="mb-8">
-                <h3 className="text-xl font-semibold text-[#A8977A] mb-4">Key Challenges:</h3>
+                <h3 className="text-xl font-semibold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>Key Challenges:</h3>
                 <ul className="space-y-3">
                   {(project.problem.challenges || project.problem.metrics).map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-[#A8977A] rounded-full mt-2 flex-shrink-0"></div>
-                      <span className="text-gray-300">{item}</span>
+                      <span className="text-gray-300" style={{ fontFamily: 'Neuton, serif' }}>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -162,22 +162,22 @@ function ProjectPage() {
           transition={{ delay: 0.4 }}
           className="mb-20"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-6">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
             {project.solution.title}
           </h2>
-          <p className="text-lg text-gray-300 leading-relaxed mb-8 max-w-4xl">
+          <p className="text-lg text-gray-300 leading-relaxed mb-8 max-w-4xl" style={{ fontFamily: 'Neuton, serif' }}>
             {project.solution.description}
           </p>
 
           {/* Features List */}
           {project.solution.features && (
             <div className="mb-12">
-              <h3 className="text-xl font-semibold text-[#A8977A] mb-4">Key Features:</h3>
+              <h3 className="text-xl font-semibold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>Key Features:</h3>
               <ul className="space-y-3">
                 {project.solution.features.map((feature, index) => (
                   <li key={index} className="flex items-start gap-3">
                     <div className="w-2 h-2 bg-[#A8977A] rounded-full mt-2 flex-shrink-0"></div>
-                    <span className="text-gray-300">{feature}</span>
+                    <span className="text-gray-300" style={{ fontFamily: 'Neuton, serif' }}>{feature}</span>
                   </li>
                 ))}
               </ul>
@@ -207,10 +207,10 @@ function ProjectPage() {
           className="mb-20"
         >
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               {project.challenge.title}
             </h2>
-            <p className="text-lg text-gray-300 leading-relaxed mb-8">
+            <p className="text-lg text-gray-300 leading-relaxed mb-8" style={{ fontFamily: 'Neuton, serif' }}>
               {project.challenge.description}
             </p>
             <div className="rounded-2xl overflow-hidden shadow-xl">
@@ -232,22 +232,22 @@ function ProjectPage() {
           className="mb-20"
         >
           <div>
-            <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-6">
+            <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
               {project.results.title}
             </h2>
-            <p className="text-lg text-gray-300 leading-relaxed mb-8">
+            <p className="text-lg text-gray-300 leading-relaxed mb-8" style={{ fontFamily: 'Neuton, serif' }}>
               {project.results.description}
             </p>
 
             {/* Results/Improvements List */}
             {(project.results.improvements || project.results.metrics) && (
               <div className="mb-8">
-                <h3 className="text-xl font-semibold text-[#A8977A] mb-4">Key Improvements:</h3>
+                <h3 className="text-xl font-semibold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>Key Improvements:</h3>
                 <ul className="space-y-3">
                   {(project.results.improvements || project.results.metrics).map((item, index) => (
                     <li key={index} className="flex items-start gap-3">
                       <div className="w-2 h-2 bg-[#A8977A] rounded-full mt-2 flex-shrink-0"></div>
-                      <span className="text-gray-300">{item}</span>
+                      <span className="text-gray-300" style={{ fontFamily: 'Neuton, serif' }}>{item}</span>
                     </li>
                   ))}
                 </ul>
@@ -272,7 +272,7 @@ function ProjectPage() {
           transition={{ delay: 0.7 }}
           className="mb-20"
         >
-          <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-12 text-center">
+          <h2 className="text-3xl md:text-4xl font-bold text-[#A8977A] mb-12 text-center" style={{ fontFamily: 'Syne, sans-serif' }}>
             More Projects
           </h2>
           <div className="flex justify-center">
@@ -290,10 +290,10 @@ function ProjectPage() {
                       className="w-full h-[200px] object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="p-6">
-                      <h3 className="text-xl font-bold text-[#A8977A] group-hover:text-[#161711] mb-2">
+                      <h3 className="text-xl font-bold text-[#A8977A] group-hover:text-[#161711] mb-2" style={{ fontFamily: 'Syne, sans-serif' }}>
                         {otherProject.title}
                       </h3>
-                      <p className="text-gray-300 group-hover:text-[#161711] text-sm">
+                      <p className="text-gray-300 group-hover:text-[#161711] text-sm" style={{ fontFamily: 'Neuton, serif' }}>
                         {otherProject.description.substring(0, 100)}...
                       </p>
                     </div>
@@ -312,14 +312,14 @@ function ProjectPage() {
           transition={{ delay: 0.8 }}
           className="text-center py-12 border-t border-[#45372B]"
         >
-          <p className="text-[#A8977A] text-lg mb-4">
+          <p className="text-[#A8977A] text-lg mb-4" style={{ fontFamily: 'Neuton, serif' }}>
             Need a healthcare website that converts visitors into patients?
           </p>
           <Link
             to="/contact"
             className="inline-block bg-[#A8977A] text-[#161711] px-8 py-3 rounded-lg font-semibold hover:bg-white transition-colors"
           >
-            Start Your Project
+            <span style={{ fontFamily: 'Neuton, serif' }}>Start Your Project</span>
           </Link>
         </motion.footer>
       </div>

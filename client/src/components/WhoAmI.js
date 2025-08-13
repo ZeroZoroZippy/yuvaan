@@ -39,14 +39,14 @@ function WhoAmI() {
 
       {/* Text Content */}
       <div className="absolute top-[6rem] left-2 lg:top-[7rem] lg:left-4">
-        <h2 className="text-[1.75rem] lg:text-[2rem] font-medium text-[#A8977A] text-left px-4">
+        <h2 className="text-[1.75rem] lg:text-[2rem] font-medium text-[#A8977A] text-left px-4" style={{ fontFamily: 'Syne, sans-serif' }}>
           Where web meets intelligence.
         </h2>
       </div>
 
       {/* Description Container - positioned at bottom */}
       <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 lg:bottom-6 lg:left-6 lg:right-6">
-        <p className="text-lg sm:text-sm lg:text-[1.25rem] text-[#A8977A] leading-relaxed lg:leading-relaxed">
+        <p className="text-lg sm:text-sm lg:text-[1.25rem] text-[#A8977A] leading-relaxed lg:leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
           I'm a web developer who designs, or a designer who codes — either way, I bring ideas to life in ways people love to use. Blending creativity with clean execution, I make digital experiences that work beautifully and feel effortless.
         </p>
       </div>

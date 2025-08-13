@@ -3,6 +3,8 @@
 @tailwind utilities;
 
 @import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Neuton:ital,wght@0,200;0,300;0,400;0,700;0,800;1,400&display=swap');
 
 /* ===== OPTION 1: Fade & Scale (Current Default) ===== */
 @keyframes fadeScaleIn {
@@ -713,6 +715,32 @@ body {
   /* Disable bounce/spring effect on scroll */
   overscroll-behavior: none;
   -webkit-overflow-scrolling: touch;
+}
+
+/* Apply Syne font to all heading tags */
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Syne', sans-serif;
+  font-weight: 400;
+}
+
+/* Apply Neuton font to all paragraph tags */
+p {
+  font-family: 'Neuton', serif;
+  font-weight: 400;
+  font-size: 1.125rem; /* 18px base size, up from default 16px */
+}
+
+/* Responsive font sizes for paragraphs */
+@media (max-width: 640px) {
+  p {
+    font-size: 1rem; /* 16px on mobile, up from default 14px */
+  }
+}
+
+@media (min-width: 1024px) {
+  p {
+    font-size: 1.25rem; /* 20px on desktop, up from default 18px */
+  }
 }
 
 /* Hide scrollbar for webkit browsers (Chrome, Safari, Edge) */

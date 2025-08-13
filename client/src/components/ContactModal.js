@@ -97,9 +97,9 @@ function ContactModal({ isOpen, onClose }) {
               </svg>
             </div>
 
-            <h3 className="text-2xl font-bold text-[#45372B] mb-4">Thank You!</h3>
+            <h3 className="text-2xl font-bold text-[#45372B] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>Thank You!</h3>
             
-            <p className="text-gray-600 mb-6 leading-relaxed">
+            <p className="text-gray-600 mb-6 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
               Your message has been sent successfully. I'll get back to you as soon as possible!
             </p>
 
@@ -119,10 +119,10 @@ function ContactModal({ isOpen, onClose }) {
                   />
                 </svg>
                 <div className="text-left">
-                  <p className="text-sm font-medium text-blue-800 mb-1">
+                  <p className="text-sm font-medium text-blue-800 mb-1" style={{ fontFamily: 'Neuton, serif' }}>
                     Check your email
                   </p>
-                  <p className="text-sm text-blue-600">
+                  <p className="text-sm text-blue-600" style={{ fontFamily: 'Neuton, serif' }}>
                     You'll receive a confirmation email shortly with details about next steps.
                   </p>
                 </div>
@@ -134,20 +134,20 @@ function ContactModal({ isOpen, onClose }) {
                 onClick={handleBackToForm}
                 className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200"
               >
-                Send Another
+                <span style={{ fontFamily: 'Neuton, serif' }}>Send Another</span>
               </button>
               <button
                 onClick={handleClose}
                 className="flex-1 bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200"
               >
-                Close
+                <span style={{ fontFamily: 'Neuton, serif' }}>Close</span>
               </button>
             </div>
           </div>
         ) : (
           /* Contact Form */
           <>
-            <h3 className="text-2xl font-bold text-[#45372B] mb-6">Send me a message</h3>
+            <h3 className="text-2xl font-bold text-[#45372B] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>Send me a message</h3>
 
             {submitStatus === 'error' && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
@@ -206,7 +206,7 @@ function ContactModal({ isOpen, onClose }) {
                 disabled={isSubmitting}
                 className="w-full bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {isSubmitting ? 'Sending...' : 'Send Message'}
+                <span style={{ fontFamily: 'Neuton, serif' }}>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
               </button>
             </form>
           </>

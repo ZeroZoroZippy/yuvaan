@@ -24,7 +24,7 @@ function ScrollingGallery() {
                                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 />
                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
-                                    <p className="text-white font-medium text-sm sm:text-base">{item.label}</p>
+                                    <p className="text-white font-medium text-sm sm:text-base" style={{ fontFamily: 'Neuton, serif' }}>{item.label}</p>
                                 </div>
                             </div>
                         ))}
@@ -39,7 +39,7 @@ function ScrollingGallery() {
                                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                                 />
                                 <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
-                                    <p className="text-white font-medium text-sm sm:text-base">{item.label}</p>
+                                    <p className="text-white font-medium text-sm sm:text-base" style={{ fontFamily: 'Neuton, serif' }}>{item.label}</p>
                                 </div>
                             </div>
                         ))}

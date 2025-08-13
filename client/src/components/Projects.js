@@ -148,7 +148,7 @@ function Projects() {
 
   // Project data for cleaner code
   const projects = [
-    { key: 'project1', title: 'Dental Website', ref: project1Ref, image: dental },
+    { key: 'project1', title: 'Sarvodaya Dental Clinic', ref: project1Ref, image: dental },
     { key: 'project2', title: 'Wellness Website', ref: project2Ref, image: wellness }
   ];
 
@@ -166,7 +166,7 @@ function Projects() {
           scrollBehavior: 'smooth'
         }}
       >
-        <h2 className="text-3xl font-bold mb-4 text-[#A8977A]">Work</h2>
+        <h2 className="text-3xl font-bold mb-4 text-[#A8977A]" style={{ fontFamily: 'Syne, sans-serif' }}>Work</h2>
 
 
 
@@ -176,7 +176,7 @@ function Projects() {
               <div className="flex justify-between items-center">
                 <h3
                   className="font-semibold text-[#A8977A] cursor-pointer hover:text-[#45372B] transition-colors"
-                  style={{ fontSize: '1.25rem' }}
+                  style={{ fontSize: '1.25rem', fontFamily: 'Syne, sans-serif' }}
                   onClick={() => handleOpenProject(project.key)}
                   role="button"
                   tabIndex={0}
@@ -197,7 +197,16 @@ function Projects() {
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.2 }}
                     className="cursor-pointer"
-                    onClick={() => handleCloseProject(project.key)}
+                    onClick={(e) => {
+                      if (project.key === 'project1') {
+                        // For Dental Website, open the live site
+                        e.preventDefault();
+                        window.open('https://www.sarvodayadental.com/', '_blank');
+                      } else {
+                        // For other projects, close the project
+                        handleCloseProject(project.key);
+                      }
+                    }}
                   >
                     <svg
                       className="w-6 h-6 text-[#A8977A] transition-transform duration-300 ease-in-out hover:scale-110 hover:text-[#45372B]"
@@ -232,12 +241,7 @@ function Projects() {
                           alt={project.title}
                           className="w-full h-56 object-cover"
                         />
-                        <Link
-                          to={`/projects/${project.key === 'project1' ? 'dental' : 'wellness'}`}
-                          className="absolute bottom-3 right-3 bg-[#A8977A] text-[#161711] px-3 py-1.5 rounded-lg text-sm font-medium hover:bg-[#45372B] hover:text-[#A8977A] transition-colors shadow-lg"
-                        >
-                          View More
-                        </Link>
+
                       </div>
                     </div>
                   </motion.div>
