@@ -2,8 +2,10 @@ import React from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PageTransitionProvider } from './contexts/PageTransitionContext';
 import { MobileMenuProvider, useMobileMenu } from './contexts/MobileMenuContext';
+import { ChatbotProvider } from './contexts/ChatbotContext';
 import { LenisProvider } from './contexts/LenisContext';
 import PageTransition from './components/ui/PageTransition';
+import Chatbot from './components/Chatbot';
 import HeroPage from './pages/HeroPage';
 import AboutPage from './pages/AboutPage';
 import ProjectPage from './pages/ProjectPage';
@@ -14,6 +16,7 @@ const AppContent = () => {
   return (
     <div className="App">
       <PageTransition />
+      <Chatbot />
       <Routes>
         <Route path="/" element={<HeroPage />} />
         <Route path="/about" element={<AboutPage />} />
@@ -31,7 +34,9 @@ function App() {
       <LenisProvider>
         <PageTransitionProvider>
           <MobileMenuProvider>
-            <AppContent />
+            <ChatbotProvider>
+              <AppContent />
+            </ChatbotProvider>
           </MobileMenuProvider>
         </PageTransitionProvider>
       </LenisProvider>

@@ -1,10 +1,12 @@
 import React from 'react';
 import { usePageNavigation } from '../hooks/usePageNavigation';
 import { useMobileMenu } from '../contexts/MobileMenuContext';
+import { useChatbot } from '../contexts/ChatbotContext';
 
 const Navbar = () => {
   const { isOpen, toggleMenu, closeMenu } = useMobileMenu();
   const { navigateWithTransition } = usePageNavigation();
+  const { openChatbot } = useChatbot();
 
   const handleLogoClick = () => {
     console.log('Logo clicked - navigating to home');
@@ -18,16 +20,23 @@ const Navbar = () => {
   };
 
   const handleTalkToSaarthClick = () => {
-    // Add your CTA logic here
-    console.log('Talk to Saarth clicked');
-    closeMenu();
+    // Immediately open chatbot for instant response
+    openChatbot();
+
+    // Close menu with reduced delay to prevent animation conflicts
+    if (isOpen) {
+      // Use requestAnimationFrame for smoother coordination
+      requestAnimationFrame(() => {
+        closeMenu();
+      });
+    }
   };
 
   return (
     <>
       {/* Blur overlay for mobile menu - positioned behind navbar */}
       <div
-        className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-30 transition-opacity duration-300 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
+        className={`fixed inset-0 bg-black/20 backdrop-blur-sm z-30 transition-opacity duration-200 ${isOpen ? 'opacity-100 pointer-events-auto' : 'opacity-0 pointer-events-none'
           }`}
         onClick={closeMenu}
       />
@@ -87,11 +96,11 @@ const Navbar = () => {
               </div>
             </div>
 
-            {/* Mobile Menu */}
-            <div className={`md:hidden overflow-hidden transition-all duration-300 ease-in-out ${isOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
+            {/* Mobile Menu - Faster animations */}
+            <div className={`md:hidden overflow-hidden transition-all duration-200 ease-out ${isOpen ? 'max-h-48 opacity-100' : 'max-h-0 opacity-0'
               }`}>
               <div className="mt-4 border-t border-[#A8977A]/20">
-                <div className={`pt-4 pb-3 space-y-1 transform transition-transform duration-300 ease-in-out ${isOpen ? 'translate-y-0' : '-translate-y-4'
+                <div className={`pt-4 pb-3 space-y-1 transform transition-transform duration-200 ease-out ${isOpen ? 'translate-y-0' : '-translate-y-4'
                   }`}>
                   <a
                     href="about"
@@ -110,7 +119,7 @@ const Navbar = () => {
                   </button>
                   <button
                     onClick={handleTalkToSaarthClick}
-                    className="mx-3 mt-6 px-6 py-2 rounded-full bg-[#A8977A] text-[#161711] hover:bg-[#161711] hover:text-[#A8977A] transition-colors duration-300 w-[calc(100%-1.5rem)]"
+                    className="mx-3 mt-6 px-6 py-2 rounded-full bg-[#A8977A] text-[#161711] hover:bg-[#161711] hover:text-[#A8977A] transition-colors duration-200 w-[calc(100%-1.5rem)] active:scale-95 transform"
                     style={{ fontFamily: 'Neuton, serif' }}
                   >
                     Talk to Saarth

@@ -1,19 +1,53 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { usePageNavigation } from '../hooks/usePageNavigation';
+import { useChatbot } from '../contexts/ChatbotContext';
 import Orb from './ui/orb'
 
 function WhoAmI() {
   const { navigateWithTransition } = usePageNavigation();
+  const { openChatbot, isOpen } = useChatbot();
+  const [isOrbTeleporting, setIsOrbTeleporting] = useState(false);
+
+  // Reset teleporting state when chatbot closes, trigger when chatbot opens
+  useEffect(() => {
+    if (isOpen && !isOrbTeleporting) {
+      // Chatbot opened from elsewhere (like navbar) - trigger teleportation
+      setIsOrbTeleporting(true);
+    } else if (!isOpen && isOrbTeleporting) {
+      // Chatbot closed - reset teleporting state
+      setIsOrbTeleporting(false);
+    }
+  }, [isOpen, isOrbTeleporting]);
+
+  const handleOrbClick = () => {
+    // Start teleportation animation
+    setIsOrbTeleporting(true);
+    
+    // Open chatbot after scale down animation completes
+    setTimeout(() => {
+      openChatbot();
+    }, 300); // Match the scale down duration
+  };
 
   return (
     <div
       className="rounded-2xl shadow-lg w-full lg:w-[590px] h-[500px] lg:h-[400px] p-4 relative"
       style={{ backgroundColor: '#161711' }}
     >
-      {/* Orb Component - Top Left */}
-      <div className="absolute top-4 left-4 lg:top-6 lg:left-6">
-        <div className="relative w-16 h-16 lg:w-20 lg:h-20">
-          <Orb />
+      {/* Orb Component - Top Left with teleportation effect */}
+      <div 
+        className="absolute top-4 left-4 lg:top-6 lg:left-6 cursor-pointer"
+        onClick={handleOrbClick}
+      >
+        <div className={`relative w-16 h-16 lg:w-20 lg:h-20 transition-all duration-300 ease-in-out ${
+          isOrbTeleporting || isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
+        }`}>
+          <Orb
+            hue={220}
+            hoverIntensity={0.3}
+            rotateOnHover={true}
+            forceHoverState={false}
+          />
         </div>
       </div>
 

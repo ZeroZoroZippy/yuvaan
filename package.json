@@ -22,6 +22,7 @@
     "concurrently": "^8.2.2"
   },
   "dependencies": {
+    "claude": "^0.1.1",
     "ogl": "^1.0.11"
   }
 }
