@@ -7,11 +7,15 @@ import Testimonial from '../components/Testimonial';
 import Contact from '../components/Contact';
 import SocialMedia from '../components/SocialMedia';
 import ContactModal from '../components/ContactModal';
+import { useLenisContext } from '../contexts/LenisContext';
 
 function HeroPage() {
   const [animationStage, setAnimationStage] = useState(0);
   const [showContent, setShowContent] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+
+  // Get Lenis instance from context
+  const lenis = useLenisContext();
 
   const openContactModal = () => {
     setIsContactModalOpen(true);
@@ -22,30 +26,10 @@ function HeroPage() {
   };
 
   useEffect(() => {
-    // Smooth scroll to top when component mounts with animation
-    const smoothScrollToTop = () => {
-      const startPosition = window.pageYOffset;
-      const startTime = performance.now();
-      const duration = 800; // 800ms for smooth transition
-
-      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-      const animateScroll = (currentTime) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easedProgress = easeOutCubic(progress);
-
-        window.scrollTo(0, startPosition * (1 - easedProgress));
-
-        if (progress < 1) {
-          requestAnimationFrame(animateScroll);
-        }
-      };
-
-      requestAnimationFrame(animateScroll);
-    };
-
-    smoothScrollToTop();
+    // Smooth scroll to top using Lenis when component mounts
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: false, duration: 0.8 });
+    }
 
     // Clean staggered reveal animation
     const timeouts = [
@@ -59,7 +43,7 @@ function HeroPage() {
     ];
 
     return () => timeouts.forEach(clearTimeout);
-  }, []);
+  }, [lenis]);
 
   return (
     <>

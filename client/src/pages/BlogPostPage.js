@@ -3,6 +3,7 @@ import { useParams, Navigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import { getBlogPost, getRecentPosts } from '../data/blogData';
 import { usePageNavigation } from '../hooks/usePageNavigation';
+import { useLenisContext } from '../contexts/LenisContext';
 
 function BlogPostPage() {
   const { id } = useParams();
@@ -15,9 +16,14 @@ function BlogPostPage() {
   const post = getBlogPost(id);
   const recentPosts = getRecentPosts().filter(p => p.id !== parseInt(id));
 
+  // Get Lenis instance from context
+  const lenis = useLenisContext();
+
   useEffect(() => {
-    // Simple scroll to top without animation to prevent conflicts
-    window.scrollTo(0, 0);
+    // Smooth scroll to top using Lenis when component mounts
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: false, duration: 0.8 });
+    }
 
     // Simplified animation timing to prevent glitches
     const timeouts = [
@@ -28,22 +34,26 @@ function BlogPostPage() {
       setTimeout(() => setAnimationStage(4), 800),
     ];
 
-    // Reading progress tracker using modern scrollY
-    const handleScroll = () => {
-      const scrollTop = window.scrollY;
+    // Reading progress tracker using Lenis scroll event
+    const handleScroll = ({ scroll }) => {
       const docHeight = document.documentElement.scrollHeight - window.innerHeight;
-      const scrollPercent = scrollTop / docHeight;
+      const scrollPercent = scroll / docHeight;
       setReadingProgress(Math.min(scrollPercent * 100, 100));
-      setIsScrolled(scrollTop > 100);
+      setIsScrolled(scroll > 100);
     };
 
-    window.addEventListener('scroll', handleScroll);
+    // Use Lenis scroll event for better integration
+    if (lenis) {
+      lenis.on('scroll', handleScroll);
+    }
 
     return () => {
       timeouts.forEach(clearTimeout);
-      window.removeEventListener('scroll', handleScroll);
+      if (lenis) {
+        lenis.off('scroll', handleScroll);
+      }
     };
-  }, [id]);
+  }, [id, lenis]);
 
   // If post not found, redirect to blogs page
   if (!post) {

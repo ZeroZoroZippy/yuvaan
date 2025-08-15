@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from 'react';
-import Lenis from 'lenis';
 import { usePageTransition } from '../contexts/PageTransitionContext';
+import { useLenisContext } from '../contexts/LenisContext';
 import Navbar from '../components/Navbar';
 import ScrollingGallery from '../components/ui/ScrollingGallery';
 import Footer from '../components/Footer';
@@ -30,8 +30,8 @@ function AboutPage() {
     const [contentLoaded, setContentLoaded] = useState(false);
     const [showContent, setShowContent] = useState(false);
 
-    // Lenis smooth scroll ref
-    const lenisRef = useRef();
+    // Get Lenis instance from context
+    const lenis = useLenisContext();
     const observerRef = useRef();
 
     const toggleSection = (section) => {
@@ -399,23 +399,10 @@ function AboutPage() {
             requestAnimationFrame(animateScroll);
         };
 
-        smoothScrollToTop();
-
-        // Initialize Lenis with enhanced settings
-        const lenis = new Lenis({
-            duration: 1.8,
-            easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-            direction: 'vertical',
-            gestureDirection: 'vertical',
-            smooth: true,
-            mouseMultiplier: 1.2,
-            smoothTouch: false,
-            touchMultiplier: 2,
-            infinite: false,
-            normalizeWheel: true,
-        });
-
-        lenisRef.current = lenis;
+        // Smooth scroll to top using Lenis when component mounts
+        if (lenis) {
+            lenis.scrollTo(0, { immediate: false, duration: 0.8 });
+        }
 
         // Initialize Intersection Observer for animations
         observerRef.current = createIntersectionObserver();
@@ -426,13 +413,6 @@ function AboutPage() {
             el.classList.add('animate-hidden');
             observerRef.current?.observe(el);
         });
-
-        // Animation frame loop for Lenis
-        function raf(time) {
-            lenis.raf(time);
-            requestAnimationFrame(raf);
-        }
-        requestAnimationFrame(raf);
 
         // Handle scroll to detect which section is in view (desktop only)
         const handleScroll = (e) => {
@@ -453,14 +433,18 @@ function AboutPage() {
         };
 
         // Listen to Lenis scroll events
-        lenis.on('scroll', handleScroll);
+        if (lenis) {
+            lenis.on('scroll', handleScroll);
+        }
 
         // Cleanup
         return () => {
-            lenis.destroy();
+            if (lenis) {
+                lenis.off('scroll', handleScroll);
+            }
             observerRef.current?.disconnect();
         };
-    }, [showContent]);
+    }, [showContent, lenis]);
 
     return (
         <div className="min-h-screen relative z-10" style={{ backgroundColor: '#45372B' }}>

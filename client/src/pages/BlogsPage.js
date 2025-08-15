@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import Navbar from '../components/Navbar';
 import { blogPosts } from '../data/blogData';
 import { usePageNavigation } from '../hooks/usePageNavigation';
+import { useLenisContext } from '../contexts/LenisContext';
 
 function BlogsPage() {
   const [animationStage, setAnimationStage] = useState(0);
@@ -9,9 +10,14 @@ function BlogsPage() {
   const [hoveredCard, setHoveredCard] = useState(null);
   const { navigateWithTransition } = usePageNavigation();
 
+  // Get Lenis instance from context
+  const lenis = useLenisContext();
+
   useEffect(() => {
-    // Simple scroll to top without animation to prevent conflicts
-    window.scrollTo(0, 0);
+    // Smooth scroll to top using Lenis when component mounts
+    if (lenis) {
+      lenis.scrollTo(0, { immediate: false, duration: 0.8 });
+    }
 
     // Simplified animation timing to prevent glitches
     const timeouts = [
@@ -23,7 +29,7 @@ function BlogsPage() {
     ];
 
     return () => timeouts.forEach(clearTimeout);
-  }, []);
+  }, [lenis]);
 
   // Enhanced topic color mapping
   const getTopicStyle = (topic) => {
