@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function ContactModal({ isOpen, onClose }) {
   const [formData, setFormData] = useState({
@@ -9,6 +9,8 @@ function ContactModal({ isOpen, onClose }) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitStatus, setSubmitStatus] = useState('');
   const [showThankYou, setShowThankYou] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+  const [isClosing, setIsClosing] = useState(false);
 
   const handleInputChange = (e) => {
     setFormData({
@@ -46,10 +48,15 @@ function ContactModal({ isOpen, onClose }) {
   };
 
   const handleClose = () => {
-    onClose();
-    setSubmitStatus('');
-    setShowThankYou(false);
-    setFormData({ name: '', email: '', message: '' });
+    setIsClosing(true);
+    setTimeout(() => {
+      onClose();
+      setSubmitStatus('');
+      setShowThankYou(false);
+      setFormData({ name: '', email: '', message: '' });
+      setIsClosing(false);
+      setIsVisible(false);
+    }, 300); // Match the animation duration
   };
 
   const handleBackToForm = () => {
@@ -58,32 +65,46 @@ function ContactModal({ isOpen, onClose }) {
     setFormData({ name: '', email: '', message: '' });
   };
 
+  // Handle modal visibility animations
+  useEffect(() => {
+    if (isOpen) {
+      setIsVisible(true);
+    }
+  }, [isOpen]);
+
   if (!isOpen) return null;
 
   return (
     <div
-      className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4"
+      className={`fixed inset-0 flex items-center justify-center z-50 p-4 transition-all duration-300 ease-out ${isVisible && !isClosing
+          ? 'bg-black bg-opacity-50'
+          : 'bg-black bg-opacity-0'
+        }`}
       onClick={handleClose}
     >
       <div
-        className="bg-white rounded-2xl p-6 w-full max-w-md mx-auto relative shadow-2xl transform transition-all duration-300 ease-in-out"
+        className={`bg-white rounded-2xl p-6 w-full max-w-md mx-auto relative shadow-2xl transition-all duration-300 ease-out ${isVisible && !isClosing
+            ? 'transform scale-100 translate-y-0 opacity-100'
+            : 'transform scale-95 translate-y-4 opacity-0'
+          }`}
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl transition-colors duration-200"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl transition-all duration-200 ease-out transform hover:scale-110 hover:rotate-90 active:scale-95"
         >
           ×
         </button>
 
         {/* Thank You Screen */}
         {showThankYou ? (
-          <div className="text-center py-8">
+          <div className={`text-center py-8 transition-all duration-500 ease-out ${showThankYou ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
+            }`}>
             {/* Success Icon */}
-            <div className="mx-auto mb-6 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+            <div className="mx-auto mb-6 w-16 h-16 bg-green-100 rounded-full flex items-center justify-center transform transition-all duration-700 ease-out animate-bounce">
               <svg
-                className="w-8 h-8 text-green-600"
+                className="w-8 h-8 text-green-600 transition-all duration-500 ease-out"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -98,7 +119,7 @@ function ContactModal({ isOpen, onClose }) {
             </div>
 
             <h3 className="text-2xl font-bold text-[#45372B] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>Thank You!</h3>
-            
+
             <p className="text-gray-600 mb-6 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
               Your message has been sent successfully. I'll get back to you as soon as possible!
             </p>
@@ -129,16 +150,16 @@ function ContactModal({ isOpen, onClose }) {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex gap-3 transition-all duration-300 ease-out delay-500">
               <button
                 onClick={handleBackToForm}
-                className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-colors duration-200"
+                className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-200 ease-out transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span style={{ fontFamily: 'Neuton, serif' }}>Send Another</span>
               </button>
               <button
                 onClick={handleClose}
-                className="flex-1 bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200"
+                className="flex-1 bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-all duration-200 ease-out transform hover:scale-[1.02] active:scale-[0.98]"
               >
                 <span style={{ fontFamily: 'Neuton, serif' }}>Close</span>
               </button>
@@ -146,18 +167,19 @@ function ContactModal({ isOpen, onClose }) {
           </div>
         ) : (
           /* Contact Form */
-          <>
-            <h3 className="text-2xl font-bold text-[#45372B] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>Send me a message</h3>
+          <div className={`transition-all duration-500 ease-out ${!showThankYou ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
+            }`}>
+            <h3 className="text-2xl font-bold text-[#45372B] mb-6 transition-all duration-300 ease-out delay-100" style={{ fontFamily: 'Syne, sans-serif' }}>Send me a message</h3>
 
             {submitStatus === 'error' && (
-              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+              <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 transition-all duration-300 ease-out transform animate-pulse">
                 Failed to send message. Please try again.
               </div>
             )}
 
             <form onSubmit={handleSubmit} className="space-y-4">
-              <div>
-                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
+              <div className="transition-all duration-300 ease-out delay-150 transform">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-200 ease-out">
                   Name
                 </label>
                 <input
@@ -167,12 +189,12 @@ function ContactModal({ isOpen, onClose }) {
                   value={formData.name}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-[#A8977A] transition-all duration-200 ease-out transform focus:scale-[1.02]"
                 />
               </div>
 
-              <div>
-                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
+              <div className="transition-all duration-300 ease-out delay-200 transform">
+                <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-200 ease-out">
                   Email
                 </label>
                 <input
@@ -182,12 +204,12 @@ function ContactModal({ isOpen, onClose }) {
                   value={formData.email}
                   onChange={handleInputChange}
                   required
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A]"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-[#A8977A] transition-all duration-200 ease-out transform focus:scale-[1.02]"
                 />
               </div>
 
-              <div>
-                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1">
+              <div className="transition-all duration-300 ease-out delay-300 transform">
+                <label htmlFor="message" className="block text-sm font-medium text-gray-700 mb-1 transition-all duration-200 ease-out">
                   Message
                 </label>
                 <textarea
@@ -197,19 +219,29 @@ function ContactModal({ isOpen, onClose }) {
                   onChange={handleInputChange}
                   required
                   rows="4"
-                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] resize-none"
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-[#A8977A] resize-none transition-all duration-200 ease-out transform focus:scale-[1.02]"
                 />
               </div>
 
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] delay-400"
               >
-                <span style={{ fontFamily: 'Neuton, serif' }}>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
+                <span style={{ fontFamily: 'Neuton, serif' }} className="transition-all duration-200 ease-out">
+                  {isSubmitting ? (
+                    <span className="flex items-center justify-center">
+                      <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                      </svg>
+                      Sending...
+                    </span>
+                  ) : 'Send Message'}
+                </span>
               </button>
             </form>
-          </>
+          </div>
         )}
       </div>
     </div>
