@@ -13,10 +13,16 @@ function BlogsPage() {
   // Get Lenis instance from context
   const lenis = useLenisContext();
 
+  // Immediate scroll reset on component mount
+  React.useLayoutEffect(() => {
+    window.scrollTo(0, 0);
+  }, []);
+
   useEffect(() => {
-    // Smooth scroll to top using Lenis when component mounts
+    // Immediately scroll to top - use both native and Lenis for reliability
+    window.scrollTo(0, 0);
     if (lenis) {
-      lenis.scrollTo(0, { immediate: false, duration: 0.8 });
+      lenis.scrollTo(0, { immediate: true });
     }
 
     // Simplified animation timing to prevent glitches

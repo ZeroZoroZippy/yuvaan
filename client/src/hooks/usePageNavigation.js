@@ -11,7 +11,10 @@ export const usePageNavigation = () => {
 
     // Navigate after the overlay covers the screen
     setTimeout(() => {
-      navigate(path);
+      // Prevent scroll restoration by scrolling to top before navigation
+      window.scrollTo(0, 0);
+      
+      navigate(path, { replace: false });
       
       // End transition after navigation is complete
       setTimeout(() => {
