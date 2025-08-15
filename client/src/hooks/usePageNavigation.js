@@ -16,8 +16,8 @@ export const usePageNavigation = () => {
       // End transition after navigation is complete
       setTimeout(() => {
         endTransition();
-      }, 100); // Small delay to ensure page is loaded
-    }, 800); // Match the circular expand duration
+      }, 50); // Reduced delay to prevent animation conflicts
+    }, 600); // Reduced timing to prevent glitches
   };
 
   return { navigateWithTransition };

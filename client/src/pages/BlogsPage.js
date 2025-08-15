@@ -10,38 +10,16 @@ function BlogsPage() {
   const { navigateWithTransition } = usePageNavigation();
 
   useEffect(() => {
-    // Smooth scroll to top when component mounts
-    const smoothScrollToTop = () => {
-      const startPosition = window.pageYOffset;
-      const startTime = performance.now();
-      const duration = 800;
+    // Simple scroll to top without animation to prevent conflicts
+    window.scrollTo(0, 0);
 
-      const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-      const animateScroll = (currentTime) => {
-        const elapsed = currentTime - startTime;
-        const progress = Math.min(elapsed / duration, 1);
-        const easedProgress = easeOutCubic(progress);
-
-        window.scrollTo(0, startPosition * (1 - easedProgress));
-
-        if (progress < 1) {
-          requestAnimationFrame(animateScroll);
-        }
-      };
-
-      requestAnimationFrame(animateScroll);
-    };
-
-    smoothScrollToTop();
-
-    // Staggered animation matching your design system
+    // Simplified animation timing to prevent glitches
     const timeouts = [
-      setTimeout(() => setShowContent(true), 100),
-      setTimeout(() => setAnimationStage(1), 400),
-      setTimeout(() => setAnimationStage(2), 700),
-      setTimeout(() => setAnimationStage(3), 1000),
-      setTimeout(() => setAnimationStage(4), 1300),
+      setTimeout(() => setShowContent(true), 50),
+      setTimeout(() => setAnimationStage(1), 200),
+      setTimeout(() => setAnimationStage(2), 400),
+      setTimeout(() => setAnimationStage(3), 600),
+      setTimeout(() => setAnimationStage(4), 800),
     ];
 
     return () => timeouts.forEach(clearTimeout);

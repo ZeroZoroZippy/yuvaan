@@ -417,11 +417,24 @@
   }
 }
 
-/* Smooth transitions for all interactive elements */
+/* Smooth transitions for all interactive elements - optimized to prevent glitches */
 * {
   transition-property: transform, opacity, filter, box-shadow;
   transition-duration: 0.3s;
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Prevent layout shifts during animations */
+.animate-fade-scale-in,
+.animate-slide-up-fade {
+  will-change: transform, opacity;
+  backface-visibility: hidden;
+  transform: translateZ(0);
+}
+
+/* Ensure smooth rendering during page transitions */
+body.transitioning {
+  overflow: hidden;
 }
 
 /* Premium glass morphism effect */

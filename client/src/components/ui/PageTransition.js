@@ -11,13 +11,13 @@ const PageTransition = () => {
             
             const coverTimeout = setTimeout(() => {
                 setAnimationPhase('exiting');
-            }, 1200); // Reduced for snappier feel
+            }, 800); // Further reduced to prevent conflicts
             
             return () => clearTimeout(coverTimeout);
         } else {
             const resetTimeout = setTimeout(() => {
                 setAnimationPhase('idle');
-            }, 100);
+            }, 50);
             
             return () => clearTimeout(resetTimeout);
         }
@@ -49,15 +49,15 @@ const PageTransition = () => {
             return {
                 ...baseStyles,
                 animation: isReverse 
-                    ? 'liquidRevealReverseEnter 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards'
-                    : 'liquidRevealEnter 1.2s cubic-bezier(0.65, 0, 0.35, 1) forwards',
+                    ? 'liquidRevealReverseEnter 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards'
+                    : 'liquidRevealEnter 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards',
             };
         } else if (animationPhase === 'exiting') {
             return {
                 ...baseStyles,
                 animation: isReverse
-                    ? 'liquidRevealReverseExit 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards'
-                    : 'liquidRevealExit 0.8s cubic-bezier(0.65, 0, 0.35, 1) forwards',
+                    ? 'liquidRevealReverseExit 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards'
+                    : 'liquidRevealExit 0.6s cubic-bezier(0.65, 0, 0.35, 1) forwards',
             };
         }
         
