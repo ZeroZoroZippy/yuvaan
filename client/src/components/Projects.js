@@ -1,8 +1,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
-import wellness from '../assets/Projects/mental-wellness.png'
-import dental from '../assets/Projects/Dental.png'
+import wellness from '../assets/Projects/mental-wellness.jpg'
+import dental from '../assets/Projects/Dental.jpg'
 
 function Projects() {
   const [toggleStates, setToggleStates] = useState({

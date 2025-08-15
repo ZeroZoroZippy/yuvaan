@@ -166,7 +166,7 @@ function AboutPage() {
                         data-delay="200"
                         style={{ fontFamily: 'Neuton, serif' }}
                     >
-                        The best work happens when creativity and collaboration meet — every project is a conversation, not just a checklist.
+                        The best work happens when creativity and collaboration meet – every project is a conversation, not just a checklist.
                     </p>
                     <p
                         className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-6 sm:mb-8 lg:mb-12"
@@ -310,7 +310,7 @@ function AboutPage() {
                                             </svg>
                                         </div>
                                         <span className="text-sm sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
-                                            Simple, smart solutions grounded in the problem — not buzzwords.
+                                            Simple, smart solutions grounded in the problem – not buzzwords.
                                         </span>
                                     </div>
                                 </div>
@@ -451,10 +451,15 @@ function AboutPage() {
             {/* Show content with smooth slide-in animation */}
             {contentLoaded && (
                 <div className={`${showContent ? 'animate-slide-in-bottom' : 'opacity-0 translate-y-12'}`}>
-                    <div className={`${showContent ? 'animate-slide-in-stagger delay-200' : 'opacity-0'}`} style={{ pointerEvents: showContent ? 'auto' : 'none', position: 'relative', zIndex: 100 }}>
-                        <Navbar />
+                    {/* Fixed Navbar with proper z-index */}
+                    <div className="fixed top-0 left-0 right-0 z-50">
+                        <div className={`${showContent ? 'animate-slide-in-stagger delay-200' : 'opacity-0'}`} style={{ pointerEvents: showContent ? 'auto' : 'none' }}>
+                            <Navbar />
+                        </div>
                     </div>
-                    <div className={`text-[#A8977A] px-4 sm:px-8 lg:px-16 py-6 pt-20 sm:pt-24 lg:pt-28 relative z-0 ${showContent ? 'animate-slide-in-stagger delay-400' : 'opacity-0'}`}>
+                    
+                    {/* Main content with proper top spacing */}
+                    <div className={`text-[#A8977A] px-4 sm:px-8 lg:px-16 py-6 pt-24 sm:pt-28 lg:pt-32 relative z-0 ${showContent ? 'animate-slide-in-stagger delay-400' : 'opacity-0'}`}>
                         <div className="w-full max-w-6xl mx-auto">
 
                             {/* Main content */}
