@@ -2,7 +2,7 @@
 @tailwind components;
 @tailwind utilities;
 
-@import url('https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap');
+
 @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap');
 @import url('https://fonts.googleapis.com/css2?family=Neuton:ital,wght@0,200;0,300;0,400;0,700;0,800;1,400&display=swap');
 
@@ -703,7 +703,7 @@
 
 body {
   margin: 0;
-  font-family: 'Kaushan Script', cursive;
+  font-family: 'Neuton', serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #45372B;
@@ -832,4 +832,74 @@ code {
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
   /* Safari and Chrome */
+}/* Line 
+clamp utilities for blog cards */
+.line-clamp-2 {
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.line-clamp-3 {
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+/* Blog-specific styles */
+.prose {
+  max-width: none;
+  color: #A8977A;
+}
+
+.prose h1 {
+  font-family: 'Syne', sans-serif;
+  color: #A8977A;
+}
+
+.prose h2 {
+  font-family: 'Syne', sans-serif;
+  color: #A8977A;
+}
+
+.prose h3 {
+  font-family: 'Syne', sans-serif;
+  color: #A8977A;
+}
+
+.prose p {
+  font-family: 'Neuton', serif;
+  color: #A8977A;
+}
+
+.prose li {
+  font-family: 'Neuton', serif;
+  color: #A8977A;
+}
+
+.prose code {
+  background-color: rgba(168, 151, 122, 0.1);
+  color: #A8977A;
+  padding: 0.125rem 0.25rem;
+  border-radius: 0.25rem;
+  font-size: 0.875rem;
+  border: 1px solid rgba(168, 151, 122, 0.2);
+}
+
+.prose pre {
+  background-color: rgba(22, 23, 17, 0.8);
+  color: #A8977A;
+  padding: 1rem;
+  border-radius: 0.5rem;
+  overflow-x: auto;
+  border: 1px solid rgba(168, 151, 122, 0.2);
+}
+
+.prose pre code {
+  background-color: transparent;
+  padding: 0;
+  color: inherit;
+  border: none;
 }

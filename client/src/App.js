@@ -5,6 +5,8 @@ import PageTransition from './components/ui/PageTransition';
 import HeroPage from './pages/HeroPage';
 import AboutPage from './pages/AboutPage';
 import ProjectPage from './pages/ProjectPage';
+import BlogsPage from './pages/BlogsPage';
+import BlogPostPage from './pages/BlogPostPage';
 
 function App() {
   return (
@@ -16,6 +18,8 @@ function App() {
             <Route path="/" element={<HeroPage />} />
             <Route path="/about" element={<AboutPage />} />
             <Route path="/projects/:projectId" element={<ProjectPage />} />
+            <Route path="/blog" element={<BlogsPage />} />
+            <Route path="/blog/:id" element={<BlogPostPage />} />
           </Routes>
         </div>
       </PageTransitionProvider>
