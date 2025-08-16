@@ -9,7 +9,11 @@ const Chatbot = () => {
     const inputRef = useRef(null);
 
     const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+        messagesEndRef.current?.scrollIntoView({
+            behavior: 'smooth',
+            block: 'end',
+            inline: 'nearest'
+        });
     };
 
     useEffect(() => {
@@ -104,7 +108,7 @@ const Chatbot = () => {
                         </div>
 
                         {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/30 scroll-smooth">
                             {messages.map((message) => (
                                 <div
                                     key={message.id}
@@ -197,7 +201,7 @@ const Chatbot = () => {
                         </div>
 
                         {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4">
+                        <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/30 scroll-smooth">
                             {messages.map((message) => (
                                 <div
                                     key={message.id}
@@ -209,8 +213,8 @@ const Chatbot = () => {
                                             : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20'
                                             }`}
                                     >
-                                        <p className="text-base" style={{ fontFamily: "Neuton, serif" }}>{message.text}</p>
-                                        <p className={`text-xs mt-1 ${message.sender === 'user' ? 'text-[#45372B]/80' : 'text-[#A8977A]/60'
+                                        <p className="text-lg" style={{ fontFamily: "Neuton, serif" }}>{message.text}</p>
+                                        <p className={`text-sm mt-1 ${message.sender === 'user' ? 'text-[#45372B]/80' : 'text-[#A8977A]/60'
                                             }`}>
                                             {formatTime(message.timestamp)}
                                         </p>
