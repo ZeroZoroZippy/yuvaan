@@ -309,7 +309,7 @@ class AnalyticsService {
             conversationId: this.currentChatbotSession.conversationId
         });
 
-        // Save to dedicated chatbot_sessions collection
+        // Save to dedicated chatbot_sessions collection using setDoc with custom ID
         if (this.enableFirebaseWrites && hasFirebaseConfig && db) {
             try {
                 const sessionData = this.sanitizeData({
@@ -323,10 +323,12 @@ class AnalyticsService {
                     page: window.location.pathname
                 });
 
-                await addDoc(collection(db, 'chatbot_sessions'), sessionData);
+                // Use setDoc with custom document ID instead of addDoc
+                const sessionRef = doc(db, 'chatbot_sessions', chatbotSessionId);
+                await setDoc(sessionRef, sessionData);
 
                 if (process.env.NODE_ENV === 'development') {
-                    console.log('✅ Chatbot session started in Firebase');
+                    console.log('✅ Chatbot session started in Firebase with ID:', chatbotSessionId);
                 }
             } catch (error) {
                 console.error('❌ Failed to save chatbot session:', error.message);
@@ -469,7 +471,7 @@ class AnalyticsService {
 
                 await addDoc(collection(db, 'chatbot_conversations'), conversationData);
 
-                // Update session status
+                // Update session status using the same document ID we created earlier
                 const sessionRef = doc(db, 'chatbot_sessions', session.sessionId);
                 await updateDoc(sessionRef, {
                     status: 'completed',
@@ -480,7 +482,7 @@ class AnalyticsService {
                 });
 
                 if (process.env.NODE_ENV === 'development') {
-                    console.log('✅ Chatbot conversation saved to Firebase');
+                    console.log('✅ Chatbot conversation saved and session updated in Firebase');
                 }
             } catch (error) {
                 console.error('❌ Failed to save chatbot conversation:', error.message);
@@ -582,10 +584,16 @@ class AnalyticsService {
     trackChatbotInteraction(action, messageCount = 0, context = null, additionalData = {}) {
         try {
             if (action === 'open') {
-                this.startChatbotSession();
-                this.updateClickCounter('chatbot_opens', 'saarth');
+                return this.startChatbotSession();
             } else if (action === 'close') {
-                this.endChatbotSession('user_close');
+                return this.endChatbotSession('user_close');
+            } else if (action === 'message' && additionalData.messageData) {
+                // Handle message tracking - call the dedicated message tracking method
+                return this.trackChatbotMessage(additionalData.messageData);
+            }
+
+            if (action === 'open') {
+                this.updateClickCounter('chatbot_opens', 'saarth');
             }
 
             this.trackEvent('chatbot_interaction', {
@@ -823,28 +831,7 @@ class AnalyticsService {
         this.updateClickCounter('social_clicks', platform);
     }
 
-    // Error Tracking
-    trackError(errorType, errorMessage, context = null) {
-        this.trackEvent('error', {
-            errorType,
-            errorMessage,
-            context,
-            url: window.location.href,
-            userAgent: navigator.userAgent,
-            timestamp: Date.now()
-        });
-    }
-
     // Form Tracking
-    trackFormInteraction(formName, fieldName, action, value = null) {
-        this.trackEvent('form_interaction', {
-            formName,
-            fieldName,
-            action, // 'focus', 'blur', 'change'
-            value: value ? String(value).substring(0, 100) : null
-        });
-    }
-
     trackFormSubmit(formName, formData, success = true, errorMessage = null) {
         this.trackEvent('form_submit', {
             formName,
@@ -856,15 +843,6 @@ class AnalyticsService {
         if (success) {
             this.updateClickCounter('form_submissions', formName);
         }
-    }
-
-    // Navigation Tracking
-    trackNavigation(from, to, method = 'click') {
-        this.trackEvent('navigation', {
-            from,
-            to,
-            method
-        });
     }
 
     // Project Tracking

@@ -175,9 +175,6 @@ const Chatbot = () => {
                                 <div>
                                     <h3 className="text-white font-semibold" style={{ fontFamily: "Syne, sans-serif" }}>Saarth</h3>
                                     <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>AI Assistant</p>
-                                    {process.env.NODE_ENV === 'development' && chatbotSessionId && (
-                                        <p className="text-white/50 text-xs">Session: {chatbotSessionId.slice(-8)}</p>
-                                    )}
                                 </div>
                             </div>
                             <button
@@ -271,9 +268,6 @@ const Chatbot = () => {
                                 <div>
                                     <h3 className="text-white font-semibold" style={{ fontFamily: "Syne, sans-serif" }}>Saarth</h3>
                                     <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>AI Assistant</p>
-                                    {process.env.NODE_ENV === 'development' && chatbotSessionId && (
-                                        <p className="text-white/50 text-xs">Session: {chatbotSessionId.slice(-8)}</p>
-                                    )}
                                 </div>
                             </div>
                             <button

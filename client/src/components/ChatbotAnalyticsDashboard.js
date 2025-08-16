@@ -14,10 +14,14 @@ const ChatbotAnalyticsDashboard = () => {
     recentConversations: [],
     conversionPotential: {},
     popularQuestions: [],
-    responseEffectiveness: {}
+    responseEffectiveness: {},
+    recentMessages: []
   });
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('7d');
+  const [activeTab, setActiveTab] = useState('overview');
+  const [selectedConversation, setSelectedConversation] = useState(null);
+  const [conversationMessages, setConversationMessages] = useState([]);
 
   useEffect(() => {
     fetchChatbotAnalytics();
@@ -34,98 +38,206 @@ const ChatbotAnalyticsDashboard = () => {
       };
       const startDate = timeRanges[timeRange];
 
-      // Fetch chatbot interactions
-      const interactionsQuery = query(
-        collection(db, 'analytics_interactions'),
-        where('uploadTime', '>=', startDate),
-        orderBy('uploadTime', 'desc'),
-        limit(1000)
-      );
-      const interactionsSnapshot = await getDocs(interactionsQuery);
-      const interactions = interactionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      console.log('🔍 Fetching chatbot analytics for time range:', timeRange, 'since:', startDate);
 
-      // Process chatbot-specific data
-      const processedAnalytics = processChatbotData(interactions);
+      // Fetch chatbot interactions (legacy support)
+      let interactions = [];
+      try {
+        const interactionsQuery = query(
+          collection(db, 'analytics_interactions'),
+          where('uploadTime', '>=', startDate),
+          orderBy('uploadTime', 'desc'),
+          limit(1000)
+        );
+        const interactionsSnapshot = await getDocs(interactionsQuery);
+        interactions = interactionsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log('📊 Found', interactions.length, 'analytics interactions');
+      } catch (error) {
+        console.warn('⚠️ Error fetching analytics_interactions:', error.message);
+      }
+
+      // Fetch chatbot conversations
+      let conversations = [];
+      try {
+        const conversationsQuery = query(
+          collection(db, 'chatbot_conversations'),
+          where('timestamp', '>=', startDate),
+          orderBy('timestamp', 'desc'),
+          limit(100)
+        );
+        const conversationsSnapshot = await getDocs(conversationsQuery);
+        conversations = conversationsSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log('💬 Found', conversations.length, 'chatbot conversations');
+      } catch (error) {
+        console.warn('⚠️ Error fetching chatbot_conversations:', error.message);
+      }
+
+      // Fetch recent messages
+      let messages = [];
+      try {
+        const messagesQuery = query(
+          collection(db, 'chatbot_messages'),
+          where('timestamp', '>=', startDate),
+          orderBy('timestamp', 'desc'),
+          limit(200)
+        );
+        const messagesSnapshot = await getDocs(messagesQuery);
+        messages = messagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        console.log('📝 Found', messages.length, 'chatbot messages');
+      } catch (error) {
+        console.warn('⚠️ Error fetching chatbot_messages:', error.message);
+      }
+
+      // Fallback: Try to get messages from analytics_interactions if chatbot_messages is empty
+      if (messages.length === 0) {
+        console.log('🔄 Attempting fallback to analytics_interactions for messages...');
+        try {
+          const fallbackMessages = [];
+          interactions.forEach(batch => {
+            if (batch.interactions) {
+              batch.interactions.forEach(interaction => {
+                if (interaction.eventType === 'chatbot_message') {
+                  fallbackMessages.push({
+                    id: interaction.timestamp || Date.now(),
+                    conversationId: interaction.conversationId || 'unknown',
+                    sender: interaction.sender || 'unknown',
+                    content: interaction.content || '[No content]',
+                    messageType: interaction.messageType,
+                    sentiment: interaction.sentiment,
+                    topics: interaction.topics || [],
+                    intent: interaction.intent,
+                    containsContact: interaction.containsContact,
+                    timestamp: new Date(interaction.timestamp || Date.now()),
+                    wordCount: interaction.wordCount,
+                    responseTime: interaction.responseTime
+                  });
+                }
+              });
+            }
+          });
+          messages = fallbackMessages;
+          console.log('🔄 Found', messages.length, 'messages in fallback source');
+        } catch (error) {
+          console.warn('⚠️ Fallback message extraction failed:', error.message);
+        }
+      }
+
+      // Fallback: Try to get conversations from analytics_interactions if chatbot_conversations is empty
+      if (conversations.length === 0) {
+        console.log('🔄 Attempting fallback to analytics_interactions for conversations...');
+        try {
+          const fallbackConversations = [];
+          interactions.forEach(batch => {
+            if (batch.interactions) {
+              batch.interactions.forEach(interaction => {
+                if (interaction.eventType === 'chatbot_session_end') {
+                  fallbackConversations.push({
+                    id: interaction.conversationId || interaction.sessionId,
+                    conversationId: interaction.conversationId,
+                    sessionId: interaction.sessionId,
+                    duration: interaction.duration,
+                    messageCount: interaction.messageCount,
+                    topics: interaction.topics || [],
+                    overallSentiment: interaction.overallSentiment || interaction.sentiment,
+                    leadQuality: interaction.leadQuality,
+                    conversionPotential: interaction.conversionPotential,
+                    outcome: interaction.outcome,
+                    timestamp: new Date(interaction.timestamp || Date.now()),
+                    startTime: new Date((interaction.timestamp || Date.now()) - (interaction.duration || 0)),
+                    endTime: new Date(interaction.timestamp || Date.now())
+                  });
+                }
+              });
+            }
+          });
+          conversations = fallbackConversations;
+          console.log('🔄 Found', conversations.length, 'conversations in fallback source');
+        } catch (error) {
+          console.warn('⚠️ Fallback conversation extraction failed:', error.message);
+        }
+      }
+
+      // Process all data
+      const processedAnalytics = processChatbotData(interactions, conversations, messages);
       setAnalytics(processedAnalytics);
+      
+      console.log('✅ Analytics processing complete:', {
+        totalConversations: processedAnalytics.totalConversations,
+        totalMessages: processedAnalytics.totalMessages,
+        recentMessages: processedAnalytics.recentMessages.length
+      });
+      
     } catch (error) {
-      console.error('Error fetching chatbot analytics:', error);
+      console.error('❌ Error fetching chatbot analytics:', error);
     } finally {
       setLoading(false);
     }
   };
 
-  const processChatbotData = (interactions) => {
-    let totalConversations = 0;
-    let totalMessages = 0;
+  const fetchConversationMessages = async (conversationId) => {
+    try {
+      const messagesQuery = query(
+        collection(db, 'chatbot_messages'),
+        where('conversationId', '==', conversationId),
+        orderBy('timestamp', 'asc')
+      );
+      const messagesSnapshot = await getDocs(messagesQuery);
+      const messages = messagesSnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      setConversationMessages(messages);
+    } catch (error) {
+      console.error('Error fetching conversation messages:', error);
+    }
+  };
+
+  const processChatbotData = (interactions, conversations, messages) => {
+    let totalConversations = conversations.length;
+    let totalMessages = messages.length;
     let conversationLengths = [];
     const topicCounts = {};
     const intentCounts = {};
     const sentimentCounts = { positive: 0, negative: 0, neutral: 0 };
     const leadQualityCounts = { high: 0, medium: 0, low: 0 };
     const conversionPotentialCounts = { high: 0, medium: 0, low: 0 };
-    const recentConversations = [];
     const questionTypes = {};
 
-    // Process interactions to extract chatbot data
-    interactions.forEach(batch => {
-      if (batch.interactions) {
-        batch.interactions.forEach(interaction => {
-          if (interaction.eventType === 'chatbot_session') {
-            totalConversations++;
-            conversationLengths.push(interaction.messageCount || 0);
-            
-            // Count topics
-            if (interaction.topics) {
-              interaction.topics.forEach(topic => {
-                topicCounts[topic] = (topicCounts[topic] || 0) + 1;
-              });
-            }
-            
-            // Count intents
-            if (interaction.intents) {
-              interaction.intents.forEach(intent => {
-                intentCounts[intent] = (intentCounts[intent] || 0) + 1;
-              });
-            }
-            
-            // Count sentiments
-            if (interaction.sentiment) {
-              sentimentCounts[interaction.sentiment] = (sentimentCounts[interaction.sentiment] || 0) + 1;
-            }
-            
-            // Count lead quality
-            if (interaction.leadQuality) {
-              leadQualityCounts[interaction.leadQuality] = (leadQualityCounts[interaction.leadQuality] || 0) + 1;
-            }
-            
-            // Count conversion potential
-            if (interaction.conversionPotential) {
-              conversionPotentialCounts[interaction.conversionPotential] = (conversionPotentialCounts[interaction.conversionPotential] || 0) + 1;
-            }
-            
-            // Add to recent conversations
-            if (recentConversations.length < 10) {
-              recentConversations.push({
-                id: interaction.conversationId,
-                duration: interaction.duration,
-                messageCount: interaction.messageCount,
-                topics: interaction.topics || [],
-                sentiment: interaction.sentiment,
-                leadQuality: interaction.leadQuality,
-                timestamp: interaction.timestamp
-              });
-            }
-          }
-          
-          if (interaction.eventType === 'chatbot_message' && interaction.sender === 'user') {
-            totalMessages++;
-            
-            // Count question types
-            if (interaction.messageType) {
-              questionTypes[interaction.messageType] = (questionTypes[interaction.messageType] || 0) + 1;
-            }
-          }
+    // Process conversations
+    conversations.forEach(conversation => {
+      conversationLengths.push(conversation.messageCount || 0);
+      
+      // Count topics
+      if (conversation.topics) {
+        conversation.topics.forEach(topic => {
+          topicCounts[topic] = (topicCounts[topic] || 0) + 1;
         });
+      }
+      
+      // Count intents
+      if (conversation.intents) {
+        conversation.intents.forEach(intent => {
+          intentCounts[intent] = (intentCounts[intent] || 0) + 1;
+        });
+      }
+      
+      // Count sentiments
+      if (conversation.overallSentiment) {
+        sentimentCounts[conversation.overallSentiment] = (sentimentCounts[conversation.overallSentiment] || 0) + 1;
+      }
+      
+      // Count lead quality
+      if (conversation.leadQuality) {
+        leadQualityCounts[conversation.leadQuality] = (leadQualityCounts[conversation.leadQuality] || 0) + 1;
+      }
+      
+      // Count conversion potential
+      if (conversation.conversionPotential) {
+        conversionPotentialCounts[conversation.conversionPotential] = (conversionPotentialCounts[conversation.conversionPotential] || 0) + 1;
+      }
+    });
+
+    // Process messages for question types
+    messages.forEach(message => {
+      if (message.sender === 'user' && message.messageType) {
+        questionTypes[message.messageType] = (questionTypes[message.messageType] || 0) + 1;
       }
     });
 
@@ -149,6 +261,37 @@ const ChatbotAnalyticsDashboard = () => {
       .slice(0, 10)
       .map(([type, count]) => ({ type, count }));
 
+    // Recent conversations with enhanced data
+    const recentConversations = conversations.slice(0, 10).map(conv => ({
+      id: conv.conversationId,
+      sessionId: conv.sessionId,
+      duration: conv.duration,
+      messageCount: conv.messageCount,
+      topics: conv.topics || [],
+      sentiment: conv.overallSentiment,
+      leadQuality: conv.leadQuality,
+      conversionPotential: conv.conversionPotential,
+      outcome: conv.outcome,
+      startTime: conv.startTime?.toDate ? conv.startTime.toDate() : new Date(conv.startTime),
+      endTime: conv.endTime?.toDate ? conv.endTime.toDate() : new Date(conv.endTime)
+    }));
+
+    // Recent messages with enhanced data
+    const recentMessages = messages.slice(0, 50).map(msg => ({
+      id: msg.id,
+      conversationId: msg.conversationId,
+      sender: msg.sender,
+      content: msg.content,
+      messageType: msg.messageType,
+      sentiment: msg.sentiment,
+      topics: msg.topics || [],
+      intent: msg.intent,
+      containsContact: msg.containsContact,
+      timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(msg.timestamp),
+      wordCount: msg.wordCount,
+      responseTime: msg.responseTime
+    }));
+
     return {
       totalConversations,
       totalMessages,
@@ -160,25 +303,18 @@ const ChatbotAnalyticsDashboard = () => {
       recentConversations,
       conversionPotential: conversionPotentialCounts,
       popularQuestions,
-      responseEffectiveness: calculateResponseEffectiveness(interactions)
+      responseEffectiveness: calculateResponseEffectiveness(conversations),
+      recentMessages
     };
   };
 
-  const calculateResponseEffectiveness = (interactions) => {
-    // Analyze how effective bot responses are based on user follow-up behavior
+  const calculateResponseEffectiveness = (conversations) => {
     let effectiveResponses = 0;
-    let totalResponses = 0;
+    let totalResponses = conversations.length;
     
-    interactions.forEach(batch => {
-      if (batch.interactions) {
-        batch.interactions.forEach(interaction => {
-          if (interaction.eventType === 'chatbot_session') {
-            totalResponses++;
-            if (interaction.messageCount > 3 && interaction.sentiment === 'positive') {
-              effectiveResponses++;
-            }
-          }
-        });
+    conversations.forEach(conversation => {
+      if (conversation.messageCount > 3 && conversation.overallSentiment === 'positive') {
+        effectiveResponses++;
       }
     });
     
@@ -187,6 +323,21 @@ const ChatbotAnalyticsDashboard = () => {
       totalResponses,
       effectiveResponses
     };
+  };
+
+  const formatTime = (timestamp) => {
+    if (!timestamp) return 'Unknown';
+    const date = timestamp instanceof Date ? timestamp : new Date(timestamp);
+    return date.toLocaleString();
+  };
+
+  const formatDuration = (duration) => {
+    if (!duration) return '0s';
+    const seconds = Math.floor(duration / 1000);
+    if (seconds < 60) return `${seconds}s`;
+    const minutes = Math.floor(seconds / 60);
+    const remainingSeconds = seconds % 60;
+    return `${minutes}m ${remainingSeconds}s`;
   };
 
   if (loading) {
@@ -200,188 +351,362 @@ const ChatbotAnalyticsDashboard = () => {
   return (
     <div className="min-h-screen bg-[#45372B] p-6">
       <div className="max-w-7xl mx-auto">
+        {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <h1 className="text-4xl font-bold text-[#A8977A]" style={{ fontFamily: 'Syne, sans-serif' }}>
             Saarth Chatbot Analytics
           </h1>
-          <select
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className="bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 rounded-lg px-4 py-2"
-          >
-            <option value="1d">Last 24 Hours</option>
-            <option value="7d">Last 7 Days</option>
-            <option value="30d">Last 30 Days</option>
-          </select>
-        </div>
-
-        {/* Key Metrics */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <MetricCard title="Total Conversations" value={analytics.totalConversations} />
-          <MetricCard title="Total Messages" value={analytics.totalMessages} />
-          <MetricCard title="Avg. Conversation Length" value={`${analytics.averageConversationLength} msgs`} />
-          <MetricCard title="Response Effectiveness" value={`${analytics.responseEffectiveness.effectivenessRate}%`} />
-        </div>
-
-        {/* Sentiment and Lead Quality */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
-              Conversation Sentiment
-            </h2>
-            <div className="space-y-3">
-              {Object.entries(analytics.sentimentBreakdown).map(([sentiment, count]) => (
-                <div key={sentiment} className="flex justify-between items-center">
-                  <span className="text-[#A8977A]/80 capitalize">{sentiment}</span>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full ${
-                      sentiment === 'positive' ? 'bg-green-500' :
-                      sentiment === 'negative' ? 'bg-red-500' : 'bg-yellow-500'
-                    }`}></div>
-                    <span className="text-[#A8977A] font-semibold">{count}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
-              Lead Quality
-            </h2>
-            <div className="space-y-3">
-              {Object.entries(analytics.leadQualityBreakdown).map(([quality, count]) => (
-                <div key={quality} className="flex justify-between items-center">
-                  <span className="text-[#A8977A]/80 capitalize">{quality}</span>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full ${
-                      quality === 'high' ? 'bg-green-500' :
-                      quality === 'medium' ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}></div>
-                    <span className="text-[#A8977A] font-semibold">{count}</span>
-                  </div>
-                </div>
-              ))}
-            </div>
+          <div className="flex items-center gap-4">
+            <button
+              onClick={fetchChatbotAnalytics}
+              className="bg-[#A8977A] text-[#45372B] px-4 py-2 rounded-lg hover:bg-[#A8977A]/80 transition-colors"
+              style={{ fontFamily: 'Neuton, serif' }}
+            >
+              Refresh Data
+            </button>
+            <select
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
+              className="bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 rounded-lg px-4 py-2"
+            >
+              <option value="1d">Last 24 Hours</option>
+              <option value="7d">Last 7 Days</option>
+              <option value="30d">Last 30 Days</option>
+            </select>
           </div>
         </div>
 
-        {/* Topics and Intents */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
-              Popular Topics
-            </h2>
-            <div className="space-y-3">
-              {analytics.topTopics.map((topic, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <span className="text-[#A8977A]/80 capitalize">{topic.topic.replace('_', ' ')}</span>
-                  <span className="text-[#A8977A] font-semibold">{topic.count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
-              User Intents
-            </h2>
-            <div className="space-y-3">
-              {analytics.topIntents.map((intent, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <span className="text-[#A8977A]/80 capitalize">{intent.intent.replace('_', ' ')}</span>
-                  <span className="text-[#A8977A] font-semibold">{intent.count}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+        {/* Tab Navigation */}
+        <div className="flex space-x-1 mb-8 bg-[#161711] rounded-lg p-1">
+          {['overview', 'conversations', 'messages'].map((tab) => (
+            <button
+              key={tab}
+              onClick={() => setActiveTab(tab)}
+              className={`flex-1 py-2 px-4 rounded-md text-sm font-medium transition-colors ${
+                activeTab === tab
+                  ? 'bg-[#A8977A] text-[#45372B]'
+                  : 'text-[#A8977A] hover:text-white hover:bg-[#A8977A]/10'
+              }`}
+              style={{ fontFamily: 'Neuton, serif' }}
+            >
+              {tab.charAt(0).toUpperCase() + tab.slice(1)}
+            </button>
+          ))}
         </div>
 
-        {/* Question Types and Recent Conversations */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
-          <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
-              Popular Question Types
-            </h2>
-            <div className="space-y-3">
-              {analytics.popularQuestions.map((question, index) => (
-                <div key={index} className="flex justify-between items-center">
-                  <span className="text-[#A8977A]/80 capitalize">{question.type.replace('_', ' ')}</span>
-                  <span className="text-[#A8977A] font-semibold">{question.count}</span>
-                </div>
-              ))}
+        {activeTab === 'overview' && (
+          <>
+            {/* Key Metrics */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+              <MetricCard title="Total Conversations" value={analytics.totalConversations} />
+              <MetricCard title="Total Messages" value={analytics.totalMessages} />
+              <MetricCard title="Avg. Conversation Length" value={`${analytics.averageConversationLength} msgs`} />
+              <MetricCard title="Response Effectiveness" value={`${analytics.responseEffectiveness.effectivenessRate}%`} />
             </div>
-          </div>
 
-          <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
-              Conversion Potential
-            </h2>
-            <div className="space-y-3">
-              {Object.entries(analytics.conversionPotential).map(([potential, count]) => (
-                <div key={potential} className="flex justify-between items-center">
-                  <span className="text-[#A8977A]/80 capitalize">{potential}</span>
-                  <div className="flex items-center gap-2">
-                    <div className={`w-4 h-4 rounded-full ${
-                      potential === 'high' ? 'bg-green-500' :
-                      potential === 'medium' ? 'bg-yellow-500' : 'bg-red-500'
-                    }`}></div>
-                    <span className="text-[#A8977A] font-semibold">{count}</span>
-                  </div>
+            {/* Sentiment and Lead Quality */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <div className="bg-[#161711] rounded-2xl p-6">
+                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  Conversation Sentiment
+                </h2>
+                <div className="space-y-3">
+                  {Object.entries(analytics.sentimentBreakdown).map(([sentiment, count]) => (
+                    <div key={sentiment} className="flex justify-between items-center">
+                      <span className="text-[#A8977A]/80 capitalize">{sentiment}</span>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded-full ${
+                          sentiment === 'positive' ? 'bg-green-500' :
+                          sentiment === 'negative' ? 'bg-red-500' : 'bg-yellow-500'
+                        }`}></div>
+                        <span className="text-[#A8977A] font-semibold">{count}</span>
+                      </div>
+                    </div>
+                  ))}
                 </div>
-              ))}
-            </div>
-          </div>
-        </div>
+              </div>
 
-        {/* Recent Conversations */}
-        <div className="bg-[#161711] rounded-2xl p-6">
-          <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
-            Recent Conversations
-          </h2>
-          <div className="overflow-x-auto">
-            <table className="w-full text-[#A8977A]">
-              <thead>
-                <tr className="border-b border-[#A8977A]/20">
-                  <th className="text-left py-2">Conversation ID</th>
-                  <th className="text-left py-2">Messages</th>
-                  <th className="text-left py-2">Duration</th>
-                  <th className="text-left py-2">Topics</th>
-                  <th className="text-left py-2">Sentiment</th>
-                  <th className="text-left py-2">Lead Quality</th>
-                </tr>
-              </thead>
-              <tbody>
+              <div className="bg-[#161711] rounded-2xl p-6">
+                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  Lead Quality
+                </h2>
+                <div className="space-y-3">
+                  {Object.entries(analytics.leadQualityBreakdown).map(([quality, count]) => (
+                    <div key={quality} className="flex justify-between items-center">
+                      <span className="text-[#A8977A]/80 capitalize">{quality}</span>
+                      <div className="flex items-center gap-2">
+                        <div className={`w-4 h-4 rounded-full ${
+                          quality === 'high' ? 'bg-green-500' :
+                          quality === 'medium' ? 'bg-yellow-500' : 'bg-red-500'
+                        }`}></div>
+                        <span className="text-[#A8977A] font-semibold">{count}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+
+            {/* Topics and Intents */}
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+              <div className="bg-[#161711] rounded-2xl p-6">
+                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  Popular Topics
+                </h2>
+                <div className="space-y-3">
+                  {analytics.topTopics.map((topic, index) => (
+                    <div key={index} className="flex justify-between items-center">
+                      <span className="text-[#A8977A]/80 capitalize">{topic.topic.replace('_', ' ')}</span>
+                      <span className="text-[#A8977A] font-semibold">{topic.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+
+              <div className="bg-[#161711] rounded-2xl p-6">
+                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  User Intents
+                </h2>
+                <div className="space-y-3">
+                  {analytics.topIntents.map((intent, index) => (
+                    <div key={index} className="flex justify-between items-center">
+                      <span className="text-[#A8977A]/80 capitalize">{intent.intent.replace('_', ' ')}</span>
+                      <span className="text-[#A8977A] font-semibold">{intent.count}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            </div>
+          </>
+        )}
+
+        {activeTab === 'conversations' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            {/* Conversations List */}
+            <div className="bg-[#161711] rounded-2xl p-6">
+              <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                Recent Conversations
+              </h2>
+              <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-[#A8977A]/30 scrollbar-track-transparent hover:scrollbar-thumb-[#A8977A]/50">
                 {analytics.recentConversations.map((conversation) => (
-                  <tr key={conversation.id} className="border-b border-[#A8977A]/10">
-                    <td className="py-2 text-sm">{conversation.id?.substring(0, 15)}...</td>
-                    <td className="py-2 text-sm">{conversation.messageCount}</td>
-                    <td className="py-2 text-sm">{Math.round(conversation.duration / 1000)}s</td>
-                    <td className="py-2 text-sm">{conversation.topics?.slice(0, 2).join(', ')}</td>
-                    <td className="py-2 text-sm">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        conversation.sentiment === 'positive' ? 'bg-green-500/20 text-green-300' :
-                        conversation.sentiment === 'negative' ? 'bg-red-500/20 text-red-300' :
+                  <div
+                    key={conversation.id}
+                    onClick={() => {
+                      setSelectedConversation(conversation);
+                      fetchConversationMessages(conversation.id);
+                    }}
+                    className="p-4 border border-[#A8977A]/20 rounded-lg hover:bg-[#A8977A]/5 cursor-pointer transition-colors"
+                  >
+                    <div className="flex justify-between items-start mb-2">
+                      <span className="text-[#A8977A] text-sm font-mono">
+                        {conversation.id?.substring(0, 20)}...
+                      </span>
+                      <span className="text-[#A8977A]/60 text-xs">
+                        {formatTime(conversation.startTime)}
+                      </span>
+                    </div>
+                    <div className="grid grid-cols-3 gap-2 text-xs">
+                      <div>
+                        <span className="text-[#A8977A]/60">Messages: </span>
+                        <span className="text-[#A8977A]">{conversation.messageCount}</span>
+                      </div>
+                      <div>
+                        <span className="text-[#A8977A]/60">Duration: </span>
+                        <span className="text-[#A8977A]">{formatDuration(conversation.duration)}</span>
+                      </div>
+                      <div>
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          conversation.leadQuality === 'high' ? 'bg-green-500/20 text-green-300' :
+                          conversation.leadQuality === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
+                          'bg-red-500/20 text-red-300'
+                        }`}>
+                          {conversation.leadQuality}
+                        </span>
+                      </div>
+                    </div>
+                    {conversation.topics?.length > 0 && (
+                      <div className="mt-2">
+                        <span className="text-[#A8977A]/60 text-xs">Topics: </span>
+                        <span className="text-[#A8977A] text-xs">
+                          {conversation.topics.slice(0, 3).join(', ')}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Conversation Details */}
+            <div className="bg-[#161711] rounded-2xl p-6">
+              <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                Conversation Details
+              </h2>
+              {selectedConversation ? (
+                <div>
+                  <div className="mb-4 p-4 bg-[#45372B]/30 rounded-lg">
+                    <div className="grid grid-cols-2 gap-4 text-sm">
+                      <div>
+                        <span className="text-[#A8977A]/60">Session ID: </span>
+                        <span className="text-[#A8977A] font-mono text-xs">
+                          {selectedConversation.sessionId?.substring(0, 15)}...
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[#A8977A]/60">Outcome: </span>
+                        <span className="text-[#A8977A]">{selectedConversation.outcome}</span>
+                      </div>
+                      <div>
+                        <span className="text-[#A8977A]/60">Sentiment: </span>
+                        <span className={`px-2 py-1 rounded text-xs ${
+                          selectedConversation.sentiment === 'positive' ? 'bg-green-500/20 text-green-300' :
+                          selectedConversation.sentiment === 'negative' ? 'bg-red-500/20 text-red-300' :
+                          'bg-yellow-500/20 text-yellow-300'
+                        }`}>
+                          {selectedConversation.sentiment}
+                        </span>
+                      </div>
+                      <div>
+                        <span className="text-[#A8977A]/60">Conversion: </span>
+                        <span className="text-[#A8977A]">{selectedConversation.conversionPotential}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-[#A8977A]/30 scrollbar-track-transparent hover:scrollbar-thumb-[#A8977A]/50">
+                    {conversationMessages.map((message) => (
+                      <div
+                        key={message.id}
+                        className={`p-3 rounded-lg ${
+                          message.sender === 'user'
+                            ? 'bg-[#A8977A]/10 ml-4'
+                            : 'bg-[#45372B]/30 mr-4'
+                        }`}
+                      >
+                        <div className="flex justify-between items-start mb-1">
+                          <span className={`font-semibold text-sm ${
+                            message.sender === 'user' ? 'text-[#A8977A]' : 'text-blue-300'
+                          }`}>
+                            {message.sender === 'user' ? 'User' : 'Saarth'}
+                          </span>
+                          <span className="text-[#A8977A]/60 text-xs">
+                            {formatTime(message.timestamp)}
+                          </span>
+                        </div>
+                        <p className="text-[#A8977A] text-sm mb-2">{message.content}</p>
+                        <div className="flex flex-wrap gap-2 text-xs">
+                          {message.messageType && (
+                            <span className="px-2 py-1 bg-[#A8977A]/20 text-[#A8977A] rounded">
+                              {message.messageType}
+                            </span>
+                          )}
+                          {message.sentiment && (
+                            <span className={`px-2 py-1 rounded ${
+                              message.sentiment === 'positive' ? 'bg-green-500/20 text-green-300' :
+                              message.sentiment === 'negative' ? 'bg-red-500/20 text-red-300' :
+                              'bg-yellow-500/20 text-yellow-300'
+                            }`}>
+                              {message.sentiment}
+                            </span>
+                          )}
+                          {message.containsContact && (
+                            <span className="px-2 py-1 bg-orange-500/20 text-orange-300 rounded">
+                              Contact Info
+                            </span>
+                          )}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center text-[#A8977A]/60 py-8">
+                  Select a conversation to view details and messages
+                </div>
+              )}
+            </div>
+          </div>
+        )}
+
+        {activeTab === 'messages' && (
+          <div className="bg-[#161711] rounded-2xl p-6">
+            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+              Recent Messages ({analytics.recentMessages.length})
+            </h2>
+            <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-[#A8977A]/30 scrollbar-track-transparent hover:scrollbar-thumb-[#A8977A]/50">
+              {analytics.recentMessages.map((message) => (
+                <div
+                  key={message.id}
+                  className={`p-4 rounded-lg border-l-4 ${
+                    message.sender === 'user'
+                      ? 'bg-[#A8977A]/5 border-[#A8977A]'
+                      : 'bg-blue-500/5 border-blue-500'
+                  }`}
+                >
+                  <div className="flex justify-between items-start mb-2">
+                    <div className="flex items-center gap-2">
+                      <span className={`font-semibold ${
+                        message.sender === 'user' ? 'text-[#A8977A]' : 'text-blue-300'
+                      }`}>
+                        {message.sender === 'user' ? 'User' : 'Saarth'}
+                      </span>
+                      <span className="text-[#A8977A]/60 text-sm font-mono">
+                        {message.conversationId?.substring(0, 10)}...
+                      </span>
+                    </div>
+                    <span className="text-[#A8977A]/60 text-sm">
+                      {formatTime(message.timestamp)}
+                    </span>
+                  </div>
+                  
+                  <p className="text-[#A8977A] mb-3">{message.content}</p>
+                  
+                  <div className="flex flex-wrap gap-2 text-xs">
+                    {message.messageType && (
+                      <span className="px-2 py-1 bg-[#A8977A]/20 text-[#A8977A] rounded">
+                        {message.messageType.replace('_', ' ')}
+                      </span>
+                    )}
+                    {message.sentiment && (
+                      <span className={`px-2 py-1 rounded ${
+                        message.sentiment === 'positive' ? 'bg-green-500/20 text-green-300' :
+                        message.sentiment === 'negative' ? 'bg-red-500/20 text-red-300' :
                         'bg-yellow-500/20 text-yellow-300'
                       }`}>
-                        {conversation.sentiment}
+                        {message.sentiment}
                       </span>
-                    </td>
-                    <td className="py-2 text-sm">
-                      <span className={`px-2 py-1 rounded text-xs ${
-                        conversation.leadQuality === 'high' ? 'bg-green-500/20 text-green-300' :
-                        conversation.leadQuality === 'medium' ? 'bg-yellow-500/20 text-yellow-300' :
-                        'bg-red-500/20 text-red-300'
-                      }`}>
-                        {conversation.leadQuality}
+                    )}
+                    {message.intent && message.intent !== 'unknown' && (
+                      <span className="px-2 py-1 bg-purple-500/20 text-purple-300 rounded">
+                        {message.intent.replace('_', ' ')}
                       </span>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+                    )}
+                    {message.topics?.length > 0 && (
+                      <span className="px-2 py-1 bg-indigo-500/20 text-indigo-300 rounded">
+                        {message.topics.slice(0, 2).join(', ')}
+                      </span>
+                    )}
+                    {message.containsContact && (
+                      <span className="px-2 py-1 bg-orange-500/20 text-orange-300 rounded">
+                        Contact Info
+                      </span>
+                    )}
+                    {message.wordCount && (
+                      <span className="px-2 py-1 bg-gray-500/20 text-gray-300 rounded">
+                        {message.wordCount} words
+                      </span>
+                    )}
+                    {message.responseTime && message.sender === 'bot' && (
+                      <span className="px-2 py-1 bg-cyan-500/20 text-cyan-300 rounded">
+                        {(message.responseTime / 1000).toFixed(1)}s response
+                      </span>
+                    )}
+                  </div>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </div>
   );

@@ -50,9 +50,53 @@ export const useAnalytics = () => {
     analyticsService.trackSocialClick(platform, url, context);
   }, []);
 
-  // Chatbot tracking
-  const trackChatbot = useCallback((action, messageCount = 0, context = null) => {
-    analyticsService.trackChatbotInteraction(action, messageCount, context);
+  // Enhanced Chatbot tracking - FIXED VERSION
+  const trackChatbot = useCallback(async (action, messageCount = 0, context = null, additionalData = {}) => {
+    try {
+      if (action === 'open') {
+        // Start new chatbot session and return session ID
+        const sessionId = await analyticsService.startChatbotSession();
+        analyticsService.updateClickCounter('chatbot_opens', 'saarth');
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🤖 Chatbot session started via hook:', sessionId);
+        }
+        
+        return sessionId;
+      } 
+      else if (action === 'close') {
+        // End chatbot session
+        const result = await analyticsService.endChatbotSession(context || 'user_close');
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🤖 Chatbot session ended via hook:', result);
+        }
+        
+        return result;
+      }
+      else if (action === 'message' && additionalData.messageData) {
+        // Track individual message using the enhanced method
+        const result = await analyticsService.trackChatbotMessage(additionalData.messageData);
+        
+        if (process.env.NODE_ENV === 'development') {
+          console.log('💬 Message tracked via hook:', {
+            sender: additionalData.messageData.sender,
+            length: additionalData.messageData.content?.length || 0,
+            messageType: result?.messageType,
+            sentiment: result?.sentiment
+          });
+        }
+        
+        return result;
+      }
+      
+      // Fallback to legacy method for other actions
+      return analyticsService.trackChatbotInteraction(action, messageCount, context, additionalData);
+      
+    } catch (error) {
+      console.error('Chatbot tracking error in hook:', error.message);
+      return null;
+    }
   }, []);
 
   // Blog tracking
@@ -96,7 +140,7 @@ export const useAnalytics = () => {
     trackNavigation,
     trackProject,
     trackSocial,
-    trackChatbot,
+    trackChatbot, // Now properly handles enhanced chatbot analytics
     trackBlog,
     trackError,
     trackEvent,

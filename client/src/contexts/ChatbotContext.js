@@ -39,10 +39,10 @@ export const ChatbotProvider = ({ children }) => {
     // Track chatbot session start
     sessionStartTime.current = Date.now();
     
-    // Start analytics session
-    analyticsService.startChatbotSession();
+    // REMOVED: Duplicate session start tracking
+    // The Chatbot.js component will handle session management via useAnalytics hook
     
-    // Track chatbot open with enhanced analytics
+    // Track basic chatbot open event
     analyticsService.trackChatbotInteraction('open', messages.length, 'chatbot_trigger', {
       conversationId: conversationId.current,
       sessionStartTime: sessionStartTime.current,
@@ -61,10 +61,10 @@ export const ChatbotProvider = ({ children }) => {
     // Analyze conversation for insights
     const conversationAnalysis = analyzeConversation();
     
-    // End the chatbot session with analytics
-    analyticsService.endChatbotSession('user_close');
+    // REMOVED: Duplicate session end tracking
+    // The Chatbot.js component will handle session closure via useAnalytics hook
 
-    // Track final chatbot interaction
+    // Track basic close interaction for context analysis
     analyticsService.trackChatbotInteraction('close', messages.length, 'session_end', {
       conversationId: conversationId.current,
       duration: sessionDuration,
@@ -95,24 +95,17 @@ export const ChatbotProvider = ({ children }) => {
       timestamp: new Date()
     };
     
-    // Enhanced message with conversation ID for tracking
-    // FIXED: Use 'content' property for analytics compatibility
-    const enhancedMessage = {
-      ...newMessage,
-      content: text, // Add content property for analytics
-      conversationId: conversationId.current
-    };
-    
     setMessages(prev => [...prev, newMessage]);
 
-    // Track individual message with comprehensive analytics
-    analyticsService.trackChatbotMessage(enhancedMessage);
+    // REMOVED: Duplicate message tracking
+    // The Chatbot.js component will handle message tracking via useAnalytics hook
+    // We'll only maintain local conversation analytics here
     
-    // Update conversation tracking
+    // Update local conversation tracking for analysis
     if (sender === 'user') {
       userMessageCount.current++;
       
-      // Extract and track topics and intents from user message
+      // Extract and track topics and intents from user message locally
       const topics = analyticsService.extractTopics(text);
       const intent = analyticsService.detectUserIntent(text);
       const sentiment = analyticsService.detectSentiment(text);
@@ -120,29 +113,8 @@ export const ChatbotProvider = ({ children }) => {
       topics.forEach(topic => conversationTopics.current.add(topic));
       userIntents.current.add(intent);
       conversationSentiments.current.push(sentiment);
-      
-      // Track user message interaction
-      analyticsService.trackChatbotInteraction('message_sent', messages.length + 1, 'user_input', {
-        conversationId: conversationId.current,
-        messageLength: text.length,
-        wordCount: text.split(' ').length,
-        messageType: analyticsService.detectMessageType(text),
-        sentiment: sentiment,
-        topics: topics,
-        intent: intent,
-        containsContact: analyticsService.containsContactInfo(text),
-        timestamp: Date.now()
-      });
     } else {
       botMessageCount.current++;
-      
-      // Track bot response
-      analyticsService.trackChatbotInteraction('message_received', messages.length + 1, 'bot_response', {
-        conversationId: conversationId.current,
-        responseLength: text.length,
-        responseType: 'automated',
-        timestamp: Date.now()
-      });
     }
 
     // Simulate bot response for demo
@@ -155,7 +127,7 @@ export const ChatbotProvider = ({ children }) => {
           timestamp: new Date()
         };
         
-        // Add bot response with tracking
+        // Add bot response (this will not trigger duplicate tracking)
         addMessage(botResponse.text, 'bot');
       }, 1000);
     }
@@ -200,7 +172,7 @@ export const ChatbotProvider = ({ children }) => {
     return responses[Math.floor(Math.random() * responses.length)];
   };
 
-  // Analyze conversation for insights
+  // Analyze conversation for insights (used by close tracking)
   const analyzeConversation = () => {
     
     // Determine overall sentiment
