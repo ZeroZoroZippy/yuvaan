@@ -9,18 +9,14 @@ const Chatbot = () => {
     const [inputValue, setInputValue] = useState('');
     const [chatbotSessionId, setChatbotSessionId] = useState(null);
     const messagesEndRef = useRef(null);
+    const messagesContainerRef = useRef(null);
     const inputRef = useRef(null);
 
-    const scrollToBottom = () => {
-        messagesEndRef.current?.scrollIntoView({
-            behavior: 'smooth',
-            block: 'end',
-            inline: 'nearest'
-        });
-    };
-
+    // Auto-scroll when messages change
     useEffect(() => {
-        scrollToBottom();
+        if (messagesEndRef.current) {
+            messagesEndRef.current.scrollIntoView({ behavior: 'smooth', block: 'end' });
+        }
     }, [messages]);
 
     useEffect(() => {
@@ -134,18 +130,20 @@ const Chatbot = () => {
         <>
             {/* Blur overlay background */}
             <div
-                className={`fixed inset-0 z-40 transition-all duration-1000 ease-out ${isAnimating ? 'backdrop-blur-0' : 'backdrop-blur-md'
-                    }`}
+                className={`fixed inset-0 z-40 transition-all duration-1000 ease-out ${
+                    isAnimating ? 'backdrop-blur-0' : 'backdrop-blur-md'
+                }`}
             />
 
-            {/* Desktop Layout - Orb and Chat positioned together */}
+            {/* Desktop Layout - Fixed with proper scrolling */}
             <div className="hidden md:block">
                 {/* Smaller Orb for Desktop */}
                 <div
-                    className={`fixed z-50 w-20 h-20 transition-all duration-1200 ease-out ${isAnimating
-                        ? 'bottom-[-80px] right-[60px] opacity-0'
-                        : 'bottom-[60px] right-[60px] opacity-100'
-                        }`}
+                    className={`fixed z-50 w-20 h-20 transition-all duration-1200 ease-out ${
+                        isAnimating
+                            ? 'bottom-[-80px] right-[60px] opacity-0'
+                            : 'bottom-[60px] right-[60px] opacity-100'
+                    }`}
                 >
                     <Orb
                         hue={220}
@@ -157,17 +155,19 @@ const Chatbot = () => {
 
                 {/* Chat interface positioned above orb */}
                 <div
-                    className={`fixed z-50 transition-all duration-1000 ease-out ${isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
-                        }`}
+                    className={`fixed z-50 transition-all duration-1000 ease-out ${
+                        isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
+                    }`}
                     style={{
-                        bottom: '160px', // 60px (orb bottom) + 80px (orb height) + 20px (gap)
+                        bottom: '160px',
                         right: '60px',
-                        width: '420px'
+                        width: '420px',
+                        height: '550px'
                     }}
                 >
-                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl h-[550px] flex flex-col border border-white/20 shadow-2xl">
+                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl h-full flex flex-col border border-white/20 shadow-2xl">
                         {/* Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-white/20">
+                        <div className="flex items-center justify-between p-4 border-b border-white/20 flex-shrink-0">
                             <div className="flex items-center space-x-3">
                                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                                     <span className="text-white text-base font-bold">S</span>
@@ -187,22 +187,32 @@ const Chatbot = () => {
                             </button>
                         </div>
 
-                        {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/30 scroll-smooth">
+                        {/* Messages - Fixed with proper scrolling */}
+                        <div 
+                            ref={messagesContainerRef}
+                            className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 scroll-smooth"
+                            data-lenis-prevent
+                            style={{
+                                overscrollBehavior: 'contain',
+                                WebkitOverflowScrolling: 'touch'
+                            }}
+                        >
                             {messages.map((message) => (
                                 <div
                                     key={message.id}
                                     className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div
-                                        className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.sender === 'user'
-                                            ? 'bg-[#A8977A] text-[#45372B]'
-                                            : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20'
-                                            }`}
+                                        className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                                            message.sender === 'user'
+                                                ? 'bg-[#A8977A] text-[#45372B]'
+                                                : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20'
+                                        }`}
                                     >
                                         <p className="text-base" style={{ fontFamily: "Neuton, serif" }}>{message.text}</p>
-                                        <p className={`text-xs mt-1 ${message.sender === 'user' ? 'text-[#45372B]/80' : 'text-[#A8977A]/60'
-                                            }`}>
+                                        <p className={`text-xs mt-1 ${
+                                            message.sender === 'user' ? 'text-[#45372B]/80' : 'text-[#A8977A]/60'
+                                        }`}>
                                             {formatTime(message.timestamp)}
                                         </p>
                                     </div>
@@ -212,7 +222,7 @@ const Chatbot = () => {
                         </div>
 
                         {/* Input */}
-                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/20">
+                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/20 flex-shrink-0">
                             <div className="flex space-x-2">
                                 <input
                                     ref={inputRef}
@@ -236,14 +246,15 @@ const Chatbot = () => {
                 </div>
             </div>
 
-            {/* Mobile Layout - Centered orb with reduced size */}
+            {/* Mobile Layout - Also fixed */}
             <div className="md:hidden">
                 {/* Centered Orb for mobile with smaller size */}
                 <div
-                    className={`fixed z-50 w-16 h-16 transition-all duration-1200 ease-out ${isAnimating
-                        ? 'bottom-[-64px] left-1/2 transform -translate-x-1/2 opacity-0'
-                        : 'bottom-[60px] left-1/2 transform -translate-x-1/2 opacity-100'
-                        }`}
+                    className={`fixed z-50 w-16 h-16 transition-all duration-1200 ease-out ${
+                        isAnimating
+                            ? 'bottom-[-64px] left-1/2 transform -translate-x-1/2 opacity-0'
+                            : 'bottom-[60px] left-1/2 transform -translate-x-1/2 opacity-100'
+                    }`}
                 >
                     <Orb
                         hue={220}
@@ -255,12 +266,13 @@ const Chatbot = () => {
 
                 {/* Chat interface centered for mobile */}
                 <div
-                    className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-1000 ease-out ${isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
-                        }`}
+                    className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-1000 ease-out ${
+                        isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
+                    }`}
                 >
                     <div className="bg-white/10 backdrop-blur-lg rounded-2xl w-full max-w-md h-[600px] flex flex-col border border-white/20 shadow-2xl">
                         {/* Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-white/20">
+                        <div className="flex items-center justify-between p-4 border-b border-white/20 flex-shrink-0">
                             <div className="flex items-center space-x-3">
                                 <div className="w-8 h-8 rounded-full bg-white/20 flex items-center justify-center">
                                     <span className="text-white text-base font-bold">S</span>
@@ -280,22 +292,28 @@ const Chatbot = () => {
                             </button>
                         </div>
 
-                        {/* Messages */}
-                        <div className="flex-1 overflow-y-auto p-4 space-y-4 scrollbar-thin scrollbar-thumb-white/20 scrollbar-track-transparent hover:scrollbar-thumb-white/30 scroll-smooth">
+                        {/* Messages - Fixed for mobile too */}
+                        <div 
+                            ref={messagesContainerRef}
+                            className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 scroll-smooth"
+                            data-lenis-prevent
+                        >
                             {messages.map((message) => (
                                 <div
                                     key={message.id}
                                     className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
                                 >
                                     <div
-                                        className={`max-w-[80%] rounded-2xl px-4 py-2 ${message.sender === 'user'
-                                            ? 'bg-[#A8977A] text-[#45372B]'
-                                            : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20'
-                                            }`}
+                                        className={`max-w-[80%] rounded-2xl px-4 py-2 ${
+                                            message.sender === 'user'
+                                                ? 'bg-[#A8977A] text-[#45372B]'
+                                                : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20'
+                                        }`}
                                     >
                                         <p className="text-lg" style={{ fontFamily: "Neuton, serif" }}>{message.text}</p>
-                                        <p className={`text-sm mt-1 ${message.sender === 'user' ? 'text-[#45372B]/80' : 'text-[#A8977A]/60'
-                                            }`}>
+                                        <p className={`text-sm mt-1 ${
+                                            message.sender === 'user' ? 'text-[#45372B]/80' : 'text-[#A8977A]/60'
+                                        }`}>
                                             {formatTime(message.timestamp)}
                                         </p>
                                     </div>
@@ -305,7 +323,7 @@ const Chatbot = () => {
                         </div>
 
                         {/* Input */}
-                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/20">
+                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/20 flex-shrink-0">
                             <div className="flex space-x-2">
                                 <input
                                     ref={inputRef}
