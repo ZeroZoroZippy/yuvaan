@@ -1,4 +1,4 @@
-import { collection, addDoc, serverTimestamp, doc, updateDoc, increment } from 'firebase/firestore';
+import { collection, addDoc, serverTimestamp, doc, updateDoc, increment, setDoc } from 'firebase/firestore';
 import { db, hasFirebaseConfig } from '../config/firebase';
 
 class AnalyticsService {
@@ -8,31 +8,28 @@ class AnalyticsService {
         this.pageLoadTime = Date.now();
         this.interactions = [];
 
-        // Disable Firebase writes temporarily to avoid 400 errors
-        this.enableFirebaseWrites = false;
+        // Chatbot-specific tracking
+        this.currentChatbotSession = null;
+        this.chatbotMessages = [];
 
-        // Initialize session tracking
+        this.enableFirebaseWrites = true;
+
         this.initializeSession();
-
-        // Track page visibility changes
         this.setupVisibilityTracking();
-
-        // Track scroll depth
         this.setupScrollTracking();
-
-        // Batch upload interactions every 30 seconds
         this.setupBatchUpload();
 
         if (process.env.NODE_ENV === 'development') {
-            console.log('📊 Analytics Service initialized');
-            console.log('🔥 Firebase writes disabled until security rules are configured');
-            console.log('💡 To enable: Set up Firestore security rules and call analyticsService.enableFirebase()');
-            console.log('📋 See FIRESTORE_SETUP.md for detailed instructions');
+            console.log('📊 Analytics Service initialized with enhanced chatbot tracking');
         }
     }
 
     generateSessionId() {
         return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    }
+
+    generateChatbotSessionId() {
+        return `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
     }
 
     getUserId() {
@@ -45,7 +42,6 @@ class AnalyticsService {
     }
 
     async initializeSession() {
-        // Always mark user as returning for local tracking
         localStorage.setItem('analytics_returning_user', 'true');
 
         if (process.env.NODE_ENV === 'development') {
@@ -54,7 +50,6 @@ class AnalyticsService {
             console.log(`   User ID: ${this.userId}`);
         }
 
-        // Skip Firebase operations until security rules are configured
         if (!this.enableFirebaseWrites || !hasFirebaseConfig || !db) {
             if (process.env.NODE_ENV === 'development') {
                 console.log('🔥 Firebase writes disabled - session data not sent to Firebase');
@@ -62,9 +57,8 @@ class AnalyticsService {
             return;
         }
 
-        // This code will only run when Firebase writes are explicitly enabled
         try {
-            const sessionData = {
+            const sessionData = this.sanitizeData({
                 sessionId: this.sessionId,
                 userId: this.userId,
                 startTime: serverTimestamp(),
@@ -77,7 +71,7 @@ class AnalyticsService {
                 url: window.location.href,
                 path: window.location.pathname,
                 isNewUser: !localStorage.getItem('analytics_returning_user')
-            };
+            });
 
             await addDoc(collection(db, 'analytics_sessions'), sessionData);
 
@@ -86,6 +80,7 @@ class AnalyticsService {
             }
         } catch (error) {
             console.error('❌ Firebase session error:', error.message);
+            this.handleFirebaseError(error);
         }
     }
 
@@ -136,12 +131,15 @@ class AnalyticsService {
             if (this.interactions.length > 0) {
                 this.uploadBatchInteractions();
             }
-        }, 30000); // Upload every 30 seconds
+        }, 30000);
 
-        // Upload on page unload
         window.addEventListener('beforeunload', () => {
             if (this.interactions.length > 0) {
                 this.uploadBatchInteractions(true);
+            }
+            // Also close any active chatbot session
+            if (this.currentChatbotSession) {
+                this.endChatbotSession();
             }
         });
     }
@@ -160,7 +158,6 @@ class AnalyticsService {
             });
         }
 
-        // Skip Firebase operations until security rules are configured
         if (!this.enableFirebaseWrites || !hasFirebaseConfig || !db) {
             if (process.env.NODE_ENV === 'development') {
                 console.log('🔥 Firebase writes disabled - batch data not sent to Firebase');
@@ -169,55 +166,79 @@ class AnalyticsService {
         }
 
         try {
+            // Sanitize batch data to ensure no undefined values
+            const sanitizedBatch = batch.map(interaction => this.sanitizeData(interaction));
+            
             const batchData = {
-                sessionId: this.sessionId,
-                userId: this.userId,
-                interactions: batch,
+                sessionId: this.sessionId || 'unknown',
+                userId: this.userId || 'unknown',
+                interactions: sanitizedBatch,
                 uploadTime: serverTimestamp(),
-                batchSize: batch.length
+                batchSize: sanitizedBatch.length
             };
 
-            if (isSync && navigator.sendBeacon) {
-                navigator.sendBeacon(
-                    '/api/analytics/batch',
-                    JSON.stringify(batchData)
-                );
-            } else {
-                await addDoc(collection(db, 'analytics_interactions'), batchData);
+            // Final sanitization of the entire batch data
+            const finalBatchData = this.sanitizeData(batchData);
 
+            if (isSync && navigator.sendBeacon) {
+                navigator.sendBeacon('/api/analytics/batch', JSON.stringify(finalBatchData));
+            } else {
+                await addDoc(collection(db, 'analytics_interactions'), finalBatchData);
                 if (process.env.NODE_ENV === 'development') {
                     console.log('✅ Analytics: Batch uploaded to Firebase');
                 }
             }
         } catch (error) {
             console.error('❌ Firebase batch upload error:', error.message);
-            // Re-add failed interactions back to queue
+            this.handleFirebaseError(error);
             this.interactions.unshift(...batch);
         }
     }
 
-    // Core tracking method
+    handleFirebaseError(error) {
+        if (process.env.NODE_ENV === 'development') {
+            console.error('🔥 Firebase Error Details:', {
+                code: error.code,
+                message: error.message,
+                enableFirebaseWrites: this.enableFirebaseWrites,
+                hasFirebaseConfig,
+                dbExists: !!db
+            });
+
+            if (error.message.includes('Missing or insufficient permissions')) {
+                console.error('🔧 Fix: Update Firestore security rules');
+            } else if (error.message.includes('not-found')) {
+                console.error('🔧 Fix: Enable Firestore in Firebase Console');
+            } else if (error.code === 'failed-precondition') {
+                console.error('🔧 Fix: Check Firestore indexes and collection setup');
+            }
+        }
+    }
+
     trackEvent(eventType, eventData = {}) {
+        // Sanitize eventData to remove undefined values
+        const sanitizedEventData = this.sanitizeData(eventData);
+        
         const interaction = {
-            eventType,
+            eventType: eventType || 'unknown',
             timestamp: Date.now(),
-            sessionId: this.sessionId,
-            userId: this.userId,
+            sessionId: this.sessionId || 'unknown',
+            userId: this.userId || 'unknown',
             url: window.location.href,
             path: window.location.pathname,
-            userAgent: navigator.userAgent,
+            userAgent: navigator.userAgent || 'unknown',
             viewport: `${window.innerWidth}x${window.innerHeight}`,
-            ...eventData
+            ...sanitizedEventData
         };
 
-        this.interactions.push(interaction);
+        // Final sanitization of the entire interaction object
+        const sanitizedInteraction = this.sanitizeData(interaction);
+        this.interactions.push(sanitizedInteraction);
 
-        // Log in development mode
         if (process.env.NODE_ENV === 'development') {
-            console.log('📊 Analytics Event:', eventType, eventData);
+            console.log('📊 Analytics Event:', eventType, sanitizedEventData);
         }
 
-        // For critical events, upload immediately
         if (this.isCriticalEvent(eventType)) {
             this.uploadBatchInteractions();
         }
@@ -229,9 +250,347 @@ class AnalyticsService {
             'contact_form_submit',
             'error',
             'conversion',
-            'purchase'
+            'purchase',
+            'chatbot_session_end'
         ];
         return criticalEvents.includes(eventType);
+    }
+
+    // Sanitize data to remove undefined values and ensure Firebase compatibility
+    sanitizeData(data) {
+        if (data === null || data === undefined) {
+            return null;
+        }
+        
+        if (Array.isArray(data)) {
+            return data.map(item => this.sanitizeData(item)).filter(item => item !== undefined);
+        }
+        
+        if (typeof data === 'object') {
+            const sanitized = {};
+            for (const [key, value] of Object.entries(data)) {
+                if (value !== undefined) {
+                    const sanitizedValue = this.sanitizeData(value);
+                    if (sanitizedValue !== undefined) {
+                        sanitized[key] = sanitizedValue;
+                    }
+                }
+            }
+            return sanitized;
+        }
+        
+        return data;
+    }
+
+    // ENHANCED CHATBOT ANALYTICS METHODS
+
+    // Start a new chatbot session
+    async startChatbotSession() {
+        const chatbotSessionId = this.generateChatbotSessionId();
+        
+        this.currentChatbotSession = {
+            sessionId: chatbotSessionId,
+            conversationId: `conv_${Date.now()}`,
+            startTime: Date.now(),
+            messages: [],
+            userMessages: 0,
+            botMessages: 0,
+            topics: new Set(),
+            intents: new Set(),
+            sentiments: [],
+            isActive: true
+        };
+
+        this.chatbotMessages = [];
+
+        // Track in analytics_interactions
+        this.trackEvent('chatbot_session_start', {
+            chatbotSessionId,
+            conversationId: this.currentChatbotSession.conversationId
+        });
+
+        // Save to dedicated chatbot_sessions collection
+        if (this.enableFirebaseWrites && hasFirebaseConfig && db) {
+            try {
+                const sessionData = this.sanitizeData({
+                    sessionId: chatbotSessionId,
+                    conversationId: this.currentChatbotSession?.conversationId,
+                    userId: this.userId,
+                    webSessionId: this.sessionId,
+                    startTime: serverTimestamp(),
+                    status: 'active',
+                    userAgent: navigator.userAgent,
+                    page: window.location.pathname
+                });
+                
+                await addDoc(collection(db, 'chatbot_sessions'), sessionData);
+
+                if (process.env.NODE_ENV === 'development') {
+                    console.log('✅ Chatbot session started in Firebase');
+                }
+            } catch (error) {
+                console.error('❌ Failed to save chatbot session:', error.message);
+            }
+        }
+
+        return chatbotSessionId;
+    }
+
+    // Track individual chatbot message with enhanced analytics
+    async trackChatbotMessage(messageData) {
+        if (!messageData || typeof messageData !== 'object') {
+            console.warn('Analytics: Invalid messageData provided');
+            return;
+        }
+
+        const content = messageData.content || messageData.text || '';
+        const sender = messageData.sender || 'unknown';
+        const messageId = messageData.id || `msg_${Date.now()}`;
+
+        // Enhanced message analysis
+        const messageAnalysis = this.sanitizeData({
+            id: messageId,
+            conversationId: this.currentChatbotSession?.conversationId || 'unknown',
+            sender,
+            content: this.sanitizeChatbotMessage(content),
+            originalLength: content.length,
+            wordCount: content.split(' ').filter(word => word.length > 0).length,
+            messageType: this.detectMessageType(content),
+            sentiment: this.detectSentiment(content),
+            topics: this.extractTopics(content),
+            intent: this.detectUserIntent(content),
+            containsQuestion: content.includes('?'),
+            containsContact: this.containsContactInfo(content),
+            timestamp: messageData.timestamp || Date.now(),
+            responseTime: null // Will be calculated for bot messages
+        });
+
+        // Update current session if active
+        if (this.currentChatbotSession) {
+            this.currentChatbotSession.messages.push(messageAnalysis);
+            
+            if (sender === 'user') {
+                this.currentChatbotSession.userMessages++;
+            } else if (sender === 'bot') {
+                this.currentChatbotSession.botMessages++;
+                // Calculate response time if there's a previous user message
+                const lastUserMessage = [...this.currentChatbotSession.messages]
+                    .reverse()
+                    .find(msg => msg.sender === 'user');
+                if (lastUserMessage) {
+                    messageAnalysis.responseTime = messageAnalysis.timestamp - lastUserMessage.timestamp;
+                }
+            }
+
+            // Collect analytics data
+            messageAnalysis.topics.forEach(topic => this.currentChatbotSession.topics.add(topic));
+            if (messageAnalysis.intent !== 'unknown') {
+                this.currentChatbotSession.intents.add(messageAnalysis.intent);
+            }
+            this.currentChatbotSession.sentiments.push(messageAnalysis.sentiment);
+        }
+
+        // Track in general analytics
+        this.trackEvent('chatbot_message', messageAnalysis);
+
+        // Save to dedicated chatbot_messages collection
+        if (this.enableFirebaseWrites && hasFirebaseConfig && db) {
+            try {
+                const messageData = this.sanitizeData({
+                    ...messageAnalysis,
+                    userId: this.userId,
+                    webSessionId: this.sessionId,
+                    chatbotSessionId: this.currentChatbotSession?.sessionId,
+                    timestamp: serverTimestamp()
+                });
+                
+                await addDoc(collection(db, 'chatbot_messages'), messageData);
+
+                if (process.env.NODE_ENV === 'development') {
+                    console.log('✅ Chatbot message saved to Firebase');
+                }
+            } catch (error) {
+                console.error('❌ Failed to save chatbot message:', error.message);
+            }
+        }
+
+        return messageAnalysis;
+    }
+
+    // End chatbot session with comprehensive analytics
+    async endChatbotSession(reason = 'user_close') {
+        if (!this.currentChatbotSession) return;
+
+        const session = this.currentChatbotSession;
+        const endTime = Date.now();
+        const duration = endTime - session.startTime;
+
+        // Calculate session analytics
+        const sessionAnalytics = {
+            sessionId: session.sessionId,
+            conversationId: session.conversationId,
+            duration,
+            messageCount: session.messages.length,
+            userMessageCount: session.userMessages,
+            botMessageCount: session.botMessages,
+            topics: Array.from(session.topics),
+            intents: Array.from(session.intents),
+            overallSentiment: this.calculateOverallSentiment(session.sentiments),
+            averageResponseTime: this.calculateAverageResponseTime(session.messages),
+            leadQuality: this.assessLeadQuality(session),
+            conversionPotential: this.assessConversionPotential(session),
+            endReason: reason,
+            outcome: this.determineConversationOutcome(session)
+        };
+
+        // Track session end
+        this.trackEvent('chatbot_session_end', sessionAnalytics);
+
+        // Save to chatbot_conversations collection
+        if (this.enableFirebaseWrites && hasFirebaseConfig && db) {
+            try {
+                const conversationData = this.sanitizeData({
+                    ...sessionAnalytics,
+                    userId: this.userId,
+                    webSessionId: this.sessionId,
+                    startTime: new Date(session.startTime),
+                    endTime: new Date(endTime),
+                    timestamp: serverTimestamp(),
+                    messages: session.messages.map(msg => this.sanitizeData({
+                        id: msg.id,
+                        sender: msg.sender,
+                        messageType: msg.messageType,
+                        sentiment: msg.sentiment,
+                        topics: msg.topics,
+                        intent: msg.intent,
+                        timestamp: new Date(msg.timestamp)
+                    }))
+                });
+                
+                await addDoc(collection(db, 'chatbot_conversations'), conversationData);
+
+                // Update session status
+                const sessionRef = doc(db, 'chatbot_sessions', session.sessionId);
+                await updateDoc(sessionRef, {
+                    status: 'completed',
+                    endTime: serverTimestamp(),
+                    duration,
+                    messageCount: session.messages.length,
+                    ...sessionAnalytics
+                });
+
+                if (process.env.NODE_ENV === 'development') {
+                    console.log('✅ Chatbot conversation saved to Firebase');
+                }
+            } catch (error) {
+                console.error('❌ Failed to save chatbot conversation:', error.message);
+            }
+        }
+
+        // Clear current session
+        this.currentChatbotSession = null;
+        this.chatbotMessages = [];
+
+        return sessionAnalytics;
+    }
+
+    // Calculate overall sentiment from message sentiments
+    calculateOverallSentiment(sentiments) {
+        if (sentiments.length === 0) return 'neutral';
+        
+        const counts = sentiments.reduce((acc, sentiment) => {
+            acc[sentiment] = (acc[sentiment] || 0) + 1;
+            return acc;
+        }, {});
+
+        return Object.entries(counts).reduce((a, b) => counts[a[0]] > counts[b[0]] ? a : b)[0];
+    }
+
+    // Calculate average response time for bot messages
+    calculateAverageResponseTime(messages) {
+        const responseTimes = messages
+            .filter(msg => msg.sender === 'bot' && msg.responseTime)
+            .map(msg => msg.responseTime);
+        
+        return responseTimes.length > 0 
+            ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length 
+            : null;
+    }
+
+    // Assess lead quality based on conversation data
+    assessLeadQuality(session) {
+        let score = 0;
+        
+        // High engagement (many messages)
+        if (session.messages.length >= 8) score += 3;
+        else if (session.messages.length >= 4) score += 2;
+        else if (session.messages.length >= 2) score += 1;
+
+        // Contains contact information
+        if (session.messages.some(msg => msg.containsContact)) score += 3;
+
+        // Shows business intent
+        const businessIntents = ['hire_intent', 'pricing_request', 'contact_request'];
+        if (session.intents.some(intent => businessIntents.includes(intent))) score += 2;
+
+        // Positive sentiment
+        if (session.sentiments.filter(s => s === 'positive').length > session.sentiments.length / 2) score += 1;
+
+        // Long session duration (more than 2 minutes)
+        if ((Date.now() - session.startTime) > 120000) score += 1;
+
+        if (score >= 7) return 'high';
+        if (score >= 4) return 'medium';
+        return 'low';
+    }
+
+    // Assess conversion potential
+    assessConversionPotential(session) {
+        const conversionIndicators = [
+            session.intents.has('hire_intent'),
+            session.intents.has('pricing_request'),
+            session.intents.has('contact_request'),
+            session.messages.some(msg => msg.containsContact),
+            session.messages.length >= 5,
+            session.topics.has('pricing') || session.topics.has('contact')
+        ];
+
+        const indicatorCount = conversionIndicators.filter(Boolean).length;
+        
+        if (indicatorCount >= 4) return 'high';
+        if (indicatorCount >= 2) return 'medium';
+        return 'low';
+    }
+
+    // Determine conversation outcome
+    determineConversationOutcome(session) {
+        if (session.messages.some(msg => msg.containsContact)) return 'contact_provided';
+        if (session.intents.has('hire_intent')) return 'hire_interest';
+        if (session.intents.has('pricing_request')) return 'pricing_inquiry';
+        if (session.messages.length >= 5) return 'engaged_conversation';
+        if (session.messages.length >= 2) return 'brief_interaction';
+        return 'minimal_engagement';
+    }
+
+    // Legacy method for backward compatibility
+    trackChatbotInteraction(action, messageCount = 0, context = null, additionalData = {}) {
+        try {
+            if (action === 'open') {
+                this.startChatbotSession();
+                this.updateClickCounter('chatbot_opens', 'saarth');
+            } else if (action === 'close') {
+                this.endChatbotSession('user_close');
+            }
+
+            this.trackEvent('chatbot_interaction', {
+                action,
+                messageCount,
+                context,
+                ...additionalData
+            });
+        } catch (error) {
+            console.error('Chatbot interaction tracking failed:', error.message);
+        }
     }
 
     // CTA and Button Tracking
@@ -242,136 +601,15 @@ class AnalyticsService {
             ...additionalData
         });
 
-        // Also update CTA click counter
         this.updateClickCounter('cta_clicks', ctaName);
     }
 
-    // Navigation Tracking
-    trackNavigation(from, to, method = 'click') {
-        this.trackEvent('navigation', {
-            from,
-            to,
-            method,
-            navigationTime: Date.now() - this.pageLoadTime
-        });
-    }
-
-    // Form Interaction Tracking
-    trackFormInteraction(formName, fieldName, action, value = null) {
-        this.trackEvent('form_interaction', {
-            formName,
-            fieldName,
-            action, // 'focus', 'blur', 'input', 'submit'
-            value: action === 'input' ? (value ? value.length : 0) : null,
-            hasValue: value && value.length > 0
-        });
-    }
-
-    trackFormSubmit(formName, formData, success = true, errorMessage = null) {
-        this.trackEvent('form_submit', {
-            formName,
-            success,
-            errorMessage,
-            fieldCount: Object.keys(formData).length,
-            filledFields: Object.values(formData).filter(v => v && v.length > 0).length,
-            formData: this.sanitizeFormData(formData)
-        });
-
-        if (success) {
-            this.updateClickCounter('form_submissions', formName);
-        }
-    }
-
-    sanitizeFormData(formData) {
-        // Remove sensitive data but keep structure for analytics
-        const sanitized = {};
-        Object.keys(formData).forEach(key => {
-            if (key.toLowerCase().includes('email')) {
-                sanitized[key] = formData[key] ? 'provided' : 'empty';
-            } else if (key.toLowerCase().includes('phone')) {
-                sanitized[key] = formData[key] ? 'provided' : 'empty';
-            } else {
-                sanitized[key] = formData[key] ? `${formData[key].length}_chars` : 'empty';
-            }
-        });
-        return sanitized;
-    }
-
-    // Project and Portfolio Tracking
-    trackProjectView(projectName, projectId, viewType = 'expand') {
-        this.trackEvent('project_view', {
-            projectName,
-            projectId,
-            viewType // 'expand', 'collapse', 'external_link'
-        });
-
-        this.updateClickCounter('project_views', projectName);
-    }
-
-    // Social Media Tracking
-    trackSocialClick(platform, url, context = 'footer') {
-        this.trackEvent('social_click', {
-            platform,
-            url,
-            context // 'footer', 'about', 'contact'
-        });
-
-        this.updateClickCounter('social_clicks', platform);
-    }
-
-    // Chatbot Tracking
-    trackChatbotInteraction(action, messageCount = 0, context = null) {
-        this.trackEvent('chatbot_interaction', {
-            action, // 'open', 'close', 'message_sent', 'message_received'
-            messageCount,
-            context
-        });
-
-        if (action === 'open') {
-            this.updateClickCounter('chatbot_opens', 'saarth');
-        }
-    }
-
-    // Blog Tracking
-    trackBlogInteraction(action, blogId = null, blogTitle = null) {
-        this.trackEvent('blog_interaction', {
-            action, // 'view_list', 'click_post', 'read_time'
-            blogId,
-            blogTitle
-        });
-
-        if (action === 'click_post') {
-            this.updateClickCounter('blog_clicks', blogId);
-        }
-    }
-
-    // Error Tracking
-    trackError(errorType, errorMessage, context = null) {
-        this.trackEvent('error', {
-            errorType,
-            errorMessage,
-            context,
-            stack: new Error().stack
-        });
-    }
-
-    // Performance Tracking
-    trackPerformance(metricName, value, context = null) {
-        this.trackEvent('performance', {
-            metricName,
-            value,
-            context,
-            loadTime: Date.now() - this.pageLoadTime
-        });
-    }
-
-    // Update click counters in Firestore
+    // Enhanced updateClickCounter with proper error handling
     async updateClickCounter(counterType, itemName) {
         if (process.env.NODE_ENV === 'development') {
             console.log('📊 Analytics: Counter increment', { counterType, itemName });
         }
 
-        // Skip Firebase operations until security rules are configured
         if (!this.enableFirebaseWrites || !hasFirebaseConfig || !db) {
             if (process.env.NODE_ENV === 'development') {
                 console.log('🔥 Firebase writes disabled - counter not sent to Firebase');
@@ -380,34 +618,165 @@ class AnalyticsService {
         }
 
         try {
-            const counterRef = doc(db, 'analytics_counters', `${counterType}_${itemName}`);
-            await updateDoc(counterRef, {
+            if (!counterType || !itemName) {
+                throw new Error('counterType and itemName are required');
+            }
+
+            const safeDocId = `${counterType}_${itemName}`.replace(/[\/\[\]#]/g, '_');
+            const counterRef = doc(db, 'analytics_counters', safeDocId);
+            
+            const counterData = this.sanitizeData({
                 count: increment(1),
                 lastUpdated: serverTimestamp(),
-                itemName,
-                counterType
-            }).catch(async (error) => {
-                if (error.code === 'not-found') {
-                    // Create new counter if it doesn't exist
-                    await addDoc(collection(db, 'analytics_counters'), {
-                        count: 1,
-                        lastUpdated: serverTimestamp(),
-                        itemName,
-                        counterType,
-                        createdAt: serverTimestamp()
-                    });
-                }
+                itemName: String(itemName || 'unknown'),
+                counterType: String(counterType || 'unknown')
             });
 
+            await setDoc(counterRef, counterData, { merge: true });
+            
             if (process.env.NODE_ENV === 'development') {
                 console.log('✅ Analytics: Counter updated in Firebase');
             }
+
+            return true;
+
         } catch (error) {
             console.error('❌ Firebase counter error:', error.message);
+            this.handleFirebaseError(error);
+            return false;
         }
     }
 
-    // Page timing tracking
+    // Message analysis methods
+    sanitizeChatbotMessage(content) {
+        if (!content || typeof content !== 'string') {
+            return '[EMPTY_MESSAGE]';
+        }
+
+        let sanitized = content.toLowerCase();
+        sanitized = sanitized.replace(/\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/g, '[EMAIL]');
+        sanitized = sanitized.replace(/\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/g, '[PHONE]');
+        sanitized = sanitized.replace(/\b[A-Z][a-z]+\s[A-Z][a-z]+\b/g, '[NAME]');
+        sanitized = sanitized.replace(/https?:\/\/[^\s]+/g, '[URL]');
+        return sanitized.substring(0, 200);
+    }
+
+    detectMessageType(content) {
+        if (!content || typeof content !== 'string') return 'empty';
+        const lowerContent = content.toLowerCase();
+
+        if (lowerContent.includes('?')) return 'question';
+        if (lowerContent.includes('hello') || lowerContent.includes('hi ') || lowerContent.includes('hey')) return 'greeting';
+        if (lowerContent.includes('thank') || lowerContent.includes('thanks')) return 'gratitude';
+        if (lowerContent.includes('help') || lowerContent.includes('support')) return 'help_request';
+        if (lowerContent.includes('contact') || lowerContent.includes('email') || lowerContent.includes('phone')) return 'contact_inquiry';
+        if (lowerContent.includes('price') || lowerContent.includes('cost') || lowerContent.includes('quote')) return 'pricing_inquiry';
+        if (lowerContent.includes('project') || lowerContent.includes('work') || lowerContent.includes('service')) return 'service_inquiry';
+        if (lowerContent.includes('bye') || lowerContent.includes('goodbye')) return 'farewell';
+
+        return 'general';
+    }
+
+    detectSentiment(content) {
+        if (!content || typeof content !== 'string') return 'neutral';
+        const lowerContent = content.toLowerCase();
+
+        const positiveWords = ['good', 'great', 'excellent', 'amazing', 'love', 'like', 'happy', 'satisfied', 'perfect', 'awesome'];
+        const negativeWords = ['bad', 'terrible', 'hate', 'dislike', 'angry', 'frustrated', 'disappointed', 'awful', 'horrible'];
+
+        const positiveCount = positiveWords.filter(word => lowerContent.includes(word)).length;
+        const negativeCount = negativeWords.filter(word => lowerContent.includes(word)).length;
+
+        if (positiveCount > negativeCount) return 'positive';
+        if (negativeCount > positiveCount) return 'negative';
+        return 'neutral';
+    }
+
+    containsContactInfo(content) {
+        if (!content || typeof content !== 'string') return false;
+        const emailRegex = /\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b/;
+        const phoneRegex = /\b\d{3}[-.]?\d{3}[-.]?\d{4}\b/;
+        return emailRegex.test(content) || phoneRegex.test(content);
+    }
+
+    extractTopics(content) {
+        if (!content || typeof content !== 'string') return ['general'];
+        const lowerContent = content.toLowerCase();
+        const topics = [];
+
+        if (lowerContent.includes('website') || lowerContent.includes('web') || lowerContent.includes('site')) topics.push('web_development');
+        if (lowerContent.includes('design') || lowerContent.includes('ui') || lowerContent.includes('ux')) topics.push('design');
+        if (lowerContent.includes('react') || lowerContent.includes('javascript') || lowerContent.includes('frontend')) topics.push('frontend');
+        if (lowerContent.includes('backend') || lowerContent.includes('server') || lowerContent.includes('database')) topics.push('backend');
+        if (lowerContent.includes('mobile') || lowerContent.includes('app') || lowerContent.includes('ios') || lowerContent.includes('android')) topics.push('mobile');
+        if (lowerContent.includes('price') || lowerContent.includes('cost') || lowerContent.includes('budget')) topics.push('pricing');
+        if (lowerContent.includes('timeline') || lowerContent.includes('deadline') || lowerContent.includes('when')) topics.push('timeline');
+        if (lowerContent.includes('portfolio') || lowerContent.includes('work') || lowerContent.includes('example')) topics.push('portfolio');
+        if (lowerContent.includes('contact') || lowerContent.includes('meeting') || lowerContent.includes('call')) topics.push('contact');
+
+        return topics.length > 0 ? topics : ['general'];
+    }
+
+    detectUserIntent(content) {
+        if (!content || typeof content !== 'string') return 'unknown';
+        const lowerContent = content.toLowerCase();
+
+        if (lowerContent.includes('hire') || lowerContent.includes('work with') || lowerContent.includes('collaborate')) return 'hire_intent';
+        if (lowerContent.includes('quote') || lowerContent.includes('estimate') || lowerContent.includes('how much')) return 'pricing_request';
+        if (lowerContent.includes('portfolio') || lowerContent.includes('examples') || lowerContent.includes('previous work')) return 'portfolio_request';
+        if (lowerContent.includes('contact') || lowerContent.includes('reach') || lowerContent.includes('get in touch')) return 'contact_request';
+        if (lowerContent.includes('help') || lowerContent.includes('support') || lowerContent.includes('question')) return 'support_request';
+        if (lowerContent.includes('learn') || lowerContent.includes('know more') || lowerContent.includes('tell me')) return 'information_seeking';
+
+        return 'general_inquiry';
+    }
+
+    // Utility methods
+    checkFirebaseConnection() {
+        const status = {
+            hasConfig: !!hasFirebaseConfig,
+            hasDb: !!db,
+            writesEnabled: this.enableFirebaseWrites,
+            projectId: process.env.REACT_APP_FIREBASE_PROJECT_ID || 'Not set',
+            apiKey: process.env.REACT_APP_FIREBASE_API_KEY ? 'Set' : 'Missing',
+            authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || 'Not set'
+        };
+        
+        console.log('🔥 Firebase Connection Status:', status);
+        return status;
+    }
+
+    enableFirebase() {
+        this.enableFirebaseWrites = true;
+        if (process.env.NODE_ENV === 'development') {
+            console.log('🔥 Firebase writes enabled');
+        }
+    }
+
+    disableFirebase() {
+        this.enableFirebaseWrites = false;
+        if (process.env.NODE_ENV === 'development') {
+            console.log('🔥 Firebase writes disabled');
+        }
+    }
+
+    // Additional tracking methods for completeness
+    trackNavigation(from, to, method = 'click') {
+        this.trackEvent('navigation', { from, to, method, navigationTime: Date.now() - this.pageLoadTime });
+    }
+
+    trackFormInteraction(formName, fieldName, action, value = null) {
+        this.trackEvent('form_interaction', {
+            formName, fieldName, action,
+            value: action === 'input' ? (value ? value.length : 0) : null,
+            hasValue: value && value.length > 0
+        });
+    }
+
+    trackError(errorType, errorMessage, context = null) {
+        this.trackEvent('error', { errorType, errorMessage, context, stack: new Error().stack });
+    }
+
     trackPageTiming() {
         if (window.performance && window.performance.timing) {
             const timing = window.performance.timing;
@@ -421,54 +790,6 @@ class AnalyticsService {
                 serverResponseTime: timing.responseEnd - timing.requestStart,
                 domRenderTime: timing.domComplete - timing.domLoading
             });
-        }
-    }
-
-    // Heatmap data collection
-    trackMouseClick(x, y, element, elementText = '') {
-        this.trackEvent('mouse_click', {
-            x,
-            y,
-            element: element.tagName,
-            elementId: element.id,
-            elementClass: element.className,
-            elementText: elementText.substring(0, 100), // Limit text length
-            viewport: `${window.innerWidth}x${window.innerHeight}`
-        });
-    }
-
-    // A/B Testing support
-    trackABTest(testName, variant, action = 'view') {
-        this.trackEvent('ab_test', {
-            testName,
-            variant,
-            action
-        });
-    }
-
-    // Conversion funnel tracking
-    trackFunnelStep(funnelName, stepName, stepNumber, additionalData = {}) {
-        this.trackEvent('funnel_step', {
-            funnelName,
-            stepName,
-            stepNumber,
-            ...additionalData
-        });
-    }
-
-    // Method to enable Firebase writes when security rules are configured
-    enableFirebase() {
-        this.enableFirebaseWrites = true;
-        if (process.env.NODE_ENV === 'development') {
-            console.log('🔥 Firebase writes enabled');
-        }
-    }
-
-    // Method to disable Firebase writes
-    disableFirebase() {
-        this.enableFirebaseWrites = false;
-        if (process.env.NODE_ENV === 'development') {
-            console.log('🔥 Firebase writes disabled');
         }
     }
 }

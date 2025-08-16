@@ -7,6 +7,7 @@ const Chatbot = () => {
     const { isOpen, isAnimating, messages, closeChatbot, addMessage, setIsAnimating } = useChatbot();
     const { trackChatbot, trackCTA } = useAnalytics();
     const [inputValue, setInputValue] = useState('');
+    const [chatbotSessionId, setChatbotSessionId] = useState(null);
     const messagesEndRef = useRef(null);
     const inputRef = useRef(null);
 
@@ -38,28 +39,88 @@ const Chatbot = () => {
         }
     }, [isOpen, isAnimating, setIsAnimating]);
 
+    // Enhanced chatbot session management
+    useEffect(() => {
+        if (isOpen && !chatbotSessionId) {
+            // Start new chatbot session when opened
+            const startSession = async () => {
+                try {
+                    const sessionId = await trackChatbot('open', 0, 'chatbot_open');
+                    setChatbotSessionId(sessionId);
+                    
+                    if (process.env.NODE_ENV === 'development') {
+                        console.log('🤖 Chatbot session started:', sessionId);
+                    }
+                } catch (error) {
+                    console.error('Failed to start chatbot session:', error);
+                }
+            };
+            
+            startSession();
+        }
+    }, [isOpen, chatbotSessionId, trackChatbot]);
+
+    // Track message when added to messages array
+    useEffect(() => {
+        if (messages.length > 0 && chatbotSessionId) {
+            const lastMessage = messages[messages.length - 1];
+            
+            // Track the message with enhanced analytics
+            trackChatbot('message', messages.length, 'message_sent', {
+                messageData: {
+                    id: lastMessage.id,
+                    content: lastMessage.text,
+                    sender: lastMessage.sender,
+                    timestamp: lastMessage.timestamp.getTime(),
+                    conversationId: chatbotSessionId
+                }
+            });
+        }
+    }, [messages, chatbotSessionId, trackChatbot]);
+
     const handleSubmit = (e) => {
         e.preventDefault();
         if (inputValue.trim()) {
-            trackChatbot('message_sent', messages.length + 1, 'user_input');
-            trackCTA('chatbot_message_send', 'chatbot_interaction', {
-                messageLength: inputValue.trim().length,
-                messageCount: messages.length + 1,
-                currentPage: window.location.pathname
-            });
+            // Enhanced tracking with proper null checks
+            try {
+                trackCTA('chatbot_message_send', 'chatbot_interaction', {
+                    messageLength: inputValue.trim().length,
+                    messageCount: messages.length + 1,
+                    currentPage: window.location.pathname,
+                    sessionId: chatbotSessionId
+                });
+            } catch (error) {
+                console.warn('Analytics tracking error:', error.message);
+            }
+            
             addMessage(inputValue.trim());
             setInputValue('');
         }
     };
 
-    const handleCloseChatbot = (context = 'unknown') => {
-        trackChatbot('close', messages.length, 'close_button');
-        trackCTA(`chatbot_close_${context}`, 'chatbot_interaction', {
-            messageCount: messages.length,
-            sessionDuration: Date.now() - (messages[0]?.timestamp || Date.now()),
-            currentPage: window.location.pathname,
-            context
-        });
+    const handleCloseChatbot = async (context = 'unknown') => {
+        try {
+            // Enhanced chatbot session closure tracking
+            await trackChatbot('close', messages.length, 'close_button', {
+                context,
+                sessionDuration: chatbotSessionId ? Date.now() - (messages[0]?.timestamp?.getTime() || Date.now()) : 0,
+                finalMessageCount: messages.length,
+                sessionId: chatbotSessionId
+            });
+
+            trackCTA(`chatbot_close_${context}`, 'chatbot_interaction', {
+                messageCount: messages.length,
+                sessionDuration: chatbotSessionId ? Date.now() - (messages[0]?.timestamp?.getTime() || Date.now()) : 0,
+                currentPage: window.location.pathname,
+                context,
+                sessionId: chatbotSessionId
+            });
+        } catch (error) {
+            console.warn('Analytics tracking error:', error.message);
+        }
+        
+        // Reset session ID
+        setChatbotSessionId(null);
         closeChatbot();
     };
 
@@ -114,6 +175,9 @@ const Chatbot = () => {
                                 <div>
                                     <h3 className="text-white font-semibold" style={{ fontFamily: "Syne, sans-serif" }}>Saarth</h3>
                                     <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>AI Assistant</p>
+                                    {process.env.NODE_ENV === 'development' && chatbotSessionId && (
+                                        <p className="text-white/50 text-xs">Session: {chatbotSessionId.slice(-8)}</p>
+                                    )}
                                 </div>
                             </div>
                             <button
@@ -207,6 +271,9 @@ const Chatbot = () => {
                                 <div>
                                     <h3 className="text-white font-semibold" style={{ fontFamily: "Syne, sans-serif" }}>Saarth</h3>
                                     <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>AI Assistant</p>
+                                    {process.env.NODE_ENV === 'development' && chatbotSessionId && (
+                                        <p className="text-white/50 text-xs">Session: {chatbotSessionId.slice(-8)}</p>
+                                    )}
                                 </div>
                             </div>
                             <button
