@@ -24,7 +24,7 @@ export const ChatbotProvider = ({ children }) => {
   ]);
 
   // Analytics tracking refs
-  const conversationId = useRef(`conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`);
+  const conversationId = useRef(`conv_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`);
   const sessionStartTime = useRef(null);
   const userMessageCount = useRef(0);
   const botMessageCount = useRef(1); // Start with 1 for initial greeting
@@ -38,6 +38,9 @@ export const ChatbotProvider = ({ children }) => {
     
     // Track chatbot session start
     sessionStartTime.current = Date.now();
+    
+    // Start analytics session
+    analyticsService.startChatbotSession();
     
     // Track chatbot open with enhanced analytics
     analyticsService.trackChatbotInteraction('open', messages.length, 'chatbot_trigger', {
@@ -58,30 +61,12 @@ export const ChatbotProvider = ({ children }) => {
     // Analyze conversation for insights
     const conversationAnalysis = analyzeConversation();
     
-    // Track detailed chatbot session
-    analyticsService.trackChatbotSession({
-      sessionId: analyticsService.sessionId,
-      conversationId: conversationId.current,
-      startTime: sessionStartTime.current,
-      endTime: sessionEndTime,
-      duration: sessionDuration,
-      messageCount: messages.length,
-      userMessageCount: userMessageCount.current,
-      botMessageCount: botMessageCount.current,
-      averageResponseTime: sessionDuration / Math.max(userMessageCount.current, 1),
-      topics: Array.from(conversationTopics.current),
-      intents: Array.from(userIntents.current),
-      sentiment: conversationAnalysis.overallSentiment,
-      outcome: conversationAnalysis.outcome,
-      satisfaction: conversationAnalysis.satisfaction,
-      leadQuality: conversationAnalysis.leadQuality,
-      conversionPotential: conversationAnalysis.conversionPotential
-    });
+    // End the chatbot session with analytics
+    analyticsService.endChatbotSession('user_close');
 
-    // Track conversation summary
-    analyticsService.trackChatbotConversation({
+    // Track final chatbot interaction
+    analyticsService.trackChatbotInteraction('close', messages.length, 'session_end', {
       conversationId: conversationId.current,
-      messages: messages,
       duration: sessionDuration,
       userMessages: messages.filter(m => m.sender === 'user').length,
       botResponses: messages.filter(m => m.sender === 'bot').length,
@@ -217,7 +202,6 @@ export const ChatbotProvider = ({ children }) => {
 
   // Analyze conversation for insights
   const analyzeConversation = () => {
-    const userMessages = messages.filter(m => m.sender === 'user');
     
     // Determine overall sentiment
     const sentimentCounts = conversationSentiments.current.reduce((acc, sentiment) => {
@@ -271,7 +255,7 @@ export const ChatbotProvider = ({ children }) => {
 
   // Reset conversation tracking for new session
   const resetConversationTracking = () => {
-    conversationId.current = `conv_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+    conversationId.current = `conv_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     sessionStartTime.current = null;
     userMessageCount.current = 0;
     botMessageCount.current = 1; // Reset to 1 for initial greeting

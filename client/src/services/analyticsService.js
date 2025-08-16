@@ -25,17 +25,17 @@ class AnalyticsService {
     }
 
     generateSessionId() {
-        return `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        return `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     }
 
     generateChatbotSessionId() {
-        return `chat_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+        return `chat_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     }
 
     getUserId() {
         let userId = localStorage.getItem('analytics_user_id');
         if (!userId) {
-            userId = `user_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`;
+            userId = `user_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
             localStorage.setItem('analytics_user_id', userId);
         }
         return userId;
@@ -168,7 +168,7 @@ class AnalyticsService {
         try {
             // Sanitize batch data to ensure no undefined values
             const sanitizedBatch = batch.map(interaction => this.sanitizeData(interaction));
-            
+
             const batchData = {
                 sessionId: this.sessionId || 'unknown',
                 userId: this.userId || 'unknown',
@@ -218,7 +218,7 @@ class AnalyticsService {
     trackEvent(eventType, eventData = {}) {
         // Sanitize eventData to remove undefined values
         const sanitizedEventData = this.sanitizeData(eventData);
-        
+
         const interaction = {
             eventType: eventType || 'unknown',
             timestamp: Date.now(),
@@ -261,11 +261,11 @@ class AnalyticsService {
         if (data === null || data === undefined) {
             return null;
         }
-        
+
         if (Array.isArray(data)) {
             return data.map(item => this.sanitizeData(item)).filter(item => item !== undefined);
         }
-        
+
         if (typeof data === 'object') {
             const sanitized = {};
             for (const [key, value] of Object.entries(data)) {
@@ -278,7 +278,7 @@ class AnalyticsService {
             }
             return sanitized;
         }
-        
+
         return data;
     }
 
@@ -287,7 +287,7 @@ class AnalyticsService {
     // Start a new chatbot session
     async startChatbotSession() {
         const chatbotSessionId = this.generateChatbotSessionId();
-        
+
         this.currentChatbotSession = {
             sessionId: chatbotSessionId,
             conversationId: `conv_${Date.now()}`,
@@ -322,7 +322,7 @@ class AnalyticsService {
                     userAgent: navigator.userAgent,
                     page: window.location.pathname
                 });
-                
+
                 await addDoc(collection(db, 'chatbot_sessions'), sessionData);
 
                 if (process.env.NODE_ENV === 'development') {
@@ -368,7 +368,7 @@ class AnalyticsService {
         // Update current session if active
         if (this.currentChatbotSession) {
             this.currentChatbotSession.messages.push(messageAnalysis);
-            
+
             if (sender === 'user') {
                 this.currentChatbotSession.userMessages++;
             } else if (sender === 'bot') {
@@ -403,7 +403,7 @@ class AnalyticsService {
                     chatbotSessionId: this.currentChatbotSession?.sessionId,
                     timestamp: serverTimestamp()
                 });
-                
+
                 await addDoc(collection(db, 'chatbot_messages'), messageData);
 
                 if (process.env.NODE_ENV === 'development') {
@@ -466,7 +466,7 @@ class AnalyticsService {
                         timestamp: new Date(msg.timestamp)
                     }))
                 });
-                
+
                 await addDoc(collection(db, 'chatbot_conversations'), conversationData);
 
                 // Update session status
@@ -497,7 +497,7 @@ class AnalyticsService {
     // Calculate overall sentiment from message sentiments
     calculateOverallSentiment(sentiments) {
         if (sentiments.length === 0) return 'neutral';
-        
+
         const counts = sentiments.reduce((acc, sentiment) => {
             acc[sentiment] = (acc[sentiment] || 0) + 1;
             return acc;
@@ -511,16 +511,16 @@ class AnalyticsService {
         const responseTimes = messages
             .filter(msg => msg.sender === 'bot' && msg.responseTime)
             .map(msg => msg.responseTime);
-        
-        return responseTimes.length > 0 
-            ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length 
+
+        return responseTimes.length > 0
+            ? responseTimes.reduce((a, b) => a + b, 0) / responseTimes.length
             : null;
     }
 
     // Assess lead quality based on conversation data
     assessLeadQuality(session) {
         let score = 0;
-        
+
         // High engagement (many messages)
         if (session.messages.length >= 8) score += 3;
         else if (session.messages.length >= 4) score += 2;
@@ -531,7 +531,8 @@ class AnalyticsService {
 
         // Shows business intent
         const businessIntents = ['hire_intent', 'pricing_request', 'contact_request'];
-        if (session.intents.some(intent => businessIntents.includes(intent))) score += 2;
+        const intentsArray = Array.from(session.intents);
+        if (intentsArray.some(intent => businessIntents.includes(intent))) score += 2;
 
         // Positive sentiment
         if (session.sentiments.filter(s => s === 'positive').length > session.sentiments.length / 2) score += 1;
@@ -546,17 +547,20 @@ class AnalyticsService {
 
     // Assess conversion potential
     assessConversionPotential(session) {
+        const intentsArray = Array.from(session.intents);
+        const topicsArray = Array.from(session.topics);
+
         const conversionIndicators = [
-            session.intents.has('hire_intent'),
-            session.intents.has('pricing_request'),
-            session.intents.has('contact_request'),
+            intentsArray.includes('hire_intent'),
+            intentsArray.includes('pricing_request'),
+            intentsArray.includes('contact_request'),
             session.messages.some(msg => msg.containsContact),
             session.messages.length >= 5,
-            session.topics.has('pricing') || session.topics.has('contact')
+            topicsArray.includes('pricing') || topicsArray.includes('contact')
         ];
 
         const indicatorCount = conversionIndicators.filter(Boolean).length;
-        
+
         if (indicatorCount >= 4) return 'high';
         if (indicatorCount >= 2) return 'medium';
         return 'low';
@@ -564,9 +568,11 @@ class AnalyticsService {
 
     // Determine conversation outcome
     determineConversationOutcome(session) {
+        const intentsArray = Array.from(session.intents);
+
         if (session.messages.some(msg => msg.containsContact)) return 'contact_provided';
-        if (session.intents.has('hire_intent')) return 'hire_interest';
-        if (session.intents.has('pricing_request')) return 'pricing_inquiry';
+        if (intentsArray.includes('hire_intent')) return 'hire_interest';
+        if (intentsArray.includes('pricing_request')) return 'pricing_inquiry';
         if (session.messages.length >= 5) return 'engaged_conversation';
         if (session.messages.length >= 2) return 'brief_interaction';
         return 'minimal_engagement';
@@ -624,7 +630,7 @@ class AnalyticsService {
 
             const safeDocId = `${counterType}_${itemName}`.replace(/[\/\[\]#]/g, '_');
             const counterRef = doc(db, 'analytics_counters', safeDocId);
-            
+
             const counterData = this.sanitizeData({
                 count: increment(1),
                 lastUpdated: serverTimestamp(),
@@ -633,7 +639,7 @@ class AnalyticsService {
             });
 
             await setDoc(counterRef, counterData, { merge: true });
-            
+
             if (process.env.NODE_ENV === 'development') {
                 console.log('✅ Analytics: Counter updated in Firebase');
             }
@@ -741,7 +747,7 @@ class AnalyticsService {
             apiKey: process.env.REACT_APP_FIREBASE_API_KEY ? 'Set' : 'Missing',
             authDomain: process.env.REACT_APP_FIREBASE_AUTH_DOMAIN || 'Not set'
         };
-        
+
         console.log('🔥 Firebase Connection Status:', status);
         return status;
     }
@@ -791,6 +797,107 @@ class AnalyticsService {
                 domRenderTime: timing.domComplete - timing.domLoading
             });
         }
+    }
+
+    // Blog Tracking
+    trackBlogInteraction(action, blogId = null, blogTitle = null) {
+        this.trackEvent('blog_interaction', {
+            action, // 'view_list', 'click_post', 'read_time'
+            blogId,
+            blogTitle
+        });
+
+        if (action === 'click_post') {
+            this.updateClickCounter('blog_clicks', blogId);
+        }
+    }
+
+    // Social Media Tracking
+    trackSocialClick(platform, url, context = 'footer') {
+        this.trackEvent('social_click', {
+            platform,
+            url,
+            context // 'footer', 'about', 'contact'
+        });
+
+        this.updateClickCounter('social_clicks', platform);
+    }
+
+    // Error Tracking
+    trackError(errorType, errorMessage, context = null) {
+        this.trackEvent('error', {
+            errorType,
+            errorMessage,
+            context,
+            url: window.location.href,
+            userAgent: navigator.userAgent,
+            timestamp: Date.now()
+        });
+    }
+
+    // Form Tracking
+    trackFormInteraction(formName, fieldName, action, value = null) {
+        this.trackEvent('form_interaction', {
+            formName,
+            fieldName,
+            action, // 'focus', 'blur', 'change'
+            value: value ? String(value).substring(0, 100) : null
+        });
+    }
+
+    trackFormSubmit(formName, formData, success = true, errorMessage = null) {
+        this.trackEvent('form_submit', {
+            formName,
+            success,
+            errorMessage,
+            fieldCount: formData ? Object.keys(formData).length : 0
+        });
+
+        if (success) {
+            this.updateClickCounter('form_submissions', formName);
+        }
+    }
+
+    // Navigation Tracking
+    trackNavigation(from, to, method = 'click') {
+        this.trackEvent('navigation', {
+            from,
+            to,
+            method
+        });
+    }
+
+    // Project Tracking
+    trackProjectView(projectName, projectId, viewType = 'expand') {
+        this.trackEvent('project_view', {
+            projectName,
+            projectId,
+            viewType
+        });
+
+        this.updateClickCounter('project_views', projectId);
+    }
+
+    // Mouse Click Tracking for heatmaps
+    trackMouseClick(x, y, target, elementName = '') {
+        this.trackEvent('mouse_click', {
+            x,
+            y,
+            elementName,
+            tagName: target.tagName,
+            className: target.className,
+            id: target.id
+        });
+    }
+
+    // Funnel Tracking
+    trackFunnelStep(funnelName, stepName, stepNumber, additionalData = {}) {
+        this.trackEvent('funnel_step', {
+            funnelName,
+            stepName,
+            stepNumber,
+            ...additionalData
+        });
     }
 }
 
