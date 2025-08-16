@@ -117,7 +117,7 @@ const Chatbot = () => {
                                 </div>
                             </div>
                             <button
-                                onClick={() => handleCloseChatbot('desktop')}
+                                onClick={closeChatbot}
                                 className="text-white/70 hover:text-white transition-colors p-1"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -210,7 +210,7 @@ const Chatbot = () => {
                                 </div>
                             </div>
                             <button
-                                onClick={() => handleCloseChatbot('mobile')}
+                                onClick={closeChatbot}
                                 className="text-white/70 hover:text-white transition-colors p-1"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">

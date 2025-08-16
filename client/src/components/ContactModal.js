@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from 'react';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 function ContactModal({ isOpen, onClose }) {
+  const { trackFormField, trackFormSubmit, trackCTA, trackEvent } = useAnalytics();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -13,9 +15,14 @@ function ContactModal({ isOpen, onClose }) {
   const [isClosing, setIsClosing] = useState(false);
 
   const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    
+    // Track form field interaction
+    trackFormField('contact_modal', name, 'input', value);
+    
     setFormData({
       ...formData,
-      [e.target.name]: e.target.value
+      [name]: value
     });
   };
 
@@ -23,6 +30,9 @@ function ContactModal({ isOpen, onClose }) {
     e.preventDefault();
     setIsSubmitting(true);
     setSubmitStatus('');
+
+    // Track form submission attempt
+    trackFormSubmit('contact_modal', formData, false, null);
 
     try {
       const response = await fetch('http://localhost:8000/api/contact', {
@@ -36,18 +46,36 @@ function ContactModal({ isOpen, onClose }) {
       if (response.ok) {
         setSubmitStatus('success');
         setShowThankYou(true);
+        
+        // Track successful form submission
+        trackFormSubmit('contact_modal', formData, true, null);
+        trackCTA('contact_form_success', 'form_completion', {
+          formName: 'contact_modal',
+          fieldsCompleted: Object.keys(formData).length,
+          currentPage: window.location.pathname
+        });
       } else {
         setSubmitStatus('error');
+        trackFormSubmit('contact_modal', formData, false, `HTTP ${response.status}`);
       }
     } catch (error) {
       console.error('Error sending email:', error);
       setSubmitStatus('error');
+      trackFormSubmit('contact_modal', formData, false, error.message);
     } finally {
       setIsSubmitting(false);
     }
   };
 
   const handleClose = () => {
+    // Track modal close
+    trackCTA('contact_modal_close', 'modal_close', {
+      formCompleted: showThankYou,
+      fieldsFilledCount: Object.values(formData).filter(v => v && v.length > 0).length,
+      totalFields: Object.keys(formData).length,
+      currentPage: window.location.pathname
+    });
+    
     setIsClosing(true);
     setTimeout(() => {
       onClose();
@@ -60,6 +88,11 @@ function ContactModal({ isOpen, onClose }) {
   };
 
   const handleBackToForm = () => {
+    trackCTA('contact_modal_send_another', 'form_restart', {
+      context: 'thank_you_screen',
+      currentPage: window.location.pathname
+    });
+    
     setShowThankYou(false);
     setSubmitStatus('');
     setFormData({ name: '', email: '', message: '' });
@@ -69,8 +102,13 @@ function ContactModal({ isOpen, onClose }) {
   useEffect(() => {
     if (isOpen) {
       setIsVisible(true);
+      // Track modal open
+      trackEvent('contact_modal_open', {
+        currentPage: window.location.pathname,
+        timestamp: Date.now()
+      });
     }
-  }, [isOpen]);
+  }, [isOpen, trackEvent]);
 
   if (!isOpen) return null;
 
@@ -188,6 +226,8 @@ function ContactModal({ isOpen, onClose }) {
                   name="name"
                   value={formData.name}
                   onChange={handleInputChange}
+                  onFocus={() => trackFormField('contact_modal', 'name', 'focus')}
+                  onBlur={() => trackFormField('contact_modal', 'name', 'blur', formData.name)}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-[#A8977A] transition-all duration-200 ease-out transform focus:scale-[1.02]"
                 />
@@ -203,6 +243,8 @@ function ContactModal({ isOpen, onClose }) {
                   name="email"
                   value={formData.email}
                   onChange={handleInputChange}
+                  onFocus={() => trackFormField('contact_modal', 'email', 'focus')}
+                  onBlur={() => trackFormField('contact_modal', 'email', 'blur', formData.email)}
                   required
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-[#A8977A] transition-all duration-200 ease-out transform focus:scale-[1.02]"
                 />
@@ -217,6 +259,8 @@ function ContactModal({ isOpen, onClose }) {
                   name="message"
                   value={formData.message}
                   onChange={handleInputChange}
+                  onFocus={() => trackFormField('contact_modal', 'message', 'focus')}
+                  onBlur={() => trackFormField('contact_modal', 'message', 'blur', formData.message)}
                   required
                   rows="4"
                   className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-[#A8977A] resize-none transition-all duration-200 ease-out transform focus:scale-[1.02]"

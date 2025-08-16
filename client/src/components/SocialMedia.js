@@ -1,7 +1,9 @@
 import React from 'react';
 import { FaLinkedin, FaInstagram } from 'react-icons/fa';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 function SocialMedia() {
+    const { trackSocial, trackCTA } = useAnalytics();
     const iconColor = '#A8977A';
 
     return (
@@ -16,6 +18,14 @@ function SocialMedia() {
                         href="https://www.linkedin.com/in/yuvaanvithlani/"
                         className="hover:opacity-80 active:opacity-60 transition-opacity duration-200 flex items-center justify-center p-2 rounded-lg hover:bg-white/5"
                         style={{ color: iconColor }}
+                        onClick={() => {
+                            trackSocial('linkedin', 'https://www.linkedin.com/in/yuvaanvithlani/', 'footer');
+                            trackCTA('footer_linkedin', 'social_media', {
+                                platform: 'linkedin',
+                                context: 'footer_social_media',
+                                currentPage: window.location.pathname
+                            });
+                        }}
                     >
                         <FaLinkedin className="w-7 h-7 lg:w-8 lg:h-8" />
                     </a>
@@ -23,6 +33,14 @@ function SocialMedia() {
                         href="https://www.instagram.com/yuv.aaaan/"
                         className="hover:opacity-80 active:opacity-60 transition-opacity duration-200 flex items-center justify-center p-2 rounded-lg hover:bg-white/5"
                         style={{ color: iconColor }}
+                        onClick={() => {
+                            trackSocial('instagram', 'https://www.instagram.com/yuv.aaaan/', 'footer');
+                            trackCTA('footer_instagram', 'social_media', {
+                                platform: 'instagram',
+                                context: 'footer_social_media',
+                                currentPage: window.location.pathname
+                            });
+                        }}
                     >
                         <FaInstagram className="w-7 h-7 lg:w-8 lg:h-8" />
                     </a>

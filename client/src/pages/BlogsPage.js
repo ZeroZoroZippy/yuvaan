@@ -3,12 +3,14 @@ import Navbar from '../components/Navbar';
 import { blogPosts } from '../data/blogData';
 import { usePageNavigation } from '../hooks/usePageNavigation';
 import { useLenisContext } from '../contexts/LenisContext';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 function BlogsPage() {
   const [animationStage, setAnimationStage] = useState(0);
   const [showContent, setShowContent] = useState(false);
   const [hoveredCard, setHoveredCard] = useState(null);
   const { navigateWithTransition } = usePageNavigation();
+  const { trackBlog, trackCTA, trackNavigation } = useAnalytics();
 
   // Get Lenis instance from context
   const lenis = useLenisContext();
@@ -19,6 +21,9 @@ function BlogsPage() {
   }, []);
 
   useEffect(() => {
+    // Track blog page view
+    trackBlog('view_list', null, null);
+    
     // Immediately scroll to top - use both native and Lenis for reliability
     window.scrollTo(0, 0);
     if (lenis) {
@@ -35,7 +40,7 @@ function BlogsPage() {
     ];
 
     return () => timeouts.forEach(clearTimeout);
-  }, [lenis]);
+  }, [lenis, trackBlog]);
 
   // Enhanced topic color mapping
   const getTopicStyle = (topic) => {
@@ -86,7 +91,18 @@ function BlogsPage() {
                       group-hover:shadow-2xl group-hover:shadow-[#A8977A]/10
                       border border-[#A8977A]/10 group-hover:border-[#A8977A]/30"
                     style={{ backgroundColor: '#161711' }}
-                    onClick={() => navigateWithTransition(`/blog/${post.id}`, 'up')}
+                    onClick={() => {
+                      trackBlog('click_post', post.id, post.title);
+                      trackCTA('blog_post_click', 'blog_navigation', {
+                        blogId: post.id,
+                        blogTitle: post.title,
+                        blogTopic: post.topic,
+                        position: index + 1,
+                        currentPage: window.location.pathname
+                      });
+                      trackNavigation(window.location.pathname, `/blog/${post.id}`, 'blog_card_click');
+                      navigateWithTransition(`/blog/${post.id}`, 'up');
+                    }}
                   >
                     {/* Enhanced Image Container with Overlay */}
                     <div className="relative w-full h-[240px] overflow-hidden">
@@ -225,7 +241,19 @@ function BlogsPage() {
                     border border-[#A8977A]/10 active:border-[#A8977A]/30
                     active:shadow-xl active:shadow-[#A8977A]/20"
                   style={{ backgroundColor: '#161711' }}
-                  onClick={() => navigateWithTransition(`/blog/${post.id}`, 'up')}
+                  onClick={() => {
+                    trackBlog('click_post', post.id, post.title);
+                    trackCTA('blog_post_click_mobile', 'blog_navigation', {
+                      blogId: post.id,
+                      blogTitle: post.title,
+                      blogTopic: post.topic,
+                      position: index + 1,
+                      currentPage: window.location.pathname,
+                      context: 'mobile'
+                    });
+                    trackNavigation(window.location.pathname, `/blog/${post.id}`, 'blog_card_click_mobile');
+                    navigateWithTransition(`/blog/${post.id}`, 'up');
+                  }}
                 >
                   {/* Mobile Image Container */}
                   <div className="relative w-full h-[200px] overflow-hidden">

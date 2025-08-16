@@ -1,6 +1,8 @@
 import React from 'react';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 function Contact({ onOpenModal }) {
+  const { trackCTA } = useAnalytics();
   return (
     <div
       className="rounded-2xl shadow-lg w-full lg:w-[470px] h-[250px] sm:h-[280px] lg:h-[300px] relative"
@@ -14,7 +16,14 @@ function Contact({ onOpenModal }) {
       {/* Diagonal Arrow at top right - slightly bigger than Description */}
       <div
         className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-2 lg:right-4 cursor-pointer"
-        onClick={onOpenModal}
+        onClick={() => {
+          trackCTA('contact_arrow', 'contact_modal_trigger', { 
+            context: 'hero_page',
+            currentPage: window.location.pathname,
+            position: 'top_right'
+          });
+          onOpenModal();
+        }}
       >
         <svg
           className="w-6 h-6 sm:w-8 sm:h-8 lg:w-14 lg:h-14 text-[#45372B] transition-transform duration-300 ease-in-out hover:scale-110"

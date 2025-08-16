@@ -1,10 +1,12 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Link } from 'react-router-dom';
+import { useAnalytics } from '../hooks/useAnalytics';
 import wellness from '../assets/Projects/mental-wellness.jpg'
 import dental from '../assets/Projects/Dental.jpg'
 
 function Projects() {
+  const { trackProject, trackCTA } = useAnalytics();
   const [toggleStates, setToggleStates] = useState({
     project1: true,  // First project open by default
     project2: false
@@ -50,6 +52,19 @@ function Projects() {
       return;
     }
 
+    // Track project expansion
+    const projectNames = {
+      project1: 'Sarvodaya Dental Clinic',
+      project2: 'Wellness Website'
+    };
+    
+    trackProject(projectNames[projectKey], projectKey, 'expand');
+    trackCTA(`project_${projectKey}_expand`, 'project_interaction', {
+      projectName: projectNames[projectKey],
+      action: 'expand',
+      currentPage: window.location.pathname
+    });
+
     // Close all others and open the clicked one
     const updatedStates = {
       project1: projectKey === 'project1',
@@ -91,6 +106,18 @@ function Projects() {
   };
 
   const handleCloseProject = (projectKey) => {
+    const projectNames = {
+      project1: 'Sarvodaya Dental Clinic',
+      project2: 'Wellness Website'
+    };
+    
+    trackProject(projectNames[projectKey], projectKey, 'collapse');
+    trackCTA(`project_${projectKey}_close`, 'project_interaction', {
+      projectName: projectNames[projectKey],
+      action: 'collapse',
+      currentPage: window.location.pathname
+    });
+    
     setToggleStates({
       project1: false,
       project2: false
@@ -201,6 +228,12 @@ function Projects() {
                       if (project.key === 'project1') {
                         // For Dental Website, open the live site
                         e.preventDefault();
+                        trackProject('Sarvodaya Dental Clinic', 'project1', 'external_link');
+                        trackCTA('project_dental_external_link', 'external_link', {
+                          projectName: 'Sarvodaya Dental Clinic',
+                          destination: 'https://www.sarvodayadental.com/',
+                          currentPage: window.location.pathname
+                        });
                         window.open('https://www.sarvodayadental.com/', '_blank');
                       } else {
                         // For other projects, close the project

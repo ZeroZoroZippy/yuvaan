@@ -2,24 +2,37 @@ import React from 'react';
 import { usePageNavigation } from '../hooks/usePageNavigation';
 import { useMobileMenu } from '../contexts/MobileMenuContext';
 import { useChatbot } from '../contexts/ChatbotContext';
+import { useAnalytics } from '../hooks/useAnalytics';
 
 const Navbar = () => {
   const { isOpen, toggleMenu, closeMenu } = useMobileMenu();
   const { navigateWithTransition } = usePageNavigation();
   const { openChatbot } = useChatbot();
+  const { trackCTA, trackNavigation, trackChatbot } = useAnalytics();
 
   const handleLogoClick = () => {
     console.log('Logo clicked - navigating to home');
+    trackCTA('navbar_logo', 'logo', { destination: '/', currentPage: window.location.pathname });
+    trackNavigation(window.location.pathname, '/', 'logo_click');
     navigateWithTransition('/', 'down');
     closeMenu();
   };
 
   const handleBlogClick = () => {
+    trackCTA('navbar_blog', 'navigation', { destination: '/blog', currentPage: window.location.pathname });
+    trackNavigation(window.location.pathname, '/blog', 'navbar_click');
     navigateWithTransition('/blog', 'up');
     closeMenu();
   };
 
   const handleTalkToSaarthClick = () => {
+    trackCTA('navbar_talk_to_saarth', 'chatbot_cta', { 
+      context: 'navbar', 
+      currentPage: window.location.pathname,
+      deviceType: isOpen ? 'mobile' : 'desktop'
+    });
+    trackChatbot('open', 0, 'navbar');
+    
     // Immediately open chatbot for instant response
     openChatbot();
 
@@ -60,6 +73,14 @@ const Navbar = () => {
                   href="about"
                   className="text-xl text-[#A8977A] hover:text-white transition-colors duration-300"
                   style={{ fontFamily: 'Neuton, serif' }}
+                  onClick={() => {
+                    trackCTA('navbar_about_desktop', 'navigation', { 
+                      destination: '/about', 
+                      currentPage: window.location.pathname,
+                      context: 'desktop_menu'
+                    });
+                    trackNavigation(window.location.pathname, '/about', 'desktop_menu_click');
+                  }}
                 >
                   About
                 </a>
@@ -82,7 +103,13 @@ const Navbar = () => {
               {/* Mobile Menu Button */}
               <div className="md:hidden">
                 <button
-                  onClick={toggleMenu}
+                  onClick={() => {
+                    trackCTA('navbar_mobile_menu', 'menu_toggle', { 
+                      action: isOpen ? 'close' : 'open',
+                      currentPage: window.location.pathname 
+                    });
+                    toggleMenu();
+                  }}
                   className="text-[#A8977A] hover:text-white focus:outline-none transition-colors duration-300"
                 >
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -106,7 +133,15 @@ const Navbar = () => {
                     href="about"
                     className="block px-3 py-2 text-lg text-[#A8977A] hover:text-white transition-colors duration-300"
                     style={{ fontFamily: 'Neuton, serif' }}
-                    onClick={closeMenu}
+                    onClick={() => {
+                      trackCTA('navbar_about_mobile', 'navigation', { 
+                        destination: '/about', 
+                        currentPage: window.location.pathname,
+                        context: 'mobile_menu'
+                      });
+                      trackNavigation(window.location.pathname, '/about', 'mobile_menu_click');
+                      closeMenu();
+                    }}
                   >
                     About
                   </a>
