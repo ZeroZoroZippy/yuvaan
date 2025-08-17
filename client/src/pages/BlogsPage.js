@@ -178,7 +178,7 @@ function BlogsPage() {
                         <h3 className="text-xl font-bold text-[#A8977A] leading-tight 
                           transition-all duration-300 group-hover:text-white 
                           group-hover:translate-y-[-2px]" 
-                          style={{ fontFamily: 'Syne, sans-serif' }}>
+                          style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                           {post.title}
                         </h3>
 
@@ -302,7 +302,7 @@ function BlogsPage() {
 
                       {/* Mobile title */}
                       <h3 className="text-lg font-bold text-[#A8977A] leading-tight" 
-                        style={{ fontFamily: 'Syne, sans-serif' }}>
+                        style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                         {post.title}
                       </h3>
 

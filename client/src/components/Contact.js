@@ -42,7 +42,7 @@ function Contact({ onOpenModal }) {
 
       {/* "Contact Me" heading at bottom left */}
       <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 lg:bottom-6 lg:left-6">
-        <h2 className="text-[2rem] sm:text-2xl lg:text-4xl font-bold text-[#45372B]" style={{ fontFamily: 'Syne, sans-serif' }}>Contact Me</h2>
+        <h2 className="text-[2rem] sm:text-2xl lg:text-4xl font-bold text-[#45372B]" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Contact Me</h2>
       </div>
     </div>
   );

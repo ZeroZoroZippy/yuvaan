@@ -62,7 +62,7 @@ const Navbar = () => {
               <button
                 onClick={handleLogoClick}
                 className="text-[1.5rem] font-bold text-[#A8977A] hover:text-white transition-colors duration-300"
-                style={{ fontFamily: 'Syne, sans-serif' }}
+                style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
               >
                 Yuvaan Vithlani
               </button>

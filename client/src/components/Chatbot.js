@@ -4,16 +4,16 @@ import { useAnalytics } from '../hooks/useAnalytics';
 import Orb from './ui/orb';
 
 const Chatbot = () => {
-    const { 
-        isOpen, 
-        isAnimating, 
-        messages, 
+    const {
+        isOpen,
+        isAnimating,
+        messages,
         isProcessing,
-        closeChatbot, 
-        addMessage, 
-        setIsAnimating, 
-        leadData, 
-        conversationContext 
+        closeChatbot,
+        addMessage,
+        setIsAnimating,
+        leadData,
+        conversationContext
     } = useChatbot();
     const { trackChatbot, trackCTA } = useAnalytics();
     const [inputValue, setInputValue] = useState('');
@@ -67,15 +67,15 @@ const Chatbot = () => {
                         timestamp: Date.now()
                     });
                     setChatbotSessionId(sessionId);
-                    
+
                     if (process.env.NODE_ENV === 'development') {
-                        console.log('🎯 Professional session started:', sessionId);
+                        console.log('Professional session started:', sessionId);
                     }
                 } catch (error) {
                     console.error('Failed to start professional session:', error);
                 }
             };
-            
+
             startSession();
         }
     }, [isOpen, chatbotSessionId, trackChatbot]);
@@ -84,7 +84,7 @@ const Chatbot = () => {
     useEffect(() => {
         if (messages.length > 0 && chatbotSessionId) {
             const lastMessage = messages[messages.length - 1];
-            
+
             // Track with professional context
             trackChatbot('professional_message', messages.length, 'client_interaction', {
                 messageData: {
@@ -117,7 +117,7 @@ const Chatbot = () => {
             } catch (error) {
                 console.warn('Professional analytics tracking error:', error.message);
             }
-            
+
             addMessage(inputValue.trim());
             setInputValue('');
         }
@@ -127,7 +127,7 @@ const Chatbot = () => {
         try {
             // Enhanced professional session closure tracking
             const sessionDuration = chatbotSessionId ? Date.now() - (messages[0]?.timestamp?.getTime() || Date.now()) : 0;
-            
+
             await trackChatbot('professional_session_close', messages.length, 'client_conclusion', {
                 context,
                 sessionDuration,
@@ -151,7 +151,7 @@ const Chatbot = () => {
         } catch (error) {
             console.warn('Professional analytics tracking error:', error.message);
         }
-        
+
         setChatbotSessionId(null);
         closeChatbot();
     };
@@ -176,8 +176,8 @@ const Chatbot = () => {
 
     // Professional typing indicator component
     const TypingIndicator = () => (
-        <div className="flex justify-start mb-4">
-            <div className="bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 rounded-2xl px-4 py-3 max-w-[80%]">
+        <div className="w-full mb-4">
+            <div className="bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 rounded-2xl px-4 py-3 max-w-[70%]">
                 <div className="flex items-center space-x-1">
                     <div className="flex space-x-1">
                         <div className="w-2 h-2 bg-[#A8977A] rounded-full animate-bounce" style={{ animationDelay: '0ms' }}></div>
@@ -192,28 +192,24 @@ const Chatbot = () => {
         </div>
     );
 
-    // Lead quality indicator removed for production
-
     if (!isOpen) return null;
 
     return (
         <>
             {/* Blur overlay background */}
             <div
-                className={`fixed inset-0 z-40 transition-all duration-1000 ease-out ${
-                    isAnimating ? 'backdrop-blur-0' : 'backdrop-blur-md'
-                }`}
+                className={`fixed inset-0 z-[9998] transition-all duration-1000 ease-out ${isAnimating ? 'backdrop-blur-0' : 'backdrop-blur-md'
+                    }`}
             />
 
             {/* Desktop Layout - Enhanced for professional use */}
             <div className="hidden md:block">
                 {/* Professional Orb with status indicator */}
                 <div
-                    className={`fixed z-50 w-20 h-20 transition-all duration-1200 ease-out ${
-                        isAnimating
+                    className={`fixed z-[9999] w-20 h-20 transition-all duration-1200 ease-out ${isAnimating
                             ? 'bottom-[-80px] right-[60px] opacity-0'
                             : 'bottom-[60px] right-[60px] opacity-100'
-                    }`}
+                        }`}
                 >
                     <Orb
                         hue={leadData?.qualificationLevel === 'high' ? 120 : 220}
@@ -227,20 +223,20 @@ const Chatbot = () => {
                     )}
                 </div>
 
-                {/* Enhanced chat interface */}
+                {/* Enhanced chat interface - Centered and larger */}
                 <div
-                    className={`fixed z-50 transition-all duration-1000 ease-out ${
-                        isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
-                    }`}
+                    className={`fixed z-[9999] transition-all duration-1000 ease-out ${isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
+                        }`}
                     style={{
-                        bottom: '160px',
-                        right: '60px',
-                        width: '420px',
-                        height: '550px'
+                        top: '50%',
+                        left: '50%',
+                        transform: 'translate(-50%, -50%)',
+                        width: '600px',
+                        height: '700px'
                     }}
                 >
                     <div className="bg-white/10 backdrop-blur-lg rounded-2xl h-full flex flex-col border border-white/20 shadow-2xl relative">
-                        
+
                         {/* Professional Header */}
                         <div className="flex items-center justify-between p-4 border-b border-white/20 flex-shrink-0">
                             <div className="flex items-center space-x-3">
@@ -252,7 +248,7 @@ const Chatbot = () => {
                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-semibold" style={{ fontFamily: "Syne, sans-serif" }}>
+                                    <h3 className="text-white font-semibold" style={{ fontFamily: "Bubblegum Sans, sans-serif" }}>
                                         Saarth
                                     </h3>
                                     <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>
@@ -270,8 +266,8 @@ const Chatbot = () => {
                             </button>
                         </div>
 
-                        {/* Enhanced Messages with professional styling */}
-                        <div 
+                        {/* Enhanced Messages with full-width left alignment */}
+                        <div
                             ref={messagesContainerRef}
                             className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 scroll-smooth"
                             data-lenis-prevent
@@ -280,30 +276,40 @@ const Chatbot = () => {
                                 WebkitOverflowScrolling: 'touch'
                             }}
                         >
-                            {messages.map((message) => (
-                                <div
-                                    key={message.id}
-                                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                                >
-                                    <div
-                                        className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                                            message.sender === 'user'
-                                                ? 'bg-gradient-to-r from-[#A8977A] to-[#8B7355] text-white shadow-lg'
-                                                : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
-                                        }`}
-                                    >
-                                        <p className="text-lg leading-relaxed" style={{ fontFamily: "Neuton, serif" }}>
-                                            {message.text}
-                                        </p>
-                                        <p className={`text-xs mt-2 ${
-                                            message.sender === 'user' ? 'text-white/80' : 'text-[#A8977A]/60'
-                                        }`}>
-                                            {formatTime(message.timestamp)}
-                                        </p>
+                            {messages.map((message) => {
+                                // More precise dynamic width based on message length
+                                const getMessageWidth = (text) => {
+                                    if (text.length <= 10) return 'max-w-[35%]';  // Very short: "hello", "ok", "yes"
+                                    if (text.length <= 20) return 'max-w-[50%]';  // Short phrases
+                                    if (text.length <= 40) return 'max-w-[65%]';  // Medium sentences
+                                    if (text.length <= 80) return 'max-w-[75%]';  // Longer messages
+                                    if (text.length <= 150) return 'max-w-[85%]'; // Very long messages
+                                    return 'max-w-[95%]';                          // Maximum width
+                                };
+
+                                return (
+                                    <div key={message.id} className="w-full">
+                                        <div
+                                            className={`${getMessageWidth(message.text)} rounded-2xl px-4 py-3 ${message.sender === 'user'
+                                                    ? 'bg-gradient-to-r from-[#A8977A] to-[#8B7355] text-white shadow-lg'
+                                                    : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
+                                                }`}
+                                        >
+                                            <p className={`text-lg leading-relaxed ${message.sender === 'user' ? 'font-semibold' : ''
+                                                }`} style={{
+                                                    fontFamily: message.sender === 'user' ? "Bubblegum Sans, sans-serif" : "Neuton, serif"
+                                                }}>
+                                                {message.text}
+                                            </p>
+                                            <p className={`text-xs mt-2 ${message.sender === 'user' ? 'text-white/80' : 'text-[#A8977A]/60'
+                                                }`}>
+                                                {formatTime(message.timestamp)}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                            
+                                );
+                            })}
+
                             {/* Professional typing indicator */}
                             {showTypingIndicator && <TypingIndicator />}
                             <div ref={messagesEndRef} />
@@ -351,14 +357,14 @@ const Chatbot = () => {
                 </div>
             </div>
 
-            {/* Mobile Layout - Enhanced for professional use */}
+            {/* Mobile Layout - Full Screen with Bottom Orb Space */}
             <div className="md:hidden">
+                {/* Mobile Orb - Fixed at bottom center with proper spacing */}
                 <div
-                    className={`fixed z-50 w-16 h-16 transition-all duration-1200 ease-out ${
-                        isAnimating
+                    className={`fixed z-[10000] w-16 h-16 transition-all duration-1200 ease-out ${isAnimating
                             ? 'bottom-[-64px] left-1/2 transform -translate-x-1/2 opacity-0'
-                            : 'bottom-[60px] left-1/2 transform -translate-x-1/2 opacity-100'
-                    }`}
+                            : 'bottom-[20px] left-1/2 transform -translate-x-1/2 opacity-100'
+                        }`}
                 >
                     <Orb
                         hue={leadData?.qualificationLevel === 'high' ? 120 : 220}
@@ -371,34 +377,37 @@ const Chatbot = () => {
                     )}
                 </div>
 
+                {/* Mobile Chat Interface - Full Screen with Bottom Margin for Orb */}
                 <div
-                    className={`fixed inset-0 z-50 flex items-center justify-center p-4 transition-all duration-1000 ease-out ${
-                        isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
-                    }`}
+                    className={`fixed z-[9999] inset-0 transition-all duration-1000 ease-out ${isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
+                        }`}
+                    style={{
+                        paddingBottom: '100px' // Space for orb + safe area
+                    }}
                 >
-                    <div className="bg-white/10 backdrop-blur-lg rounded-2xl w-full max-w-md h-[600px] flex flex-col border border-white/20 shadow-2xl relative">
-                        
+                    <div className="bg-white/10 backdrop-blur-lg h-full flex flex-col border-0 shadow-2xl relative">
+
                         {/* Mobile Professional Header */}
-                        <div className="flex items-center justify-between p-4 border-b border-white/20 flex-shrink-0">
+                        <div className="flex items-center justify-between p-4 border-b border-white/20 flex-shrink-0 bg-white/5">
                             <div className="flex items-center space-x-3">
                                 <div className="relative">
-                                    <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#A8977A] to-[#8B7355] flex items-center justify-center">
-                                        <span className="text-white text-base font-bold">S</span>
+                                    <div className="w-10 h-10 rounded-full bg-gradient-to-br from-[#A8977A] to-[#8B7355] flex items-center justify-center">
+                                        <span className="text-white text-lg font-bold">S</span>
                                     </div>
                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-semibold" style={{ fontFamily: "Syne, sans-serif" }}>
+                                    <h3 className="text-white font-semibold text-lg" style={{ fontFamily: "Bubblegum Sans, sans-serif" }}>
                                         Saarth
                                     </h3>
-                                    <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>
-                                        AI Assistant
+                                    <p className="text-white/70 text-sm" style={{ fontFamily: "Neuton, serif" }}>
+                                        AI Assistant • Online
                                     </p>
                                 </div>
                             </div>
                             <button
                                 onClick={() => handleCloseChatbot('mobile')}
-                                className="text-white/70 hover:text-white transition-colors p-1 hover:bg-white/10 rounded"
+                                className="text-white/70 hover:text-white transition-colors p-2 hover:bg-white/10 rounded-lg"
                             >
                                 <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -406,60 +415,81 @@ const Chatbot = () => {
                             </button>
                         </div>
 
-                        {/* Mobile Messages */}
-                        <div 
+                        {/* Mobile Messages - Full available space */}
+                        <div
                             ref={messagesContainerRef}
                             className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 scroll-smooth"
                             data-lenis-prevent
+                            style={{
+                                overscrollBehavior: 'contain',
+                                WebkitOverflowScrolling: 'touch'
+                            }}
                         >
-                            {messages.map((message) => (
-                                <div
-                                    key={message.id}
-                                    className={`flex ${message.sender === 'user' ? 'justify-end' : 'justify-start'}`}
-                                >
-                                    <div
-                                        className={`max-w-[85%] rounded-2xl px-4 py-3 ${
-                                            message.sender === 'user'
-                                                ? 'bg-gradient-to-r from-[#A8977A] to-[#8B7355] text-white shadow-lg'
-                                                : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
-                                        }`}
-                                    >
-                                        <p className="text-base leading-relaxed" style={{ fontFamily: "Neuton, serif" }}>
-                                            {message.text}
-                                        </p>
-                                        <p className={`text-sm mt-2 ${
-                                            message.sender === 'user' ? 'text-white/80' : 'text-[#A8977A]/60'
-                                        }`}>
-                                            {formatTime(message.timestamp)}
-                                        </p>
+                            {messages.map((message) => {
+                                // More precise dynamic width based on message length  
+                                const getMessageWidth = (text) => {
+                                    if (text.length <= 10) return 'max-w-[35%]';  // Very short: "hello", "ok", "yes"
+                                    if (text.length <= 20) return 'max-w-[50%]';  // Short phrases
+                                    if (text.length <= 40) return 'max-w-[65%]';  // Medium sentences
+                                    if (text.length <= 80) return 'max-w-[75%]';  // Longer messages
+                                    if (text.length <= 150) return 'max-w-[85%]'; // Very long messages
+                                    return 'max-w-[95%]';                          // Maximum width
+                                };
+
+                                return (
+                                    <div key={message.id} className="w-full">
+                                        <div
+                                            className={`${getMessageWidth(message.text)} rounded-2xl px-4 py-3 ${message.sender === 'user'
+                                                    ? 'bg-gradient-to-r from-[#A8977A] to-[#8B7355] text-white shadow-lg'
+                                                    : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
+                                                }`}
+                                        >
+                                            <p className={`text-lg leading-relaxed ${message.sender === 'user' ? 'font-semibold' : ''
+                                                }`} style={{
+                                                    fontFamily: message.sender === 'user' ? "Bubblegum Sans, sans-serif" : "Neuton, serif"
+                                                }}>
+                                                {message.text}
+                                            </p>
+                                            <p className={`text-sm mt-2 ${message.sender === 'user' ? 'text-white/80' : 'text-[#A8977A]/60'
+                                                }`}>
+                                                {formatTime(message.timestamp)}
+                                            </p>
+                                        </div>
                                     </div>
-                                </div>
-                            ))}
-                            
+                                );
+                            })}
+
                             {showTypingIndicator && <TypingIndicator />}
                             <div ref={messagesEndRef} />
                         </div>
 
-                        {/* Mobile Input */}
-                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/20 flex-shrink-0">
-                            <div className="flex space-x-2">
+                        {/* Mobile Input - Fixed at bottom */}
+                        <form onSubmit={handleSubmit} className="p-4 border-t border-white/20 flex-shrink-0 bg-white/5">
+                            <div className="flex space-x-3">
                                 <input
                                     ref={inputRef}
                                     type="text"
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
-                                    placeholder="Discuss your project..."
+                                    placeholder="Type your message..."
                                     disabled={isProcessing}
-                                    className="flex-1 bg-white/10 border border-white/20 rounded-full px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#A8977A] focus:ring-1 focus:ring-[#A8977A] transition-all disabled:opacity-50"
+                                    className="flex-1 bg-white/10 border border-white/20 rounded-full px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#A8977A] focus:ring-1 focus:ring-[#A8977A] transition-all disabled:opacity-50 text-lg"
                                     style={{ fontFamily: "Neuton, serif" }}
                                 />
                                 <button
                                     type="submit"
                                     disabled={!inputValue.trim() || isProcessing}
-                                    className="bg-gradient-to-r from-[#A8977A] to-[#8B7355] hover:from-[#8B7355] hover:to-[#6D5D42] disabled:from-white/20 disabled:to-white/20 text-white rounded-full px-6 py-3 transition-all disabled:cursor-not-allowed shadow-lg"
+                                    className="bg-gradient-to-r from-[#A8977A] to-[#8B7355] hover:from-[#8B7355] hover:to-[#6D5D42] disabled:from-white/20 disabled:to-white/20 text-white rounded-full px-6 py-3 transition-all disabled:cursor-not-allowed shadow-lg font-medium"
                                     style={{ fontFamily: "Neuton, serif" }}
                                 >
-                                    {isProcessing ? '...' : 'Send'}
+                                    {isProcessing ? (
+                                        <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
+                                            <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                                            <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                                        </svg>
+                                    ) : (
+                                        'Send'
+                                    )}
                                 </button>
                             </div>
                         </form>

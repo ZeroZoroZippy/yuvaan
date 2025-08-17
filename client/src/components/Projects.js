@@ -193,7 +193,7 @@ function Projects() {
           scrollBehavior: 'smooth'
         }}
       >
-        <h2 className="text-3xl font-bold mb-4 text-[#A8977A]" style={{ fontFamily: 'Syne, sans-serif' }}>Work</h2>
+        <h2 className="text-3xl font-bold mb-4 text-[#A8977A]" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Work</h2>
 
 
 
@@ -203,7 +203,7 @@ function Projects() {
               <div className="flex justify-between items-center">
                 <h3
                   className="font-semibold text-[#A8977A] cursor-pointer hover:text-[#45372B] transition-colors"
-                  style={{ fontSize: '1.25rem', fontFamily: 'Syne, sans-serif' }}
+                  style={{ fontSize: '1.25rem', fontFamily: 'Bubblegum Sans, sans-serif' }}
                   onClick={() => handleOpenProject(project.key)}
                   role="button"
                   tabIndex={0}

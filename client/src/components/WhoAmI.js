@@ -73,7 +73,7 @@ function WhoAmI() {
 
       {/* Text Content */}
       <div className="absolute top-[6rem] left-2 lg:top-[7rem] lg:left-4">
-        <h2 className="text-[1.75rem] lg:text-[2rem] font-medium text-[#A8977A] text-left px-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+        <h2 className="text-[1.75rem] lg:text-[2rem] font-medium text-[#A8977A] text-left px-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
           Where web meets intelligence.
         </h2>
       </div>

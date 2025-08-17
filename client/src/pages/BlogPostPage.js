@@ -117,7 +117,7 @@ function BlogPostPage() {
             relative before:content-[''] before:absolute before:left-0 before:bottom-[-8px] 
             before:w-16 before:h-1 before:bg-gradient-to-r before:from-[#A8977A] before:to-[#E8B85C] 
             before:rounded-full"
-            style={{ fontFamily: 'Syne, sans-serif' }}
+            style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
             dangerouslySetInnerHTML={{ __html: parseMarkdown(line.slice(2)) }}>
           </h1>
         );
@@ -127,7 +127,7 @@ function BlogPostPage() {
           <h2 key={index} className="text-3xl font-bold text-[#A8977A] mb-6 mt-10 
             relative before:content-[''] before:absolute before:left-0 before:bottom-[-6px] 
             before:w-12 before:h-0.5 before:bg-[#A8977A] before:rounded-full"
-            style={{ fontFamily: 'Syne, sans-serif' }}
+            style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
             dangerouslySetInnerHTML={{ __html: parseMarkdown(line.slice(3)) }}>
           </h2>
         );
@@ -135,7 +135,7 @@ function BlogPostPage() {
       if (line.startsWith('### ')) {
         return (
           <h3 key={index} className="text-2xl font-bold text-[#A8977A] mb-4 mt-8"
-            style={{ fontFamily: 'Syne, sans-serif' }}
+            style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
             dangerouslySetInnerHTML={{ __html: parseMarkdown(line.slice(4)) }}>
           </h3>
         );
@@ -264,7 +264,7 @@ function BlogPostPage() {
 
                 {/* Title */}
                 <h1 className="text-5xl font-bold text-white leading-tight mb-6 max-w-4xl"
-                  style={{ fontFamily: 'Syne, sans-serif' }}>
+                  style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                   {post.title}
                 </h1>
 
@@ -296,7 +296,7 @@ function BlogPostPage() {
               <div className={`${animationStage >= 2 ? 'animate-fade-scale-in' : 'animate-hidden'} mb-8`}>
                 <div className="rounded-2xl p-8 shadow-lg border border-[#A8977A]/10"
                   style={{ backgroundColor: '#161711' }}>
-                  <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                     Article Summary
                   </h2>
                   <p className="text-[#A8977A]/80 leading-relaxed text-lg" style={{ fontFamily: 'Neuton, serif' }}>
@@ -315,7 +315,7 @@ function BlogPostPage() {
 
                   {/* Tags Section */}
                   <div className="mt-12 pt-8 border-t border-[#A8977A]/20">
-                    <h3 className="text-lg font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                    <h3 className="text-lg font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                       Tags
                     </h3>
                     <div className="flex flex-wrap gap-3">
@@ -342,7 +342,7 @@ function BlogPostPage() {
               <div className={`${animationStage >= 2 ? 'animate-fade-scale-in' : 'animate-hidden'} mb-8 sticky top-28`}>
                 <div className="rounded-2xl p-6 shadow-lg border border-[#A8977A]/10"
                   style={{ backgroundColor: '#A8977A' }}>
-                  <h3 className="text-xl font-bold text-[#45372B] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  <h3 className="text-xl font-bold text-[#45372B] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                     Quick Navigation
                   </h3>
 
@@ -384,7 +384,7 @@ function BlogPostPage() {
               <div className={`${animationStage >= 4 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
                 <div className="rounded-2xl p-8 shadow-lg border border-[#A8977A]/10"
                   style={{ backgroundColor: '#161711' }}>
-                  <h2 className="text-3xl font-bold text-[#A8977A] mb-8" style={{ fontFamily: 'Syne, sans-serif' }}>
+                  <h2 className="text-3xl font-bold text-[#A8977A] mb-8" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                     Continue Reading
                   </h2>
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -409,7 +409,7 @@ function BlogPostPage() {
                         <div className="absolute bottom-0 left-0 right-0 p-6">
                           <h3 className="text-lg font-bold text-white mb-2 line-clamp-2 
                             group-hover:text-[#A8977A] transition-colors duration-300"
-                            style={{ fontFamily: 'Syne, sans-serif' }}>
+                            style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                             {relatedPost.title}
                           </h3>
                           <p className="text-[#A8977A]/80 text-sm line-clamp-2 mb-3"
@@ -477,7 +477,7 @@ function BlogPostPage() {
                   </div>
 
                   <h1 className="text-2xl font-bold text-white leading-tight mb-4"
-                    style={{ fontFamily: 'Syne, sans-serif' }}>
+                    style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                     {post.title}
                   </h1>
 
@@ -498,7 +498,7 @@ function BlogPostPage() {
           <div className={`${animationStage >= 2 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
             <div className="rounded-2xl p-6 shadow-lg border border-[#A8977A]/10"
               style={{ backgroundColor: '#161711' }}>
-              <h2 className="text-xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+              <h2 className="text-xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                 Article Summary
               </h2>
               <p className="text-[#A8977A]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
@@ -517,7 +517,7 @@ function BlogPostPage() {
 
               {/* Mobile Tags */}
               <div className="mt-8 pt-6 border-t border-[#A8977A]/20">
-                <h3 className="text-lg font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                <h3 className="text-lg font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                   Tags
                 </h3>
                 <div className="flex flex-wrap gap-2">
@@ -541,7 +541,7 @@ function BlogPostPage() {
             <div className={`${animationStage >= 4 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
               <div className="rounded-2xl p-6 shadow-lg border border-[#A8977A]/10"
                 style={{ backgroundColor: '#161711' }}>
-                <h2 className="text-xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+                <h2 className="text-xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                   Continue Reading
                 </h2>
                 <div className="space-y-4">
@@ -562,7 +562,7 @@ function BlogPostPage() {
 
                       <div className="absolute bottom-0 left-0 right-0 p-4">
                         <h3 className="text-base font-bold text-white mb-1 line-clamp-2"
-                          style={{ fontFamily: 'Syne, sans-serif' }}>
+                          style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                           {relatedPost.title}
                         </h3>
                         <div className="flex items-center gap-2 text-xs text-[#A8977A]/60">

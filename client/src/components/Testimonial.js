@@ -18,8 +18,8 @@ function Testimonial() {
 
       {/* Name and Title at top right - same line as profile icon */}
       <div className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-6 lg:right-6 text-right">
-        <h4 className="text-sm lg:text-base text-[#A8977A] font-medium" style={{ fontFamily: 'Syne, sans-serif' }}>Dr.Shruti Shetty</h4>
-        <h5 className="text-xs lg:text-sm text-[#A8977A] opacity-75" style={{ fontFamily: 'Syne, sans-serif' }}>Sarvodaya Dental Clinic</h5>
+        <h4 className="text-sm lg:text-base text-[#A8977A] font-medium" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Dr.Shruti Shetty</h4>
+        <h5 className="text-xs lg:text-sm text-[#A8977A] opacity-75" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Sarvodaya Dental Clinic</h5>
       </div>
 
       {/* Testimonial Quote - pushed to bottom */}
