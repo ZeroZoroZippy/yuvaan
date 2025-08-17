@@ -3,8 +3,11 @@ const cors = require('cors');
 const nodemailer = require('nodemailer');
 require('dotenv').config();
 
+const { OpenAI } = require('openai');
+const rateLimit = require('express-rate-limit');
+
 const app = express();
-const PORT = process.env.PORT || 5000; // Keep your existing port
+const PORT = process.env.PORT || 5000;
 
 // Middleware
 app.use(cors());
@@ -17,9 +20,13 @@ const CONFIG = {
   EMAIL_HOST: 'smtp.gmail.com',
   EMAIL_USER: process.env.EMAIL_USER,
   EMAIL_PASS: process.env.EMAIL_PASS,
-  YOUR_EMAIL: process.env.EMAIL_USER, // Use same email as contact form
+  YOUR_EMAIL: process.env.EMAIL_USER,
   SLACK_WEBHOOK: process.env.SLACK_WEBHOOK_URL
 };
+
+const openai = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY,
+});
 
 // Create email transporter (reusable for both contact form and chatbot)
 const createEmailTransporter = () => {
@@ -98,8 +105,6 @@ const sendChatbotEmailNotification = async (subject, htmlContent, isHighPriority
   }
 };
 
-// EXISTING ROUTES - Keep your current functionality
-
 // Health check endpoint (enhanced)
 app.get('/api/health', (req, res) => {
   res.json({ 
@@ -109,12 +114,13 @@ app.get('/api/health', (req, res) => {
       contactForm: '✅ Active',
       chatbotAPI: '✅ Active',
       emailService: CONFIG.EMAIL_USER ? '✅ Configured' : '❌ Not configured',
-      pushNotifications: CONFIG.PUSHOVER_TOKEN ? '✅ Configured' : '❌ Not configured'
+      pushNotifications: CONFIG.PUSHOVER_TOKEN ? '✅ Configured' : '❌ Not configured',
+      openAI: '✅ GPT-5-nano Ready'
     }
   });
 });
 
-// EXISTING Contact form endpoint - Keep exactly as is
+// Contact form endpoint
 app.post('/api/contact', async (req, res) => {
   const { name, email, message } = req.body;
 
@@ -124,14 +130,12 @@ app.post('/api/contact', async (req, res) => {
   }
 
   try {
-    // Create transporter with more specific Gmail configuration
     const transporter = createEmailTransporter();
 
     // Verify transporter configuration
     await transporter.verify();
     console.log('SMTP connection verified');
 
-    // Email options - use your email as sender to avoid spam issues
     const mailOptions = {
       from: `"Portfolio Contact" <${process.env.EMAIL_USER}>`,
       to: process.env.EMAIL_USER,
@@ -152,7 +156,6 @@ app.post('/api/contact', async (req, res) => {
       `
     };
 
-    // Send email
     const info = await transporter.sendMail(mailOptions);
     console.log('Email sent successfully:', info.messageId);
     
@@ -160,7 +163,6 @@ app.post('/api/contact', async (req, res) => {
   } catch (error) {
     console.error('Detailed error sending email:', error);
     
-    // More specific error messages
     if (error.code === 'EAUTH') {
       res.status(500).json({ error: 'Email authentication failed. Please check your email credentials.' });
     } else if (error.code === 'ECONNECTION') {
@@ -170,8 +172,6 @@ app.post('/api/contact', async (req, res) => {
     }
   }
 });
-
-// NEW CHATBOT ROUTES - Add these new endpoints
 
 // Chatbot lead recording endpoint
 app.post('/api/leads', async (req, res) => {
@@ -189,7 +189,6 @@ app.post('/api/leads', async (req, res) => {
                           lead.qualificationLevel === 'high' || 
                           lead.businessValue === 'high';
     
-    // Format lead data for notifications
     const leadSummary = `
 🤖 NEW CHATBOT LEAD ALERT!
 
@@ -199,25 +198,19 @@ app.post('/api/leads', async (req, res) => {
 ⭐ Quality: ${lead.qualificationLevel}
 💰 Business Value: ${lead.businessValue}
 📋 Next Action: ${lead.nextAction}
-🕐 Time: ${new Date(lead.timestamp).toLocaleString()}
+🕒 Time: ${new Date(lead.timestamp).toLocaleString()}
 
 Summary: ${lead.conversationSummary}
 
 🔗 From: Portfolio Chatbot
     `.trim();
 
-    // Send notifications concurrently (but don't fail if they do)
     const notificationPromises = [
-      // Push notification
       sendPushNotification(
         `🤖 New ${lead.qualificationLevel} chatbot lead${lead.email ? ` (${lead.email})` : ''} - ${lead.projectType || 'General'}`,
         isHighPriority ? 1 : 0
       ),
-      
-      // Slack notification
       sendSlackNotification(leadSummary, isHighPriority),
-      
-      // Email notification
       sendChatbotEmailNotification(
         `Chatbot Lead: ${lead.email || 'Anonymous'} - ${lead.qualificationLevel} quality`,
         createLeadEmailHtml(lead),
@@ -225,7 +218,6 @@ Summary: ${lead.conversationSummary}
       )
     ];
 
-    // Wait for all notifications (but don't fail if they do)
     await Promise.allSettled(notificationPromises);
 
     console.log('✅ Chatbot lead processed and notifications sent');
@@ -260,7 +252,7 @@ app.post('/api/unknown-questions', async (req, res) => {
 ❓ Chatbot Knowledge Gap Detected
 
 🆔 Conversation: ${conversationId}
-🕐 Time: ${new Date(timestamp).toLocaleString()}
+🕒 Time: ${new Date(timestamp).toLocaleString()}
 
 Questions that couldn't be answered:
 ${questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
@@ -268,7 +260,6 @@ ${questions.map((q, i) => `${i + 1}. ${q}`).join('\n')}
 💡 Consider adding these topics to your portfolio content or chatbot responses.
     `.trim();
 
-    // Send notifications for knowledge gaps
     await Promise.allSettled([
       sendPushNotification(`🤖 ${questions.length} unknown chatbot question(s)`, 0),
       sendSlackNotification(questionSummary, false),
@@ -411,11 +402,246 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📊 Health check: http://localhost:${PORT}/api/health`);
   
-  // Log configuration status
   console.log('\n📋 Configuration Status:');
   console.log(`📧 Email (Contact Form): ${CONFIG.EMAIL_USER ? '✅ Configured' : '❌ Not configured'}`);
-  console.log(`🤖 Chatbot API: ✅ Active`);
+  console.log(`🤖 Chatbot API: ✅ Active with GPT-5-nano`);
   console.log(`📱 Pushover: ${CONFIG.PUSHOVER_TOKEN ? '✅ Configured' : '❌ Not configured (optional)'}`);
   console.log(`💬 Slack: ${CONFIG.SLACK_WEBHOOK ? '✅ Configured' : '❌ Not configured (optional)'}`);
-  console.log('\n🎯 Ready for both contact forms and chatbot leads!');
+  console.log('\n🎯 Ready for both contact forms and chatbot leads with GPT-5!');
+});
+
+// OpenAI Chat endpoint - OPTIMIZED FOR GPT-5-NANO
+app.post('/api/chat', async (req, res) => {
+  try {
+    const { messages, max_tokens = 500 } = req.body; // Increased default for GPT-5
+    const MODEL = process.env.OPENAI_MODEL || 'gpt-5-nano';
+
+    console.log('🤖 OpenAI GPT-5 Request:', {
+      messageCount: messages.length,
+      lastMessage: messages[messages.length - 1]?.content?.substring(0, 100) + '...',
+      model: MODEL,
+      max_completion_tokens: max_tokens
+    });
+
+    // Validate request
+    if (!messages || !Array.isArray(messages) || messages.length === 0) {
+      return res.status(400).json({ 
+        error: 'Invalid messages format',
+        details: 'Messages must be a non-empty array'
+      });
+    }
+
+    // Validate OpenAI API key exists
+    if (!process.env.OPENAI_API_KEY) {
+      console.error('❌ OPENAI_API_KEY not configured');
+      return res.status(500).json({
+        error: 'OpenAI not configured',
+        message: 'Server configuration error - API key missing'
+      });
+    }
+
+    // Build parameters based on model type
+    let completionParams = {
+      model: MODEL,
+      messages: messages
+    };
+
+    // Check if it's a GPT-5 model
+    if (MODEL.includes('gpt-5')) {
+      // GPT-5 specific parameters
+      completionParams.max_completion_tokens = max_tokens;
+      // GPT-5 doesn't support temperature, top_p, etc.
+    } else {
+      // GPT-4 and GPT-3.5 parameters
+      completionParams.max_tokens = max_tokens;
+      completionParams.temperature = 0.7;
+      completionParams.top_p = 0.9;
+      completionParams.frequency_penalty = 0.3;
+      completionParams.presence_penalty = 0.3;
+    }
+
+    // Call OpenAI API
+    const completion = await openai.chat.completions.create(completionParams);
+
+    const response = completion.choices[0]?.message?.content;
+
+    // Handle empty responses (GPT-5 quirk)
+    if (!response || response.trim() === '') {
+      console.warn('⚠️ Empty response from GPT-5, retrying with more tokens...');
+      
+      // Retry with significantly more tokens
+      const retryCompletion = await openai.chat.completions.create({
+        model: MODEL,
+        messages: messages,
+        max_completion_tokens: 1000
+      });
+      
+      const retryResponse = retryCompletion.choices[0]?.message?.content;
+      
+      if (!retryResponse || retryResponse.trim() === '') {
+        // Fallback to GPT-4 if GPT-5 still returns empty
+        console.log('📊 GPT-5 returned empty, falling back to GPT-4o-mini...');
+        
+        const fallbackCompletion = await openai.chat.completions.create({
+          model: 'gpt-4o-mini',
+          messages: messages,
+          max_tokens: 300,
+          temperature: 0.7
+        });
+        
+        res.json({
+          response: fallbackCompletion.choices[0]?.message?.content,
+          usage: fallbackCompletion.usage,
+          model: 'gpt-4o-mini',
+          note: 'Fallback from GPT-5 (empty response)'
+        });
+        return;
+      }
+      
+      res.json({ 
+        response: retryResponse,
+        usage: retryCompletion.usage,
+        model: MODEL,
+        note: 'Required token increase for GPT-5 response'
+      });
+      return;
+    }
+
+    console.log('✅ GPT-5 Response generated:', {
+      responseLength: response.length,
+      tokensUsed: completion.usage?.total_tokens || 'unknown',
+      reasoningTokens: completion.usage?.completion_tokens_details?.reasoning_tokens,
+      preview: response.substring(0, 100) + '...'
+    });
+
+    // Log usage for monitoring (GPT-5 costs)
+    if (completion.usage) {
+      // GPT-5-nano pricing (estimated based on typical OpenAI patterns)
+      const inputCost = (completion.usage.prompt_tokens / 1000000) * 0.15; // Estimated
+      const outputCost = (completion.usage.completion_tokens / 1000000) * 0.60; // Estimated
+      
+      console.log('📊 Token Usage:', {
+        prompt_tokens: completion.usage.prompt_tokens,
+        completion_tokens: completion.usage.completion_tokens,
+        reasoning_tokens: completion.usage.completion_tokens_details?.reasoning_tokens,
+        total_tokens: completion.usage.total_tokens,
+        estimated_cost: `$${(inputCost + outputCost).toFixed(6)}`
+      });
+    }
+
+    res.json({ 
+      response: response,
+      usage: completion.usage,
+      model: MODEL,
+      reasoning_tokens: completion.usage?.completion_tokens_details?.reasoning_tokens
+    });
+
+  } catch (error) {
+    console.error('❌ OpenAI API Error Details:', {
+      message: error.message,
+      code: error.code,
+      status: error.status || error.response?.status,
+      type: error.type,
+      response: error.response?.data
+    });
+
+    // Enhanced error handling
+    if (error.response?.status === 401 || error.status === 401) {
+      res.status(401).json({ 
+        error: 'Invalid OpenAI API key',
+        message: 'Please check your OPENAI_API_KEY environment variable'
+      });
+    } else if (error.response?.status === 429 || error.status === 429) {
+      res.status(429).json({ 
+        error: 'Rate limit exceeded',
+        message: 'Too many requests to OpenAI API',
+        retryAfter: error.response?.headers?.['retry-after'] || '60 seconds'
+      });
+    } else if (error.response?.status === 402 || error.status === 402) {
+      res.status(402).json({ 
+        error: 'OpenAI quota exceeded',
+        message: 'Please check your OpenAI billing settings'
+      });
+    } else if (error.response?.status === 404 || error.status === 404) {
+      res.status(404).json({
+        error: 'Model not available',
+        message: `${MODEL} may not be enabled for your account`,
+        suggestion: 'Try using gpt-4o-mini or gpt-3.5-turbo'
+      });
+    } else if (error.code === 'ENOTFOUND') {
+      res.status(503).json({
+        error: 'Network error',
+        message: 'Cannot reach OpenAI servers - check internet connection'
+      });
+    } else {
+      res.status(500).json({ 
+        error: 'OpenAI API call failed',
+        message: error.message || 'Unknown error occurred',
+        details: process.env.NODE_ENV === 'development' ? {
+          code: error.code,
+          type: error.type,
+          status: error.status || error.response?.status,
+          data: error.response?.data
+        } : undefined
+      });
+    }
+  }
+});
+
+// Health check for OpenAI - GPT-5 aware
+app.get('/api/openai-health', async (req, res) => {
+  try {
+    if (!process.env.OPENAI_API_KEY) {
+      throw new Error('OPENAI_API_KEY not configured');
+    }
+
+    const MODEL = process.env.OPENAI_MODEL || 'gpt-5-nano';
+
+    // Test with appropriate parameters for the model
+    const testParams = MODEL.includes('gpt-5') 
+      ? {
+          model: MODEL,
+          messages: [{ role: 'user', content: 'Say OK' }],
+          max_completion_tokens: 100
+        }
+      : {
+          model: MODEL,
+          messages: [{ role: 'user', content: 'Say OK' }],
+          max_tokens: 5,
+          temperature: 0
+        };
+
+    const testCompletion = await openai.chat.completions.create(testParams);
+
+    res.json({
+      status: 'healthy',
+      openai: '✅ Connected',
+      model: MODEL,
+      modelType: MODEL.includes('gpt-5') ? 'GPT-5 (Reasoning Model)' : 'Standard Model',
+      apiKeyConfigured: true,
+      test_response: testCompletion.choices[0]?.message?.content,
+      reasoning_tokens_used: testCompletion.usage?.completion_tokens_details?.reasoning_tokens,
+      available_models: [
+        'gpt-5-nano ✨ (NEW - You have access!)',
+        'gpt-5-mini',
+        'gpt-5',
+        'gpt-4o-mini',
+        'gpt-4-turbo-preview',
+        'gpt-3.5-turbo'
+      ],
+      timestamp: new Date().toISOString()
+    });
+
+  } catch (error) {
+    console.error('OpenAI health check failed:', error.message);
+    res.status(500).json({
+      status: 'unhealthy',
+      openai: '❌ Connection failed',
+      apiKeyConfigured: !!process.env.OPENAI_API_KEY,
+      error: error.message,
+      suggestion: 'Check your OPENAI_API_KEY and model settings',
+      fallback_models: ['gpt-4o-mini', 'gpt-3.5-turbo'],
+      timestamp: new Date().toISOString()
+    });
+  }
 });

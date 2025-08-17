@@ -1,3 +1,4 @@
+// Enhanced ChatbotContext.js with OpenAI Integration
 import React, { createContext, useContext, useState, useRef } from 'react';
 import analyticsService from '../services/analyticsService';
 import { yuvaanKnowledge, systemPromptConfig } from '../data/yuvaanKnowledge';
@@ -36,71 +37,33 @@ export const ChatbotProvider = ({ children }) => {
     budget: null,
     timeline: null,
     contactAttempted: false,
-    qualificationLevel: 'unknown' // low, medium, high, qualified
+    qualificationLevel: 'unknown'
   });
   const conversationContext = useRef({
     topics: new Set(),
     intents: new Set(),
     sentiments: [],
-    businessValue: 'unknown', // high, medium, low
+    businessValue: 'unknown',
     nextActions: []
   });
 
-  // Professional portfolio data - Yuvaan's actual information
-  const portfolioData = {
-    name: "Yuvaan Vithlani",
-    title: "Product Professional & Full-Stack Developer", 
-    specialties: ["Product Management", "Full-Stack Development", "UI/UX Design", "Healthcare Websites"],
-    recentProjects: [
-      "Sarvodaya Dental Clinic - Complete digital transformation with online booking",
-      "Mental Wellness Practice - Approachable therapy website that reduces barriers",
-      "Local SEO Product - Led beta launch at Cube with market research insights"
-    ],
-    experience: "Product management and development experience across startups and established companies",
-    contact: {
-      email: "yuvaanvithlani11@gmail.com",
-      linkedin: "linkedin.com/in/yuvaanvithlani",
-      portfolio: "yuvaan-portfolio.com"
-    },
-    pricing: {
-      starting: "₹35,000",
-      approach: "Investment varies based on project scope and business goals"
-    }
-  };
-
-  // Debug function for email detection
-  const debugEmailDetection = (text) => {
-    console.log('🔍 DEBUG: Analyzing message for email:', text);
-    
-    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
-    const emailMatches = text.match(emailRegex);
-    
-    console.log('📧 DEBUG: Email regex result:', emailMatches);
-    
-    if (emailMatches && emailMatches.length > 0) {
-      console.log('✅ DEBUG: Email detected:', emailMatches[0]);
-      return emailMatches[0];
-    } else {
-      console.log('❌ DEBUG: No email detected');
-      return null;
-    }
-  };
-
-  // Enhanced user message analysis with debugging
+  // Enhanced user message analysis
   const analyzeUserMessage = (text) => {
     const lowerText = text.toLowerCase();
     console.log('🔍 ANALYZE: Starting analysis of:', text);
     
-    // Email detection with debugging
-    const detectedEmail = debugEmailDetection(text);
-    if (detectedEmail) {
-      leadData.current.email = detectedEmail;
+    // Email detection
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+    const emailMatches = text.match(emailRegex);
+    
+    if (emailMatches && emailMatches.length > 0) {
+      const email = emailMatches[0];
+      leadData.current.email = email;
       leadData.current.qualificationLevel = 'qualified';
       conversationContext.current.intents.add('email_provided');
-      console.log('✅ EMAIL CAPTURED:', detectedEmail);
-      console.log('🎯 QUALIFICATION UPDATED TO: qualified');
+      console.log('✅ EMAIL CAPTURED:', email);
       
-      // Immediately record the lead when email is captured
+      // Record lead when email is captured
       setTimeout(() => {
         recordLeadData({
           leadQuality: 'qualified',
@@ -112,7 +75,7 @@ export const ChatbotProvider = ({ children }) => {
       }, 500);
     }
     
-    // Business context detection
+    // Business intent detection
     if (lowerText.includes('hire') || lowerText.includes('project') || lowerText.includes('work with')) {
       conversationContext.current.intents.add('hire_intent');
       if (!leadData.current.email) {
@@ -129,24 +92,13 @@ export const ChatbotProvider = ({ children }) => {
       console.log('💰 PRICING INQUIRY detected');
     }
     
-    if (lowerText.includes('company') || lowerText.includes('business')) {
-      conversationContext.current.intents.add('business_inquiry');
-      if (leadData.current.qualificationLevel === 'unknown') {
-        leadData.current.qualificationLevel = 'medium';
-      }
-      console.log('🏢 BUSINESS INQUIRY detected');
-    }
-    
     // Project type detection
     if (lowerText.includes('ecommerce') || lowerText.includes('online store')) {
       leadData.current.projectType = 'ecommerce';
-      console.log('🛒 PROJECT TYPE: ecommerce');
     } else if (lowerText.includes('website') || lowerText.includes('web')) {
       leadData.current.projectType = 'website';
-      console.log('🌐 PROJECT TYPE: website');
     } else if (lowerText.includes('app') || lowerText.includes('application')) {
       leadData.current.projectType = 'application';
-      console.log('📱 PROJECT TYPE: application');
     }
     
     // Name detection
@@ -164,16 +116,95 @@ export const ChatbotProvider = ({ children }) => {
         break;
       }
     }
-    
-    console.log('📊 CURRENT LEAD DATA:', {
-      email: leadData.current.email,
-      name: leadData.current.name,
-      qualificationLevel: leadData.current.qualificationLevel,
-      projectType: leadData.current.projectType
-    });
   };
 
-  // Lead recording function with debugging
+  // OpenAI API integration
+  const generateOpenAIResponse = async (userMessage, conversationHistory) => {
+    try {
+      // Build system prompt with Yuvaan's knowledge and current context
+      const systemPrompt = `${systemPromptConfig.identity}
+
+${systemPromptConfig.tone}
+
+${systemPromptConfig.approach}
+
+YUVAAN'S BACKGROUND:
+${yuvaanKnowledge.personal.background}
+
+YUVAAN'S APPROACH:
+${yuvaanKnowledge.personal.approach}
+
+YUVAAN'S EXPERIENCE:
+${yuvaanKnowledge.experience.detailed}
+
+RECENT PROJECTS:
+${yuvaanKnowledge.experience.projects}
+
+PRICING APPROACH:
+${yuvaanKnowledge.conversationStyle.pricing}
+
+CURRENT CONVERSATION CONTEXT:
+- Lead qualification level: ${leadData.current.qualificationLevel}
+- Email captured: ${leadData.current.email ? 'Yes' : 'No'}
+- Project type: ${leadData.current.projectType || 'Unknown'}
+- Detected intents: ${Array.from(conversationContext.current.intents).join(', ') || 'None'}
+
+CRITICAL RULES:
+1. You are Saarth, Yuvaan's AI assistant - always make this clear
+2. Speak about Yuvaan in third person ("Yuvaan does this..." not "I do this...")
+3. When capturing emails, say "I'll make sure Yuvaan gets this and reaches out"
+4. Focus on understanding needs and facilitating connection with Yuvaan
+5. Be consultative, curious, and value-driven
+6. If someone shows hiring intent, try to capture their email
+7. Keep responses under 100 words unless explaining something complex
+8. Use a friendly, approachable tone that reflects Yuvaan's personality
+
+SPECIAL INSTRUCTIONS:
+- If they ask about pricing, mention projects start around ₹35,000 but emphasize connecting with Yuvaan for specifics
+- If they want to hire or discuss projects, capture email to facilitate Yuvaan's outreach
+- If they ask about portfolio, mention Sarvodaya Dental Clinic and mental wellness projects
+- Always position as facilitating connection with Yuvaan, not replacing him`;
+
+      // Build conversation history for context
+      const conversationMessages = [
+        { role: 'system', content: systemPrompt },
+        ...conversationHistory.map(msg => ({
+          role: msg.sender === 'user' ? 'user' : 'assistant',
+          content: msg.text
+        })),
+        { role: 'user', content: userMessage }
+      ];
+
+      // Call OpenAI API
+      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
+      const response = await fetch(`${apiUrl}/api/chat`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          messages: conversationMessages,
+          // temperature: 0.7, // Removed - gpt-5-nano only supports default
+          max_tokens: 500
+        })
+      });
+
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+
+      const data = await response.json();
+      return data.response;
+
+    } catch (error) {
+      console.error('OpenAI API error:', error);
+      
+      // Fallback response if API fails
+      return `I'm having a bit of trouble processing that right now. But I'd love to make sure Yuvaan can help you properly! What's your email? I'll have him reach out directly to discuss your needs.`;
+    }
+  };
+
+  // Lead recording function
   const recordLeadData = (analysis) => {
     const leadRecord = {
       conversationId: conversationId.current,
@@ -192,7 +223,6 @@ export const ChatbotProvider = ({ children }) => {
     
     console.log('📧 RECORDING LEAD DATA:', leadRecord);
     
-    // Send to your backend API
     const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
     fetch(`${apiUrl}/api/leads`, {
       method: 'POST',
@@ -214,125 +244,7 @@ export const ChatbotProvider = ({ children }) => {
     })
     .catch(err => {
       console.error('❌ LEAD RECORDING FAILED:', err);
-      console.error('🔧 Check if server is running on port 8000');
-      console.error('🔧 Check server/.env file for notification credentials');
     });
-  };
-
-  // Record unknown questions
-  const recordUnknownQuestion = (question) => {
-    console.log('❓ RECORDING UNKNOWN QUESTION:', question);
-    
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
-    fetch(`${apiUrl}/api/unknown-questions`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        questions: [question],
-        conversationId: conversationId.current,
-        timestamp: Date.now()
-      })
-    })
-    .then(response => response.json())
-    .then(data => {
-      console.log('✅ UNKNOWN QUESTION RECORDED:', data);
-    })
-    .catch(err => {
-      console.error('❌ UNKNOWN QUESTION RECORDING FAILED:', err);
-    });
-  };
-
-  // Professional response generation - Yuvaan speaking as himself
-  const generateProfessionalResponse = (userMessage) => {
-    const lowerMessage = userMessage.toLowerCase();
-    const context = conversationContext.current;
-    const intents = Array.from(context.intents);
-    
-    console.log('🤖 GENERATING RESPONSE for:', userMessage);
-    console.log('🎯 Current intents:', intents);
-    console.log('📊 Lead qualification:', leadData.current.qualificationLevel);
-
-    // Email acknowledgment with clear AI identity and handoff
-    if (leadData.current.email && intents.includes('email_provided')) {
-      const responses = [
-        `Perfect! I've captured ${leadData.current.email} and I'll make sure Yuvaan gets this conversation along with your details. He typically reaches out within 24-48 hours with specific thoughts about your project. While we're chatting though, what's the main challenge you're hoping to solve?`,
-        `Great! I've noted ${leadData.current.email} and will pass everything along to Yuvaan. He'll reach out directly within the next day or two with relevant examples and ideas. I'm curious though - what's been the biggest frustration with your current digital presence?`,
-        `Excellent! I'll make sure Yuvaan sees ${leadData.current.email} and our entire conversation. He'll follow up personally with some tailored recommendations. In the meantime, help me understand - what does success look like for this project?`
-      ];
-      return responses[Math.floor(Math.random() * responses.length)];
-    }
-
-    // Consultative lead capture with clear AI role
-    if (intents.includes('hire_intent') && !leadData.current.email) {
-      return `I'd love to connect you with Yuvaan to discuss this! He's really good at understanding unique project needs and finding the right solutions. What's your email? I'll make sure he gets our conversation and reaches out directly to dive deeper into your goals.`;
-    }
-
-    // Strategic pricing conversations with handoff
-    if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('budget')) {
-      if (!leadData.current.email) {
-        return `Great question! Yuvaan's projects typically start around ${portfolioData.pricing.starting} for complete websites, but it really depends on what you're building together. He's much better at explaining the investment once he understands your specific goals. What's your email? I'll make sure he reaches out with relevant examples and can discuss pricing properly.`;
-      } else {
-        return `Since I have your email, Yuvaan will include detailed investment information when he reaches out. Generally, projects start around ${portfolioData.pricing.starting}, but he always focuses on what kind of results you're looking for first. Are you trying to increase bookings, build trust with customers, or solve a specific problem?`;
-      }
-    }
-
-    // Portfolio showcase with clear attribution
-    if (lowerMessage.includes('portfolio') || lowerMessage.includes('work') || lowerMessage.includes('projects')) {
-      return `I'd love to show you some of Yuvaan's work! He's been focusing on healthcare and wellness websites lately - like transforming Sarvodaya Dental Clinic's patient experience and creating a welcoming mental wellness practice site. He's also worked on AI product launches and community platforms. What type of business are you in? I can point out the most relevant examples, and Yuvaan can share more details when you connect.`;
-    }
-
-    // Experience with clear attribution
-    if (lowerMessage.includes('experience') || lowerMessage.includes('background') || lowerMessage.includes('skills')) {
-      return `Yuvaan's path has been really interesting! He started in mechanical engineering, then moved into product management at companies like Cube and TimelyAI, where he learned to think strategically about user needs. Now he combines that product thinking with full-stack development. What I find impressive is how he sees both big-picture business goals and technical details. What's your background - what got you thinking about improving your digital presence?`;
-    }
-
-    // Natural contact facilitation
-    if (lowerMessage.includes('contact') || lowerMessage.includes('reach') || lowerMessage.includes('email')) {
-      if (!leadData.current.contactAttempted) {
-        leadData.current.contactAttempted = true;
-        return `The best way is definitely email - I can make sure Yuvaan gets our conversation and your details. He usually responds within a day or two with relevant examples and questions about your specific needs. What's your email address?`;
-      }
-      return `You can reach Yuvaan directly at ${portfolioData.contact.email} or connect on LinkedIn. I'll also make sure he sees our conversation here so he can reference what we've discussed. What's the best way to describe what you're hoping to accomplish?`;
-    }
-
-    // Project exploration with clear positioning
-    if (!leadData.current.projectType && (lowerMessage.includes('website') || lowerMessage.includes('app') || lowerMessage.includes('platform'))) {
-      return `That sounds like it could be really impactful! Yuvaan loves working on projects where good design genuinely helps businesses grow. What industry are you in? He's been getting great results with healthcare and wellness businesses lately, but I'd love to understand your specific situation so I can give him better context when you connect.`;
-    }
-
-    // Warm greetings with clear AI positioning
-    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-      return `Hey! Really glad you're here. I help Yuvaan connect with people who need great digital experiences - not just websites that look good, but ones that solve real problems and drive results. What's bringing you to think about your website or digital presence today?`;
-    }
-
-    // Gracious acknowledgments with curiosity
-    if (lowerMessage.includes('thank') || lowerMessage.includes('thanks')) {
-      return `Of course! I'm genuinely excited to learn more about what you're working on. What's been the biggest challenge with your current digital setup, or what opportunity are you most excited about?`;
-    }
-
-    // Problem-solving discovery questions
-    if (lowerMessage.includes('problem') || lowerMessage.includes('challenge') || lowerMessage.includes('issue')) {
-      return `I'd love to understand more about what you're dealing with. Often the best solutions come from really understanding the underlying challenge, not just the symptoms. What's been the most frustrating part of your current situation?`;
-    }
-
-    // Business-focused responses
-    if (lowerMessage.includes('business') || lowerMessage.includes('company') || lowerMessage.includes('customers')) {
-      return `That's exactly the kind of thinking I love - focusing on how digital tools can actually help your business serve customers better. What's your business about, and what's working well versus what could be improved in how you connect with customers online?`;
-    }
-
-    // Consultative default responses with strategic thinking
-    const consultativeResponses = [
-      `That's a really interesting point. I'm curious - what's the context behind that? Understanding the full picture usually helps me give much better guidance.`,
-      `Great question! Every situation is different, so I'd love to understand more about your specific goals. What does success look like for you in this area?`,
-      `That makes me think about a few different approaches. Before I share some ideas, help me understand - what's driving this need right now? Is there a particular challenge or opportunity you're focused on?`,
-      `I've seen similar situations before, and there are usually some creative ways to approach it. What constraints are you working with, and what would an ideal outcome look like?`,
-      `Absolutely! I'd love to dive deeper into that with you. What's your email? I can send you some relevant examples and thoughts, and we can explore how it might work for your specific situation.`
-    ];
-
-    // Record as unknown question for improvement
-    recordUnknownQuestion(userMessage);
-    
-    return consultativeResponses[Math.floor(Math.random() * consultativeResponses.length)];
   };
 
   const openChatbot = () => {
@@ -342,7 +254,6 @@ export const ChatbotProvider = ({ children }) => {
     
     console.log('🚀 CHATBOT OPENED - Session started');
     
-    // Track professional interaction start
     try {
       analyticsService.trackChatbotInteraction('session_start', messages.length, 'professional_inquiry', {
         conversationId: conversationId.current,
@@ -361,15 +272,11 @@ export const ChatbotProvider = ({ children }) => {
     
     const sessionAnalysis = analyzeBusinessConversation();
     
-    console.log('📊 SESSION ANALYSIS:', sessionAnalysis);
-    
-    // Send lead data if qualified
     if (leadData.current.email || sessionAnalysis.leadQuality === 'high') {
       console.log('📧 Recording final lead data on close');
       recordLeadData(sessionAnalysis);
     }
 
-    // Track session end
     try {
       analyticsService.trackChatbotInteraction('session_end', messages.length, 'professional_conclusion', {
         ...sessionAnalysis,
@@ -388,7 +295,7 @@ export const ChatbotProvider = ({ children }) => {
     }, 800);
   };
 
-  const addMessage = (text, sender = 'user') => {
+  const addMessage = async (text, sender = 'user') => {
     console.log(`💬 NEW MESSAGE - ${sender}:`, text);
     
     const newMessage = {
@@ -404,19 +311,25 @@ export const ChatbotProvider = ({ children }) => {
       // Analyze user message for lead qualification
       analyzeUserMessage(text);
       
-      // Generate professional AI response
+      // Generate OpenAI response
       setIsProcessing(true);
-      setTimeout(() => {
-        try {
-          const response = generateProfessionalResponse(text);
-          console.log('🤖 BOT RESPONSE:', response);
+      try {
+        // Get conversation history (last 10 messages for context)
+        const recentMessages = messages.slice(-10);
+        const response = await generateOpenAIResponse(text, recentMessages);
+        
+        console.log('🤖 OPENAI RESPONSE:', response);
+        
+        setTimeout(() => {
           addMessage(response, 'bot');
-        } catch (error) {
-          console.error('Response generation failed:', error);
-          addMessage("I apologize for the delay. Let me connect you directly with Yuvaan for the best assistance. Could you share your email so he can reach out personally?", 'bot');
-        }
+          setIsProcessing(false);
+        }, 800); // Slight delay for natural feel
+        
+      } catch (error) {
+        console.error('Response generation failed:', error);
         setIsProcessing(false);
-      }, 1200); // Professional response timing
+        addMessage("I'm having a bit of trouble right now, but I'd love to make sure Yuvaan can help you! What's your email? I'll have him reach out directly.", 'bot');
+      }
     }
   };
 
@@ -444,15 +357,8 @@ export const ChatbotProvider = ({ children }) => {
       qualificationLevel: leadData.current.qualificationLevel,
       primaryIntent: intents[0] || 'general_inquiry',
       intents: intents,
-      recommendedFollowUp: determineFollowUpAction()
+      recommendedFollowUp: leadData.current.email ? 'immediate_outreach' : 'nurture_lead'
     };
-  };
-
-  const determineFollowUpAction = () => {
-    if (leadData.current.email) return 'immediate_outreach';
-    if (conversationContext.current.intents.has('hire_intent')) return 'aggressive_follow_up';
-    if (conversationContext.current.intents.has('pricing_inquiry')) return 'proposal_ready';
-    return 'nurture_lead';
   };
 
   const resetSession = () => {
