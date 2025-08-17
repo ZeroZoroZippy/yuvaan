@@ -192,7 +192,31 @@ const Chatbot = () => {
         </div>
     );
 
-    // Lead quality indicator removed for production
+    // Lead quality indicator for internal tracking
+    const LeadQualityIndicator = () => {
+        if (process.env.NODE_ENV !== 'development') return null;
+        
+        const qualityColor = {
+            'high': '#22c55e',
+            'medium': '#f59e0b', 
+            'low': '#ef4444',
+            'unknown': '#6b7280'
+        };
+
+        return (
+            <div className="absolute top-2 left-2 bg-black/20 backdrop-blur-sm rounded px-2 py-1 text-xs">
+                <div className="flex items-center space-x-2">
+                    <div 
+                        className="w-2 h-2 rounded-full" 
+                        style={{ backgroundColor: qualityColor[leadData?.qualificationLevel || 'unknown'] }}
+                    ></div>
+                    <span className="text-white/70">
+                        {leadData?.qualificationLevel || 'unknown'} | {leadData?.email ? '📧' : '❌'}
+                    </span>
+                </div>
+            </div>
+        );
+    };
 
     if (!isOpen) return null;
 
@@ -240,23 +264,25 @@ const Chatbot = () => {
                     }}
                 >
                     <div className="bg-white/10 backdrop-blur-lg rounded-2xl h-full flex flex-col border border-white/20 shadow-2xl relative">
+                        {/* Development lead quality indicator */}
+                        <LeadQualityIndicator />
                         
                         {/* Professional Header */}
                         <div className="flex items-center justify-between p-4 border-b border-white/20 flex-shrink-0">
                             <div className="flex items-center space-x-3">
                                 <div className="relative">
                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#A8977A] to-[#8B7355] flex items-center justify-center">
-                                        <span className="text-white text-base font-bold">S</span>
+                                        <span className="text-white text-base font-bold">Y</span>
                                     </div>
                                     {/* Online status indicator */}
                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div>
                                     <h3 className="text-white font-semibold" style={{ fontFamily: "Syne, sans-serif" }}>
-                                        Saarth
+                                        Yuvaan's Assistant
                                     </h3>
                                     <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>
-                                        AI Assistant
+                                        Professional AI Representative
                                     </p>
                                 </div>
                             </div>
@@ -292,7 +318,7 @@ const Chatbot = () => {
                                                 : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
                                         }`}
                                     >
-                                        <p className="text-lg leading-relaxed" style={{ fontFamily: "Neuton, serif" }}>
+                                        <p className="text-sm leading-relaxed" style={{ fontFamily: "Neuton, serif" }}>
                                             {message.text}
                                         </p>
                                         <p className={`text-xs mt-2 ${
@@ -377,22 +403,23 @@ const Chatbot = () => {
                     }`}
                 >
                     <div className="bg-white/10 backdrop-blur-lg rounded-2xl w-full max-w-md h-[600px] flex flex-col border border-white/20 shadow-2xl relative">
+                        <LeadQualityIndicator />
                         
                         {/* Mobile Professional Header */}
                         <div className="flex items-center justify-between p-4 border-b border-white/20 flex-shrink-0">
                             <div className="flex items-center space-x-3">
                                 <div className="relative">
                                     <div className="w-8 h-8 rounded-full bg-gradient-to-br from-[#A8977A] to-[#8B7355] flex items-center justify-center">
-                                        <span className="text-white text-base font-bold">S</span>
+                                        <span className="text-white text-base font-bold">Y</span>
                                     </div>
                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div>
                                     <h3 className="text-white font-semibold" style={{ fontFamily: "Syne, sans-serif" }}>
-                                        Saarth
+                                        Yuvaan's Assistant
                                     </h3>
                                     <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>
-                                        AI Assistant
+                                        Professional AI Representative
                                     </p>
                                 </div>
                             </div>

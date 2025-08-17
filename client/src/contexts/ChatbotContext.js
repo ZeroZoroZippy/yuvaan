@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useRef } from 'react';
 import analyticsService from '../services/analyticsService';
+import { yuvaanKnowledge, systemPromptConfig } from '../data/yuvaanKnowledge';
 
 const ChatbotContext = createContext();
 
@@ -17,77 +18,379 @@ export const ChatbotProvider = ({ children }) => {
   const [messages, setMessages] = useState([
     {
       id: 1,
-      text: "Hi! I'm Saarth, Yuvaan's AI assistant. How can I help you today?",
+      text: "Hey there! I'm Saarth, Yuvaan's AI assistant. I help him connect with people who need great digital experiences. I can tell you about his work and approach, and if there's a good fit, I'll make sure you two get connected properly. What brings you here today?",
       sender: 'bot',
       timestamp: new Date()
     }
   ]);
+  const [isProcessing, setIsProcessing] = useState(false);
 
-  // Analytics tracking refs
-  const conversationId = useRef(`conv_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`);
+  // Professional context and lead tracking
+  const conversationId = useRef(`session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`);
   const sessionStartTime = useRef(null);
-  const userMessageCount = useRef(0);
-  const botMessageCount = useRef(1); // Start with 1 for initial greeting
-  const conversationTopics = useRef(new Set());
-  const userIntents = useRef(new Set());
-  const conversationSentiments = useRef([]);
+  const leadData = useRef({
+    email: null,
+    name: null,
+    company: null,
+    projectType: null,
+    budget: null,
+    timeline: null,
+    contactAttempted: false,
+    qualificationLevel: 'unknown' // low, medium, high, qualified
+  });
+  const conversationContext = useRef({
+    topics: new Set(),
+    intents: new Set(),
+    sentiments: [],
+    businessValue: 'unknown', // high, medium, low
+    nextActions: []
+  });
+
+  // Professional portfolio data - Yuvaan's actual information
+  const portfolioData = {
+    name: "Yuvaan Vithlani",
+    title: "Product Professional & Full-Stack Developer", 
+    specialties: ["Product Management", "Full-Stack Development", "UI/UX Design", "Healthcare Websites"],
+    recentProjects: [
+      "Sarvodaya Dental Clinic - Complete digital transformation with online booking",
+      "Mental Wellness Practice - Approachable therapy website that reduces barriers",
+      "Local SEO Product - Led beta launch at Cube with market research insights"
+    ],
+    experience: "Product management and development experience across startups and established companies",
+    contact: {
+      email: "yuvaanvithlani11@gmail.com",
+      linkedin: "linkedin.com/in/yuvaanvithlani",
+      portfolio: "yuvaan-portfolio.com"
+    },
+    pricing: {
+      starting: "₹35,000",
+      approach: "Investment varies based on project scope and business goals"
+    }
+  };
+
+  // Debug function for email detection
+  const debugEmailDetection = (text) => {
+    console.log('🔍 DEBUG: Analyzing message for email:', text);
+    
+    const emailRegex = /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g;
+    const emailMatches = text.match(emailRegex);
+    
+    console.log('📧 DEBUG: Email regex result:', emailMatches);
+    
+    if (emailMatches && emailMatches.length > 0) {
+      console.log('✅ DEBUG: Email detected:', emailMatches[0]);
+      return emailMatches[0];
+    } else {
+      console.log('❌ DEBUG: No email detected');
+      return null;
+    }
+  };
+
+  // Enhanced user message analysis with debugging
+  const analyzeUserMessage = (text) => {
+    const lowerText = text.toLowerCase();
+    console.log('🔍 ANALYZE: Starting analysis of:', text);
+    
+    // Email detection with debugging
+    const detectedEmail = debugEmailDetection(text);
+    if (detectedEmail) {
+      leadData.current.email = detectedEmail;
+      leadData.current.qualificationLevel = 'qualified';
+      conversationContext.current.intents.add('email_provided');
+      console.log('✅ EMAIL CAPTURED:', detectedEmail);
+      console.log('🎯 QUALIFICATION UPDATED TO: qualified');
+      
+      // Immediately record the lead when email is captured
+      setTimeout(() => {
+        recordLeadData({
+          leadQuality: 'qualified',
+          businessValue: 'high',
+          contactProvided: true,
+          primaryIntent: 'email_provided',
+          recommendedFollowUp: 'immediate_outreach'
+        });
+      }, 500);
+    }
+    
+    // Business context detection
+    if (lowerText.includes('hire') || lowerText.includes('project') || lowerText.includes('work with')) {
+      conversationContext.current.intents.add('hire_intent');
+      if (!leadData.current.email) {
+        leadData.current.qualificationLevel = 'high';
+      }
+      console.log('🎯 HIRE INTENT detected');
+    }
+    
+    if (lowerText.includes('price') || lowerText.includes('cost') || lowerText.includes('budget')) {
+      conversationContext.current.intents.add('pricing_inquiry');
+      if (leadData.current.qualificationLevel === 'unknown') {
+        leadData.current.qualificationLevel = 'medium';
+      }
+      console.log('💰 PRICING INQUIRY detected');
+    }
+    
+    if (lowerText.includes('company') || lowerText.includes('business')) {
+      conversationContext.current.intents.add('business_inquiry');
+      if (leadData.current.qualificationLevel === 'unknown') {
+        leadData.current.qualificationLevel = 'medium';
+      }
+      console.log('🏢 BUSINESS INQUIRY detected');
+    }
+    
+    // Project type detection
+    if (lowerText.includes('ecommerce') || lowerText.includes('online store')) {
+      leadData.current.projectType = 'ecommerce';
+      console.log('🛒 PROJECT TYPE: ecommerce');
+    } else if (lowerText.includes('website') || lowerText.includes('web')) {
+      leadData.current.projectType = 'website';
+      console.log('🌐 PROJECT TYPE: website');
+    } else if (lowerText.includes('app') || lowerText.includes('application')) {
+      leadData.current.projectType = 'application';
+      console.log('📱 PROJECT TYPE: application');
+    }
+    
+    // Name detection
+    const namePatterns = [
+      /my name is ([a-zA-Z\s]+)/i,
+      /i'm ([a-zA-Z\s]+)/i,
+      /i am ([a-zA-Z\s]+)/i
+    ];
+    
+    for (let pattern of namePatterns) {
+      const nameMatch = text.match(pattern);
+      if (nameMatch && nameMatch[1]) {
+        leadData.current.name = nameMatch[1].trim();
+        console.log('👤 NAME DETECTED:', nameMatch[1].trim());
+        break;
+      }
+    }
+    
+    console.log('📊 CURRENT LEAD DATA:', {
+      email: leadData.current.email,
+      name: leadData.current.name,
+      qualificationLevel: leadData.current.qualificationLevel,
+      projectType: leadData.current.projectType
+    });
+  };
+
+  // Lead recording function with debugging
+  const recordLeadData = (analysis) => {
+    const leadRecord = {
+      conversationId: conversationId.current,
+      timestamp: Date.now(),
+      email: leadData.current.email,
+      name: leadData.current.name,
+      projectType: leadData.current.projectType,
+      qualificationLevel: leadData.current.qualificationLevel,
+      businessValue: analysis.businessValue,
+      conversationSummary: `${analysis.leadQuality} quality lead${leadData.current.email ? ` with email ${leadData.current.email}` : ''}${leadData.current.projectType ? ` interested in ${leadData.current.projectType}` : ''}`,
+      nextAction: analysis.recommendedFollowUp,
+      source: 'portfolio_chatbot',
+      intents: Array.from(conversationContext.current.intents),
+      rawConversation: messages.map(m => `${m.sender}: ${m.text}`).join('\n')
+    };
+    
+    console.log('📧 RECORDING LEAD DATA:', leadRecord);
+    
+    // Send to your backend API
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+    fetch(`${apiUrl}/api/leads`, {
+      method: 'POST',
+      headers: { 
+        'Content-Type': 'application/json',
+        'Accept': 'application/json'
+      },
+      body: JSON.stringify(leadRecord)
+    })
+    .then(response => {
+      console.log('📡 API RESPONSE STATUS:', response.status);
+      if (!response.ok) {
+        throw new Error(`HTTP error! status: ${response.status}`);
+      }
+      return response.json();
+    })
+    .then(data => {
+      console.log('✅ LEAD RECORDED SUCCESSFULLY:', data);
+    })
+    .catch(err => {
+      console.error('❌ LEAD RECORDING FAILED:', err);
+      console.error('🔧 Check if server is running on port 8000');
+      console.error('🔧 Check server/.env file for notification credentials');
+    });
+  };
+
+  // Record unknown questions
+  const recordUnknownQuestion = (question) => {
+    console.log('❓ RECORDING UNKNOWN QUESTION:', question);
+    
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+    fetch(`${apiUrl}/api/unknown-questions`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        questions: [question],
+        conversationId: conversationId.current,
+        timestamp: Date.now()
+      })
+    })
+    .then(response => response.json())
+    .then(data => {
+      console.log('✅ UNKNOWN QUESTION RECORDED:', data);
+    })
+    .catch(err => {
+      console.error('❌ UNKNOWN QUESTION RECORDING FAILED:', err);
+    });
+  };
+
+  // Professional response generation - Yuvaan speaking as himself
+  const generateProfessionalResponse = (userMessage) => {
+    const lowerMessage = userMessage.toLowerCase();
+    const context = conversationContext.current;
+    const intents = Array.from(context.intents);
+    
+    console.log('🤖 GENERATING RESPONSE for:', userMessage);
+    console.log('🎯 Current intents:', intents);
+    console.log('📊 Lead qualification:', leadData.current.qualificationLevel);
+
+    // Email acknowledgment with clear AI identity and handoff
+    if (leadData.current.email && intents.includes('email_provided')) {
+      const responses = [
+        `Perfect! I've captured ${leadData.current.email} and I'll make sure Yuvaan gets this conversation along with your details. He typically reaches out within 24-48 hours with specific thoughts about your project. While we're chatting though, what's the main challenge you're hoping to solve?`,
+        `Great! I've noted ${leadData.current.email} and will pass everything along to Yuvaan. He'll reach out directly within the next day or two with relevant examples and ideas. I'm curious though - what's been the biggest frustration with your current digital presence?`,
+        `Excellent! I'll make sure Yuvaan sees ${leadData.current.email} and our entire conversation. He'll follow up personally with some tailored recommendations. In the meantime, help me understand - what does success look like for this project?`
+      ];
+      return responses[Math.floor(Math.random() * responses.length)];
+    }
+
+    // Consultative lead capture with clear AI role
+    if (intents.includes('hire_intent') && !leadData.current.email) {
+      return `I'd love to connect you with Yuvaan to discuss this! He's really good at understanding unique project needs and finding the right solutions. What's your email? I'll make sure he gets our conversation and reaches out directly to dive deeper into your goals.`;
+    }
+
+    // Strategic pricing conversations with handoff
+    if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('budget')) {
+      if (!leadData.current.email) {
+        return `Great question! Yuvaan's projects typically start around ${portfolioData.pricing.starting} for complete websites, but it really depends on what you're building together. He's much better at explaining the investment once he understands your specific goals. What's your email? I'll make sure he reaches out with relevant examples and can discuss pricing properly.`;
+      } else {
+        return `Since I have your email, Yuvaan will include detailed investment information when he reaches out. Generally, projects start around ${portfolioData.pricing.starting}, but he always focuses on what kind of results you're looking for first. Are you trying to increase bookings, build trust with customers, or solve a specific problem?`;
+      }
+    }
+
+    // Portfolio showcase with clear attribution
+    if (lowerMessage.includes('portfolio') || lowerMessage.includes('work') || lowerMessage.includes('projects')) {
+      return `I'd love to show you some of Yuvaan's work! He's been focusing on healthcare and wellness websites lately - like transforming Sarvodaya Dental Clinic's patient experience and creating a welcoming mental wellness practice site. He's also worked on AI product launches and community platforms. What type of business are you in? I can point out the most relevant examples, and Yuvaan can share more details when you connect.`;
+    }
+
+    // Experience with clear attribution
+    if (lowerMessage.includes('experience') || lowerMessage.includes('background') || lowerMessage.includes('skills')) {
+      return `Yuvaan's path has been really interesting! He started in mechanical engineering, then moved into product management at companies like Cube and TimelyAI, where he learned to think strategically about user needs. Now he combines that product thinking with full-stack development. What I find impressive is how he sees both big-picture business goals and technical details. What's your background - what got you thinking about improving your digital presence?`;
+    }
+
+    // Natural contact facilitation
+    if (lowerMessage.includes('contact') || lowerMessage.includes('reach') || lowerMessage.includes('email')) {
+      if (!leadData.current.contactAttempted) {
+        leadData.current.contactAttempted = true;
+        return `The best way is definitely email - I can make sure Yuvaan gets our conversation and your details. He usually responds within a day or two with relevant examples and questions about your specific needs. What's your email address?`;
+      }
+      return `You can reach Yuvaan directly at ${portfolioData.contact.email} or connect on LinkedIn. I'll also make sure he sees our conversation here so he can reference what we've discussed. What's the best way to describe what you're hoping to accomplish?`;
+    }
+
+    // Project exploration with clear positioning
+    if (!leadData.current.projectType && (lowerMessage.includes('website') || lowerMessage.includes('app') || lowerMessage.includes('platform'))) {
+      return `That sounds like it could be really impactful! Yuvaan loves working on projects where good design genuinely helps businesses grow. What industry are you in? He's been getting great results with healthcare and wellness businesses lately, but I'd love to understand your specific situation so I can give him better context when you connect.`;
+    }
+
+    // Warm greetings with clear AI positioning
+    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
+      return `Hey! Really glad you're here. I help Yuvaan connect with people who need great digital experiences - not just websites that look good, but ones that solve real problems and drive results. What's bringing you to think about your website or digital presence today?`;
+    }
+
+    // Gracious acknowledgments with curiosity
+    if (lowerMessage.includes('thank') || lowerMessage.includes('thanks')) {
+      return `Of course! I'm genuinely excited to learn more about what you're working on. What's been the biggest challenge with your current digital setup, or what opportunity are you most excited about?`;
+    }
+
+    // Problem-solving discovery questions
+    if (lowerMessage.includes('problem') || lowerMessage.includes('challenge') || lowerMessage.includes('issue')) {
+      return `I'd love to understand more about what you're dealing with. Often the best solutions come from really understanding the underlying challenge, not just the symptoms. What's been the most frustrating part of your current situation?`;
+    }
+
+    // Business-focused responses
+    if (lowerMessage.includes('business') || lowerMessage.includes('company') || lowerMessage.includes('customers')) {
+      return `That's exactly the kind of thinking I love - focusing on how digital tools can actually help your business serve customers better. What's your business about, and what's working well versus what could be improved in how you connect with customers online?`;
+    }
+
+    // Consultative default responses with strategic thinking
+    const consultativeResponses = [
+      `That's a really interesting point. I'm curious - what's the context behind that? Understanding the full picture usually helps me give much better guidance.`,
+      `Great question! Every situation is different, so I'd love to understand more about your specific goals. What does success look like for you in this area?`,
+      `That makes me think about a few different approaches. Before I share some ideas, help me understand - what's driving this need right now? Is there a particular challenge or opportunity you're focused on?`,
+      `I've seen similar situations before, and there are usually some creative ways to approach it. What constraints are you working with, and what would an ideal outcome look like?`,
+      `Absolutely! I'd love to dive deeper into that with you. What's your email? I can send you some relevant examples and thoughts, and we can explore how it might work for your specific situation.`
+    ];
+
+    // Record as unknown question for improvement
+    recordUnknownQuestion(userMessage);
+    
+    return consultativeResponses[Math.floor(Math.random() * consultativeResponses.length)];
+  };
 
   const openChatbot = () => {
     setIsOpen(true);
     setIsAnimating(true);
-    
-    // Track chatbot session start
     sessionStartTime.current = Date.now();
     
-    // REMOVED: Duplicate session start tracking
-    // The Chatbot.js component will handle session management via useAnalytics hook
+    console.log('🚀 CHATBOT OPENED - Session started');
     
-    // Track basic chatbot open event
-    analyticsService.trackChatbotInteraction('open', messages.length, 'chatbot_trigger', {
-      conversationId: conversationId.current,
-      sessionStartTime: sessionStartTime.current,
-      initialMessageCount: messages.length,
-      currentPage: window.location.pathname,
-      userAgent: navigator.userAgent.substring(0, 100),
-      timestamp: Date.now()
-    });
+    // Track professional interaction start
+    try {
+      analyticsService.trackChatbotInteraction('session_start', messages.length, 'professional_inquiry', {
+        conversationId: conversationId.current,
+        sessionStartTime: sessionStartTime.current,
+        currentPage: window.location.pathname,
+        referrer: document.referrer,
+        timestamp: Date.now()
+      });
+    } catch (error) {
+      console.warn('Analytics tracking error:', error);
+    }
   };
 
   const closeChatbot = () => {
-    // Track comprehensive chatbot session before closing
-    const sessionEndTime = Date.now();
-    const sessionDuration = sessionEndTime - (sessionStartTime.current || sessionEndTime);
+    console.log('🔚 CHATBOT CLOSING');
     
-    // Analyze conversation for insights
-    const conversationAnalysis = analyzeConversation();
+    const sessionAnalysis = analyzeBusinessConversation();
     
-    // REMOVED: Duplicate session end tracking
-    // The Chatbot.js component will handle session closure via useAnalytics hook
+    console.log('📊 SESSION ANALYSIS:', sessionAnalysis);
+    
+    // Send lead data if qualified
+    if (leadData.current.email || sessionAnalysis.leadQuality === 'high') {
+      console.log('📧 Recording final lead data on close');
+      recordLeadData(sessionAnalysis);
+    }
 
-    // Track basic close interaction for context analysis
-    analyticsService.trackChatbotInteraction('close', messages.length, 'session_end', {
-      conversationId: conversationId.current,
-      duration: sessionDuration,
-      userMessages: messages.filter(m => m.sender === 'user').length,
-      botResponses: messages.filter(m => m.sender === 'bot').length,
-      summary: conversationAnalysis.summary,
-      detectedIntent: conversationAnalysis.primaryIntent,
-      satisfaction: conversationAnalysis.satisfaction,
-      outcome: conversationAnalysis.outcome,
-      topics: Array.from(conversationTopics.current)
-    });
+    // Track session end
+    try {
+      analyticsService.trackChatbotInteraction('session_end', messages.length, 'professional_conclusion', {
+        ...sessionAnalysis,
+        conversationId: conversationId.current,
+        duration: Date.now() - (sessionStartTime.current || Date.now())
+      });
+    } catch (error) {
+      console.warn('Analytics tracking error:', error);
+    }
     
     setIsAnimating(true);
     setTimeout(() => {
       setIsOpen(false);
       setIsAnimating(false);
-      
-      // Reset conversation tracking for next session
-      resetConversationTracking();
-    }, 800); // Match animation duration
+      resetSession();
+    }, 800);
   };
 
   const addMessage = (text, sender = 'user') => {
+    console.log(`💬 NEW MESSAGE - ${sender}:`, text);
+    
     const newMessage = {
       id: Date.now(),
       text,
@@ -97,143 +400,82 @@ export const ChatbotProvider = ({ children }) => {
     
     setMessages(prev => [...prev, newMessage]);
 
-    // REMOVED: Duplicate message tracking
-    // The Chatbot.js component will handle message tracking via useAnalytics hook
-    // We'll only maintain local conversation analytics here
-    
-    // Update local conversation tracking for analysis
     if (sender === 'user') {
-      userMessageCount.current++;
+      // Analyze user message for lead qualification
+      analyzeUserMessage(text);
       
-      // Extract and track topics and intents from user message locally
-      const topics = analyticsService.extractTopics(text);
-      const intent = analyticsService.detectUserIntent(text);
-      const sentiment = analyticsService.detectSentiment(text);
-      
-      topics.forEach(topic => conversationTopics.current.add(topic));
-      userIntents.current.add(intent);
-      conversationSentiments.current.push(sentiment);
-    } else {
-      botMessageCount.current++;
-    }
-
-    // Simulate bot response for demo
-    if (sender === 'user') {
+      // Generate professional AI response
+      setIsProcessing(true);
       setTimeout(() => {
-        const botResponse = {
-          id: Date.now() + 1,
-          text: getBotResponse(text),
-          sender: 'bot',
-          timestamp: new Date()
-        };
-        
-        // Add bot response (this will not trigger duplicate tracking)
-        addMessage(botResponse.text, 'bot');
-      }, 1000);
+        try {
+          const response = generateProfessionalResponse(text);
+          console.log('🤖 BOT RESPONSE:', response);
+          addMessage(response, 'bot');
+        } catch (error) {
+          console.error('Response generation failed:', error);
+          addMessage("I apologize for the delay. Let me connect you directly with Yuvaan for the best assistance. Could you share your email so he can reach out personally?", 'bot');
+        }
+        setIsProcessing(false);
+      }, 1200); // Professional response timing
     }
   };
 
-  const getBotResponse = (userMessage) => {
-    const lowerMessage = userMessage.toLowerCase();
+  const analyzeBusinessConversation = () => {
+    const intents = Array.from(conversationContext.current.intents);
     
-    // Contextual responses based on user message content
-    if (lowerMessage.includes('price') || lowerMessage.includes('cost') || lowerMessage.includes('quote')) {
-      return "I'd be happy to help you with pricing information! Yuvaan offers competitive rates for web development projects. Would you like to discuss your specific project requirements?";
-    }
-    
-    if (lowerMessage.includes('portfolio') || lowerMessage.includes('work') || lowerMessage.includes('examples')) {
-      return "Great question! You can see Yuvaan's latest projects right here on this website. Check out the Projects section to see his recent work, including the Sarvodaya Dental Clinic website and other exciting projects.";
-    }
-    
-    if (lowerMessage.includes('contact') || lowerMessage.includes('reach') || lowerMessage.includes('email')) {
-      return "Perfect! You can reach Yuvaan directly through the contact form on this website, or connect with him on LinkedIn. He typically responds within 24 hours and would love to discuss your project!";
-    }
-    
-    if (lowerMessage.includes('experience') || lowerMessage.includes('skills') || lowerMessage.includes('background')) {
-      return "Yuvaan is a skilled full-stack developer with expertise in React, Node.js, and modern web technologies. He specializes in creating beautiful, functional websites that deliver great user experiences. Check out the About page to learn more!";
-    }
-    
-    if (lowerMessage.includes('hello') || lowerMessage.includes('hi') || lowerMessage.includes('hey')) {
-      return "Hello! Welcome to Yuvaan's portfolio. I'm here to help you learn more about his work and how he can help with your project. What would you like to know?";
-    }
-    
-    if (lowerMessage.includes('thank') || lowerMessage.includes('thanks')) {
-      return "You're very welcome! Is there anything else you'd like to know about Yuvaan's services or experience? I'm here to help!";
-    }
-    
-    // Default responses
-    const responses = [
-      "That's interesting! Yuvaan would love to discuss that with you. Feel free to reach out through the contact form.",
-      "I can help you learn more about Yuvaan's work and experience. What specific aspect interests you most?",
-      "Would you like to know more about Yuvaan's projects, skills, or how he can help with your next project?",
-      "Feel free to ask me anything about Yuvaan's expertise in web development and design!",
-      "I'm here to help you connect with Yuvaan. What would you like to know about his services?"
-    ];
-    return responses[Math.floor(Math.random() * responses.length)];
-  };
-
-  // Analyze conversation for insights (used by close tracking)
-  const analyzeConversation = () => {
-    
-    // Determine overall sentiment
-    const sentimentCounts = conversationSentiments.current.reduce((acc, sentiment) => {
-      acc[sentiment] = (acc[sentiment] || 0) + 1;
-      return acc;
-    }, {});
-    
-    const overallSentiment = Object.keys(sentimentCounts).reduce((a, b) => 
-      sentimentCounts[a] > sentimentCounts[b] ? a : b, 'neutral'
-    );
-    
-    // Determine primary intent
-    const intentArray = Array.from(userIntents.current);
-    const primaryIntent = intentArray.length > 0 ? intentArray[0] : 'general_inquiry';
-    
-    // Determine conversation outcome
-    let outcome = 'completed';
-    if (userMessageCount.current === 0) outcome = 'no_interaction';
-    else if (userMessageCount.current < 3) outcome = 'brief_interaction';
-    else if (userIntents.current.has('contact_request') || userIntents.current.has('hire_intent')) outcome = 'lead_generated';
-    
-    // Determine satisfaction level
-    let satisfaction = 'unknown';
-    if (overallSentiment === 'positive') satisfaction = 'satisfied';
-    else if (overallSentiment === 'negative') satisfaction = 'unsatisfied';
-    else satisfaction = 'neutral';
-    
-    // Determine lead quality
     let leadQuality = 'low';
-    if (userIntents.current.has('hire_intent') || userIntents.current.has('pricing_request')) leadQuality = 'high';
-    else if (userIntents.current.has('contact_request') || userIntents.current.has('portfolio_request')) leadQuality = 'medium';
+    if (leadData.current.email && intents.includes('hire_intent')) leadQuality = 'qualified';
+    else if (leadData.current.email) leadQuality = 'high';
+    else if (intents.includes('hire_intent') || intents.includes('pricing_inquiry')) leadQuality = 'high';
+    else if (intents.includes('business_inquiry')) leadQuality = 'medium';
     
-    // Determine conversion potential
-    let conversionPotential = 'low';
-    if (leadQuality === 'high' && overallSentiment === 'positive') conversionPotential = 'high';
-    else if (leadQuality === 'medium' || overallSentiment === 'positive') conversionPotential = 'medium';
-    
-    // Create conversation summary
-    const summary = `${userMessageCount.current} user messages, topics: ${Array.from(conversationTopics.current).join(', ')}, primary intent: ${primaryIntent}`;
+    let businessValue = 'low';
+    if (leadData.current.email && (intents.includes('pricing_inquiry') || intents.includes('hire_intent'))) {
+      businessValue = 'high';
+    } else if (leadData.current.projectType || intents.includes('business_inquiry')) {
+      businessValue = 'medium';
+    }
     
     return {
-      overallSentiment,
-      primaryIntent,
-      outcome,
-      satisfaction,
       leadQuality,
-      conversionPotential,
-      summary
+      businessValue,
+      contactProvided: !!leadData.current.email,
+      projectType: leadData.current.projectType,
+      qualificationLevel: leadData.current.qualificationLevel,
+      primaryIntent: intents[0] || 'general_inquiry',
+      intents: intents,
+      recommendedFollowUp: determineFollowUpAction()
     };
   };
 
-  // Reset conversation tracking for new session
-  const resetConversationTracking = () => {
-    conversationId.current = `conv_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
+  const determineFollowUpAction = () => {
+    if (leadData.current.email) return 'immediate_outreach';
+    if (conversationContext.current.intents.has('hire_intent')) return 'aggressive_follow_up';
+    if (conversationContext.current.intents.has('pricing_inquiry')) return 'proposal_ready';
+    return 'nurture_lead';
+  };
+
+  const resetSession = () => {
+    console.log('🔄 RESETTING SESSION');
+    conversationId.current = `session_${Date.now()}_${Math.random().toString(36).substring(2, 11)}`;
     sessionStartTime.current = null;
-    userMessageCount.current = 0;
-    botMessageCount.current = 1; // Reset to 1 for initial greeting
-    conversationTopics.current.clear();
-    userIntents.current.clear();
-    conversationSentiments.current = [];
+    leadData.current = {
+      email: null,
+      name: null,
+      company: null,
+      projectType: null,
+      budget: null,
+      timeline: null,
+      contactAttempted: false,
+      qualificationLevel: 'unknown'
+    };
+    conversationContext.current = {
+      topics: new Set(),
+      intents: new Set(),
+      sentiments: [],
+      businessValue: 'unknown',
+      nextActions: []
+    };
   };
 
   return (
@@ -242,10 +484,13 @@ export const ChatbotProvider = ({ children }) => {
         isOpen,
         isAnimating,
         messages,
+        isProcessing,
         openChatbot,
         closeChatbot,
         addMessage,
-        setIsAnimating
+        setIsAnimating,
+        leadData: leadData.current,
+        conversationContext: conversationContext.current
       }}
     >
       {children}
