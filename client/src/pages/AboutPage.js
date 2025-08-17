@@ -6,6 +6,12 @@ import Navbar from '../components/Navbar';
 import ScrollingGallery from '../components/ui/ScrollingGallery';
 import Footer from '../components/Footer';
 
+import me from '../assets/Hero/Hero3.jpg'
+import work from '../assets/About/work.jpg'
+import wirefrme from '../assets/About/wireframe.jpeg'
+import code from '../assets/About/code.jpeg'
+import contact from '../assets/About/contact.JPG'
+
 function AboutPage() {
     const { isTransitioning } = usePageTransition();
     const { trackSocial, trackCTA, trackFormField, trackFormSubmit } = useAnalytics();
@@ -35,6 +41,7 @@ function AboutPage() {
     // Get Lenis instance from context
     const lenis = useLenisContext();
     const observerRef = useRef();
+    const sectionObserverRef = useRef();
 
     const toggleSection = (section) => {
         const isCurrentlyOpen = toggleStates[section];
@@ -189,7 +196,7 @@ function AboutPage() {
                     </div>
                 </div>
             ),
-            image: "https://picsum.photos/seed/developer/600/800",
+            image: me,
             alt: "Developer at work"
         },
         {
@@ -210,7 +217,7 @@ function AboutPage() {
                         data-delay="200"
                         style={{ fontFamily: 'Neuton, serif' }}
                     >
-                        The best work happens when creativity and collaboration meet – every project is a conversation, not just a checklist.
+                        The best work happens when creativity and collaboration meet — every project is a conversation, not just a checklist.
                     </p>
                     <p
                         className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-6 sm:mb-8 lg:mb-12"
@@ -354,7 +361,7 @@ function AboutPage() {
                                             </svg>
                                         </div>
                                         <span className="text-sm sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
-                                            Simple, smart solutions grounded in the problem – not buzzwords.
+                                            Simple, smart solutions grounded in the problem — not buzzwords.
                                         </span>
                                     </div>
                                 </div>
@@ -363,7 +370,7 @@ function AboutPage() {
                     </div>
                 </div>
             ),
-            image: "https://picsum.photos/seed/creative/600/800",
+            image: work,
             alt: "Creative process"
         }
     ];
@@ -397,6 +404,27 @@ function AboutPage() {
         );
     };
 
+    // Create section observer for image switching
+    const createSectionObserver = () => {
+        return new IntersectionObserver(
+            (entries) => {
+                entries.forEach((entry) => {
+                    if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
+                        const sectionIndex = parseInt(entry.target.dataset.sectionIndex);
+                        if (!isNaN(sectionIndex) && window.innerWidth >= 1024) {
+                            console.log('Setting active section:', sectionIndex); // Debug log
+                            setActiveSection(sectionIndex);
+                        }
+                    }
+                });
+            },
+            {
+                threshold: [0.3, 0.5, 0.7],
+                rootMargin: '-10% 0px -30% 0px' // Trigger when section is more centered
+            }
+        );
+    };
+
     // Handle content loading after page transition
     useEffect(() => {
         if (!isTransitioning) {
@@ -421,35 +449,15 @@ function AboutPage() {
         if (!showContent) return;
 
         // Smooth scroll to top when component mounts with animation
-        const smoothScrollToTop = () => {
-            const startPosition = window.pageYOffset;
-            const startTime = performance.now();
-            const duration = 800; // 800ms for smooth transition
-
-            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
-
-            const animateScroll = (currentTime) => {
-                const elapsed = currentTime - startTime;
-                const progress = Math.min(elapsed / duration, 1);
-                const easedProgress = easeOutCubic(progress);
-
-                window.scrollTo(0, startPosition * (1 - easedProgress));
-
-                if (progress < 1) {
-                    requestAnimationFrame(animateScroll);
-                }
-            };
-
-            requestAnimationFrame(animateScroll);
-        };
-
-        // Smooth scroll to top using Lenis when component mounts
         if (lenis) {
             lenis.scrollTo(0, { immediate: false, duration: 0.8 });
         }
 
         // Initialize Intersection Observer for animations
         observerRef.current = createIntersectionObserver();
+
+        // Initialize Section Observer for image switching
+        sectionObserverRef.current = createSectionObserver();
 
         // Observe all elements with animation data attributes
         const animatedElements = document.querySelectorAll('[data-animation]');
@@ -458,37 +466,24 @@ function AboutPage() {
             observerRef.current?.observe(el);
         });
 
-        // Handle scroll to detect which section is in view (desktop only)
-        const handleScroll = (e) => {
-            // Only apply scroll-based image switching on larger screens
-            if (window.innerWidth >= 1024) {
-                const sections = document.querySelectorAll('.content-section');
-                const scrollPosition = e.scroll + window.innerHeight / 2;
-
-                sections.forEach((section, index) => {
-                    const sectionTop = section.offsetTop;
-                    const sectionBottom = sectionTop + section.offsetHeight;
-
-                    if (scrollPosition >= sectionTop && scrollPosition <= sectionBottom) {
-                        setActiveSection(index);
-                    }
-                });
-            }
-        };
-
-        // Listen to Lenis scroll events
-        if (lenis) {
-            lenis.on('scroll', handleScroll);
-        }
+        // Observe sections for image switching
+        const sections = document.querySelectorAll('[data-section-index]');
+        console.log('Found sections:', sections.length); // Debug log
+        sections.forEach(section => {
+            sectionObserverRef.current?.observe(section);
+        });
 
         // Cleanup
         return () => {
-            if (lenis) {
-                lenis.off('scroll', handleScroll);
-            }
             observerRef.current?.disconnect();
+            sectionObserverRef.current?.disconnect();
         };
     }, [showContent, lenis]);
+
+    // Debug effect to track activeSection changes
+    useEffect(() => {
+        console.log('Active section changed to:', activeSection);
+    }, [activeSection]);
 
     return (
         <div className="min-h-screen relative z-10" style={{ backgroundColor: '#45372B' }}>
@@ -537,6 +532,7 @@ function AboutPage() {
                                                                 ? 'items-center mt-16 sm:mt-24 lg:mt-40'
                                                                 : 'items-center'
                                                             }`}
+                                                        data-section-index={index}
                                                     >
                                                         {section.content}
                                                     </div>
@@ -544,7 +540,7 @@ function AboutPage() {
                                             </div>
 
                                             {/* Right Side - Enhanced Fixed Image Container (hidden on mobile, shown on desktop) */}
-                                            <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh] group">
+                                            <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[50vh] lg:h-[70vh] group">
                                                 <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl hover:-translate-y-2">
                                                     {/* Background blur effect */}
                                                     <div className="absolute inset-0 bg-gradient-to-br from-[#A8977A]/20 to-transparent backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
@@ -561,9 +557,6 @@ function AboutPage() {
                                                                 src={section.image}
                                                                 alt={section.alt}
                                                                 className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
-                                                                style={{
-                                                                    filter: activeSection === index ? 'brightness(1) contrast(1.05)' : 'brightness(0.8) contrast(0.9)'
-                                                                }}
                                                             />
                                                             {/* Animated overlay */}
                                                             <div className={`absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent transition-opacity duration-1000 ${activeSection === index ? 'opacity-100' : 'opacity-60'
@@ -652,7 +645,7 @@ function AboutPage() {
                                                 data-animation="fade-scale-in"
                                                 data-delay="700"
                                             >
-                                                <img src="https://picsum.photos/seed/ideation/300/300" alt="Ideation process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                                <img src= {wirefrme} alt="Ideation process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                                             </div>
 
                                             {/* Process Step 03 - Spans 2 columns on larger screens */}
@@ -691,7 +684,7 @@ function AboutPage() {
                                                 data-animation="fade-scale-in"
                                                 data-delay="1000"
                                             >
-                                                <img src="https://picsum.photos/seed/testing/300/300" alt="Testing process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                                                <img src={code} alt="Testing process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
                                             </div>
 
                                             {/* Process Step 05 */}
@@ -900,10 +893,10 @@ function AboutPage() {
                                             </div>
 
                                             {/* Right Side - Fixed Image Container */}
-                                            <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[40vh] lg:h-[60vh]">
+                                            <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[50vh] lg:h-[70vh]">
                                                 <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
                                                     <img
-                                                        src="https://picsum.photos/seed/contact/600/800"
+                                                        src={contact}
                                                         alt="Let's work together"
                                                         className="w-full h-full object-cover"
                                                     />
