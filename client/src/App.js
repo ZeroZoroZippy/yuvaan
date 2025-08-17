@@ -6,6 +6,7 @@ import { ChatbotProvider } from './contexts/ChatbotContext';
 import { LenisProvider } from './contexts/LenisContext';
 import PageTransition from './components/ui/PageTransition';
 import Chatbot from './components/Chatbot';
+import ChatbotTrigger from './components/ChatbotTrigger';
 import HeroPage from './pages/HeroPage';
 import AboutPage from './pages/AboutPage';
 import ProjectPage from './pages/ProjectPage';
@@ -44,6 +45,7 @@ const AppContent = () => {
     <div className="App">
       <PageTransition />
       <Chatbot />
+      <ChatbotTrigger />
       <Routes>
         <Route path="/" element={<HeroPage />} />
         <Route path="/about" element={<AboutPage />} />

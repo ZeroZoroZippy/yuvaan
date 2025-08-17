@@ -1,7 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { useChatbot } from '../contexts/ChatbotContext';
 import { useAnalytics } from '../hooks/useAnalytics';
-import Orb from './ui/orb';
 
 const Chatbot = () => {
     const {
@@ -204,25 +203,6 @@ const Chatbot = () => {
 
             {/* Desktop Layout - Enhanced for professional use */}
             <div className="hidden md:block">
-                {/* Professional Orb with status indicator */}
-                <div
-                    className={`fixed z-[9999] w-20 h-20 transition-all duration-1200 ease-out ${isAnimating
-                            ? 'bottom-[-80px] right-[60px] opacity-0'
-                            : 'bottom-[60px] right-[60px] opacity-100'
-                        }`}
-                >
-                    <Orb
-                        hue={leadData?.qualificationLevel === 'high' ? 120 : 220}
-                        hoverIntensity={0.3}
-                        rotateOnHover={true}
-                        forceHoverState={!isAnimating}
-                    />
-                    {/* Status pulse for high-quality leads */}
-                    {leadData?.qualificationLevel === 'high' && (
-                        <div className="absolute inset-0 rounded-full border-2 border-green-400 animate-ping opacity-20"></div>
-                    )}
-                </div>
-
                 {/* Enhanced chat interface - Centered and larger */}
                 <div
                     className={`fixed z-[9999] transition-all duration-1000 ease-out ${isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
@@ -357,33 +337,12 @@ const Chatbot = () => {
                 </div>
             </div>
 
-            {/* Mobile Layout - Full Screen with Bottom Orb Space */}
+            {/* Mobile Layout - Full Screen */}
             <div className="md:hidden">
-                {/* Mobile Orb - Fixed at bottom center with proper spacing */}
-                <div
-                    className={`fixed z-[10000] w-16 h-16 transition-all duration-1200 ease-out ${isAnimating
-                            ? 'bottom-[-64px] left-1/2 transform -translate-x-1/2 opacity-0'
-                            : 'bottom-[20px] left-1/2 transform -translate-x-1/2 opacity-100'
-                        }`}
-                >
-                    <Orb
-                        hue={leadData?.qualificationLevel === 'high' ? 120 : 220}
-                        hoverIntensity={0.3}
-                        rotateOnHover={true}
-                        forceHoverState={!isAnimating}
-                    />
-                    {leadData?.qualificationLevel === 'high' && (
-                        <div className="absolute inset-0 rounded-full border-2 border-green-400 animate-ping opacity-20"></div>
-                    )}
-                </div>
-
-                {/* Mobile Chat Interface - Full Screen with Bottom Margin for Orb */}
+                {/* Mobile Chat Interface - Full Screen */}
                 <div
                     className={`fixed z-[9999] inset-0 transition-all duration-1000 ease-out ${isAnimating ? 'opacity-0 pointer-events-none delay-0' : 'opacity-100 delay-300'
                         }`}
-                    style={{
-                        paddingBottom: '100px' // Space for orb + safe area
-                    }}
                 >
                     <div className="bg-white/10 backdrop-blur-lg h-full flex flex-col border-0 shadow-2xl relative">
 
