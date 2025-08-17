@@ -175,7 +175,7 @@ function BlogsPage() {
                         </div>
 
                         {/* Enhanced Title with better hover effect */}
-                        <h3 className="text-xl font-bold text-[#A8977A] leading-tight 
+                        <h3 className="text-2xl font-bold text-[#A8977A] leading-tight 
                           transition-all duration-300 group-hover:text-white 
                           group-hover:translate-y-[-2px]" 
                           style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>

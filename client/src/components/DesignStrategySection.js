@@ -7,7 +7,7 @@ function DesignStrategySection() {
         <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
             <div className="w-full max-w-6xl mx-auto">
                 <h2
-                    className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
+                    className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
                     data-animation="fade-scale-in"
                     data-delay="0"
                     style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
@@ -15,7 +15,7 @@ function DesignStrategySection() {
                     Design with Strategy and Creativity
                 </h2>
                 <p
-                    className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
+                    className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
                     data-animation="slide-up-fade"
                     data-delay="200"
                     style={{ fontFamily: 'Neuton, serif' }}
@@ -33,8 +33,8 @@ function DesignStrategySection() {
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>01.</h2>
                         <div className="self-start">
-                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Research & Strategy</h3>
-                            <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                            <h3 className="text-3xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Research & Strategy</h3>
+                            <p className="text-xl sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                 In this phase, I dive deep into understanding your business, target audience, and project goals. Through research and strategic planning, I create a clear roadmap to guide the entire design process.
                             </p>
                         </div>
@@ -57,8 +57,8 @@ function DesignStrategySection() {
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>02.</h2>
                         <div className="self-start">
-                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Concept & Ideation</h3>
-                            <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                            <h3 className="text-3xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Concept & Ideation</h3>
+                            <p className="text-xl sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                 Here, I brainstorm and develop creative concepts that align with your vision. Initial sketches and ideas are refined into tangible wireframes, setting the direction for design and functionality.
                             </p>
                         </div>
@@ -81,8 +81,8 @@ function DesignStrategySection() {
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#45372B] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>03.</h2>
                         <div className="self-start max-w-2xl">
-                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#45372B] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Feedback & Refinement</h3>
-                            <p className="text-sm sm:text-base lg:text-lg text-[#45372B] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                            <h3 className="text-3xl sm:text-2xl lg:text-3xl font-medium text-[#45372B] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Feedback & Refinement</h3>
+                            <p className="text-xl sm:text-base lg:text-lg text-[#45372B] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                 Collaboration is key. I review the design with you, gather feedback, and refine the work to align with your expectations and goals. This ensures the design reflects your vision.
                             </p>
                         </div>
@@ -96,8 +96,8 @@ function DesignStrategySection() {
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>04.</h2>
                         <div className="self-start">
-                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Testing & Optimization</h3>
-                            <p className="text-sm sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                            <h3 className="text-3xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Testing & Optimization</h3>
+                            <p className="text-xl sm:text-base lg:text-lg text-[#A8977A]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                 I conduct thorough testing to identify and resolve any performance or usability issues. This phase ensures the design works seamlessly across devices and meets user experience standards.
                             </p>
                         </div>
@@ -120,8 +120,8 @@ function DesignStrategySection() {
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>05.</h2>
                         <div className="self-start">
-                            <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Launch & Delivery</h3>
-                            <p className="text-sm sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                            <h3 className="text-3xl sm:text-2xl lg:text-3xl font-medium text-[#161711] mb-2 sm:mb-3" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Launch & Delivery</h3>
+                            <p className="text-xl sm:text-base lg:text-lg text-[#161711]/80 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                 Once everything is finalized, the project is launched and delivered to you. I also provide guidance or support for ongoing maintenance to ensure long-term success.
                             </p>
                         </div>

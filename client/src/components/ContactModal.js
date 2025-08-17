@@ -156,7 +156,7 @@ function ContactModal({ isOpen, onClose }) {
               </svg>
             </div>
 
-            <h3 className="text-2xl font-bold text-[#45372B] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>Thank You!</h3>
+            <h3 className="text-2xl font-bold text-[#45372B] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Thank You!</h3>
 
             <p className="text-gray-600 mb-6 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
               Your message has been sent successfully. I'll get back to you as soon as possible!
@@ -207,7 +207,7 @@ function ContactModal({ isOpen, onClose }) {
           /* Contact Form */
           <div className={`transition-all duration-500 ease-out ${!showThankYou ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
             }`}>
-            <h3 className="text-2xl font-bold text-[#45372B] mb-6 transition-all duration-300 ease-out delay-100" style={{ fontFamily: 'Syne, sans-serif' }}>Send me a message</h3>
+            <h3 className="text-2xl font-bold text-[#45372B] mb-6 transition-all duration-300 ease-out delay-100" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Send me a message</h3>
 
             {submitStatus === 'error' && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 transition-all duration-300 ease-out transform animate-pulse">

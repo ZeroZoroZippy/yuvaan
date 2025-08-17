@@ -5,6 +5,7 @@ import { MobileMenuProvider, useMobileMenu } from './contexts/MobileMenuContext'
 import { LenisProvider } from './contexts/LenisContext';
 import PageTransition from './components/ui/PageTransition';
 import { Chatbot, ChatbotTrigger, ChatbotProvider } from './chatbot';
+import ErrorBoundary from './components/ErrorBoundary';
 import HeroPage from './pages/HeroPage';
 import AboutPage from './pages/AboutPage';
 import ProjectPage from './pages/ProjectPage';
@@ -159,7 +160,9 @@ function App() {
         <PageTransitionProvider>
           <MobileMenuProvider>
             <ChatbotProvider>
-              <AppContent />
+              <ErrorBoundary>
+                <AppContent />
+              </ErrorBoundary>
             </ChatbotProvider>
           </MobileMenuProvider>
         </PageTransitionProvider>

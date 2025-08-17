@@ -1,0 +1,11 @@
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://yuvaanvithlani.com/sitemap.xml
+
+# Disallow crawling of analytics and admin paths
+Disallow: /analytics-test
+Disallow: /chatbot-analytics
+Disallow: /_next/
+Disallow: /api/

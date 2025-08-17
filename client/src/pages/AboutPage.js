@@ -126,7 +126,7 @@ function AboutPage() {
             content: (
                 <div>
                     <h1
-                        className="text-3xl sm:text-4xl lg:text-6xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-10"
+                        className="text-5xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-10"
                         data-animation="fade-scale-in"
                         data-delay="0"
                         style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
@@ -134,7 +134,7 @@ function AboutPage() {
                         About Me
                     </h1>
                     <h3
-                        className="text-xl sm:text-2xl lg:text-3xl font-light text-[#A8977A] mb-3 sm:mb-4 lg:mb-6"
+                        className="text-3xl sm:text-2xl lg:text-3xl font-light text-[#A8977A] mb-3 sm:mb-4 lg:mb-6"
                         data-animation="slide-up-fade"
                         data-delay="200"
                         style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
@@ -142,7 +142,7 @@ function AboutPage() {
                         Hi, I'm Yuvaan
                     </h3>
                     <p
-                        className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-20"
+                        className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-20"
                         data-animation="slide-up-fade"
                         data-delay="400"
                         style={{ fontFamily: 'Neuton, serif' }}
@@ -205,7 +205,7 @@ function AboutPage() {
             content: (
                 <div>
                     <h2
-                        className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-4 sm:mb-6 lg:mb-8"
+                        className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-4 sm:mb-6 lg:mb-8"
                         data-animation="fade-scale-in"
                         data-delay="0"
                         style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
@@ -213,7 +213,7 @@ function AboutPage() {
                         What I Can Do For You
                     </h2>
                     <p
-                        className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-4 sm:mb-6"
+                        className="text-xl sm:text-xl lg:text-xl text-[#A8977A] leading-relaxed mb-4 sm:mb-6"
                         data-animation="slide-up-fade"
                         data-delay="200"
                         style={{ fontFamily: 'Neuton, serif' }}
@@ -221,7 +221,7 @@ function AboutPage() {
                         The best work happens when creativity and collaboration meet — every project is a conversation, not just a checklist.
                     </p>
                     <p
-                        className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-6 sm:mb-8 lg:mb-12"
+                        className="text-xl sm:text-xl lg:text-xl text-[#A8977A] leading-relaxed mb-6 sm:mb-8 lg:mb-12"
                         data-animation="slide-up-fade"
                         data-delay="400"
                         style={{ fontFamily: 'Neuton, serif' }}
@@ -239,7 +239,7 @@ function AboutPage() {
                                 className="flex items-center justify-between cursor-pointer group"
                                 onClick={() => toggleSection('webDesign')}
                             >
-                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
+                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                                     Web Design
                                 </h3>
                                 <svg
@@ -259,7 +259,7 @@ function AboutPage() {
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <span className="text-sm sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                             User‑focused layouts and typography that feel clear, consistent, and accessible.
                                         </span>
                                     </div>
@@ -273,7 +273,7 @@ function AboutPage() {
                                 className="flex items-center justify-between cursor-pointer group"
                                 onClick={() => toggleSection('webDevelopment')}
                             >
-                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
+                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                                     Web Development
                                 </h3>
                                 <svg
@@ -293,7 +293,7 @@ function AboutPage() {
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <span className="text-sm sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                             Fast, responsive builds that turn designs into reliable, scalable products.
                                         </span>
                                     </div>
@@ -307,7 +307,7 @@ function AboutPage() {
                                 className="flex items-center justify-between cursor-pointer group"
                                 onClick={() => toggleSection('brandExperience')}
                             >
-                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
+                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                                     Brand Experience
                                 </h3>
                                 <svg
@@ -327,7 +327,7 @@ function AboutPage() {
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <span className="text-sm sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                             Turning your story into visuals, interactions, and moments people remember.
                                         </span>
                                     </div>
@@ -341,7 +341,7 @@ function AboutPage() {
                                 className="flex items-center justify-between cursor-pointer group"
                                 onClick={() => toggleSection('creativeProblemSolving')}
                             >
-                                <h3 className="text-xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
+                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                                     Creative Problem-Solving
                                 </h3>
                                 <svg
@@ -361,7 +361,7 @@ function AboutPage() {
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <span className="text-sm sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                             Simple, smart solutions grounded in the problem — not buzzwords.
                                         </span>
                                     </div>
@@ -583,7 +583,7 @@ function AboutPage() {
                                 <section className="px-0 sm:px-2 lg:px-4 py-8 sm:py-16 lg:py-24">
                                     <div className="w-full max-w-6xl mx-auto">
                                         <h2
-                                            className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
+                                            className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
                                             data-animation="fade-scale-in"
                                             data-delay="0"
                                             style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
@@ -591,7 +591,7 @@ function AboutPage() {
                                             When I'm Not Working
                                         </h2>
                                         <p
-                                            className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
+                                            className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
                                             data-animation="slide-up-fade"
                                             data-delay="200"
                                             style={{ fontFamily: 'Neuton, serif' }}
@@ -615,7 +615,7 @@ function AboutPage() {
                                             {/* Left Side - Contact Form */}
                                             <div>
                                                 <h2
-                                                    className="text-2xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
+                                                    className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
                                                     data-animation="fade-scale-in"
                                                     data-delay="0"
                                                     style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
@@ -623,7 +623,7 @@ function AboutPage() {
                                                     Let's Work Together
                                                 </h2>
                                                 <p
-                                                    className="text-base sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16"
+                                                    className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16"
                                                     data-animation="slide-up-fade"
                                                     data-delay="200"
                                                     style={{ fontFamily: 'Neuton, serif' }}
@@ -677,7 +677,7 @@ function AboutPage() {
                                                                         <p className="text-sm font-medium text-[#161711] mb-1" style={{ fontFamily: 'Neuton, serif' }}>
                                                                             Check your email
                                                                         </p>
-                                                                        <p className="text-sm text-[#161711]/90" style={{ fontFamily: 'Neuton, serif' }}>
+                                                                        <p className="text-xl text-[#161711]/90" style={{ fontFamily: 'Neuton, serif' }}>
                                                                             You'll receive a confirmation email shortly with details about next steps.
                                                                         </p>
                                                                     </div>
@@ -708,7 +708,7 @@ function AboutPage() {
                                                         <form onSubmit={handleSubmit} className="space-y-6">
                                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                                                 <div>
-                                                                    <label htmlFor="name" className="block text-sm font-medium text-[#A8977A] mb-2" style={{ fontFamily: 'Neuton, serif' }}>
+                                                                    <label htmlFor="name" className="block text-lg font-medium text-[#A8977A] mb-2" style={{ fontFamily: 'Neuton, serif' }}>
                                                                         Name
                                                                     </label>
                                                                     <input

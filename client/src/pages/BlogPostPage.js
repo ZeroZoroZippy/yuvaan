@@ -299,7 +299,7 @@ function BlogPostPage() {
                   <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
                     Article Summary
                   </h2>
-                  <p className="text-[#A8977A]/80 leading-relaxed text-lg" style={{ fontFamily: 'Neuton, serif' }}>
+                  <p className="text-[#A8977A]/80 leading-relaxed text-2xl" style={{ fontFamily: 'Neuton, serif' }}>
                     {post.excerpt}
                   </p>
                 </div>
