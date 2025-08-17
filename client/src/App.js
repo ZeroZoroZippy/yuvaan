@@ -2,18 +2,16 @@ import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PageTransitionProvider } from './contexts/PageTransitionContext';
 import { MobileMenuProvider, useMobileMenu } from './contexts/MobileMenuContext';
-import { ChatbotProvider } from './contexts/ChatbotContext';
 import { LenisProvider } from './contexts/LenisContext';
 import PageTransition from './components/ui/PageTransition';
-import Chatbot from './components/Chatbot';
-import ChatbotTrigger from './components/ChatbotTrigger';
+import { Chatbot, ChatbotTrigger, ChatbotProvider } from './chatbot';
 import HeroPage from './pages/HeroPage';
 import AboutPage from './pages/AboutPage';
 import ProjectPage from './pages/ProjectPage';
 import BlogsPage from './pages/BlogsPage';
 import BlogPostPage from './pages/BlogPostPage';
 import AnalyticsTest from './components/AnalyticsTest';
-import ChatbotAnalyticsDashboard from './components/ChatbotAnalyticsDashboard';
+import { ChatbotAnalyticsDashboard } from './chatbot';
 import analyticsService from './services/analyticsService';
 import { db } from './config/firebase'; // Add this import for diagnostics
 

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { usePageNavigation } from '../hooks/usePageNavigation';
-import { useChatbot } from '../contexts/ChatbotContext';
+import { useChatbot } from '../chatbot/context/ChatbotContext';
 import Orb from './ui/orb'
 
 function WhoAmI() {

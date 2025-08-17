@@ -235,6 +235,16 @@ function Projects() {
                           currentPage: window.location.pathname
                         });
                         window.open('https://www.sarvodayadental.com/', '_blank');
+                      } else if (project.key === 'project2') {
+                        // For Wellness Website, open the live site
+                        e.preventDefault();
+                        trackProject('Wellness Website', 'project2', 'external_link');
+                        trackCTA('project_wellness_external_link', 'external_link', {
+                          projectName: 'Wellness Website',
+                          destination: 'https://therapy-with-aakanksha.vercel.app/',
+                          currentPage: window.location.pathname
+                        });
+                        window.open('https://therapy-with-aakanksha.vercel.app/', '_blank');
                       } else {
                         // For other projects, close the project
                         handleCloseProject(project.key);

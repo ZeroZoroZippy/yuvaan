@@ -1,7 +1,7 @@
 import React from 'react';
-import { useChatbot } from '../contexts/ChatbotContext';
-import { useAnalytics } from '../hooks/useAnalytics';
-import Orb from './ui/orb';
+import { useChatbot } from '../context/ChatbotContext';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import Orb from '../../components/ui/orb';
 
 const ChatbotTrigger = () => {
     const { isOpen, openChatbot, leadData } = useChatbot();

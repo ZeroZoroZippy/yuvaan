@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useChatbot } from '../contexts/ChatbotContext';
-import { useAnalytics } from '../hooks/useAnalytics';
-import Orb from './ui/orb';
+import { useChatbot } from '../context/ChatbotContext';
+import { useAnalytics } from '../../hooks/useAnalytics';
+import Orb from '../../components/ui/orb';
 
 const Chatbot = () => {
     const { isOpen, isAnimating, messages, closeChatbot, addMessage, setIsAnimating } = useChatbot();

@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { useChatbot } from '../contexts/ChatbotContext';
-import { useAnalytics } from '../hooks/useAnalytics';
+import { useChatbot } from '../context/ChatbotContext';
+import { useAnalytics } from '../../hooks/useAnalytics';
 
 const Chatbot = () => {
     const {

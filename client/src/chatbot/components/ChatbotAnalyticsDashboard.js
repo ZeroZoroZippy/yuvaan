@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
-import { db } from '../config/firebase';
+import { db } from '../../config/firebase';
 
 const ChatbotAnalyticsDashboard = () => {
   const [analytics, setAnalytics] = useState({

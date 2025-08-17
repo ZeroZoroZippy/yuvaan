@@ -1,7 +1,7 @@
 import React from 'react';
 import { usePageNavigation } from '../hooks/usePageNavigation';
 import { useMobileMenu } from '../contexts/MobileMenuContext';
-import { useChatbot } from '../contexts/ChatbotContext';
+import { useChatbot } from '../chatbot/context/ChatbotContext';
 import { useAnalytics } from '../hooks/useAnalytics';
 
 const Navbar = () => {

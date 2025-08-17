@@ -1,7 +1,7 @@
-// Enhanced ChatbotContext.js with OpenAI Integration
+// Enhanced ChatbotContext.js with GPT-4o-mini (Fast & Efficient)
 import React, { createContext, useContext, useState, useRef } from 'react';
-import analyticsService from '../services/analyticsService';
-import { yuvaanKnowledge, systemPromptConfig } from '../data/yuvaanKnowledge';
+import analyticsService from '../../services/analyticsService';
+import { yuvaanKnowledge, systemPromptConfig } from '../../data/yuvaanKnowledge';
 
 const ChatbotContext = createContext();
 
@@ -118,8 +118,8 @@ export const ChatbotProvider = ({ children }) => {
     }
   };
 
-  // OpenAI API integration
-  const generateOpenAIResponse = async (userMessage, conversationHistory) => {
+  // GPT-4o-mini API integration (Optimized for Speed)
+  const generateGPT4oMiniResponse = async (userMessage, conversationHistory) => {
     try {
       // Build system prompt with Yuvaan's knowledge and current context
       const systemPrompt = `${systemPromptConfig.identity}
@@ -165,17 +165,18 @@ SPECIAL INSTRUCTIONS:
 - If they ask about portfolio, mention Sarvodaya Dental Clinic and mental wellness projects
 - Always position as facilitating connection with Yuvaan, not replacing him`;
 
-      // Build conversation history for context
+      // Build conversation history for context (limit to last 8 messages for speed)
+      const recentMessages = conversationHistory.slice(-8);
       const conversationMessages = [
         { role: 'system', content: systemPrompt },
-        ...conversationHistory.map(msg => ({
+        ...recentMessages.map(msg => ({
           role: msg.sender === 'user' ? 'user' : 'assistant',
           content: msg.text
         })),
         { role: 'user', content: userMessage }
       ];
 
-      // Call OpenAI API
+      // Call API with GPT-4o-mini optimized settings
       const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
       const response = await fetch(`${apiUrl}/api/chat`, {
         method: 'POST',
@@ -184,8 +185,9 @@ SPECIAL INSTRUCTIONS:
         },
         body: JSON.stringify({
           messages: conversationMessages,
-          // temperature: 0.7, // Removed - gpt-5-nano only supports default
-          max_tokens: 500
+          max_tokens: 300,  // Optimized for speed - shorter responses
+          temperature: 0.7, // GPT-4o-mini supports standard parameters
+          model: 'gpt-4o-mini' // Explicitly specify the model
         })
       });
 
@@ -197,14 +199,14 @@ SPECIAL INSTRUCTIONS:
       return data.response;
 
     } catch (error) {
-      console.error('OpenAI API error:', error);
+      console.error('GPT-4o-mini API error:', error);
       
       // Fallback response if API fails
       return `I'm having a bit of trouble processing that right now. But I'd love to make sure Yuvaan can help you properly! What's your email? I'll have him reach out directly to discuss your needs.`;
     }
   };
 
-  // Lead recording function
+  // Lead recording function (unchanged)
   const recordLeadData = (analysis) => {
     const leadRecord = {
       conversationId: conversationId.current,
@@ -268,7 +270,7 @@ SPECIAL INSTRUCTIONS:
   };
 
   const closeChatbot = () => {
-    console.log('🔚 CHATBOT CLOSING');
+    console.log('📚 CHATBOT CLOSING');
     
     const sessionAnalysis = analyzeBusinessConversation();
     
@@ -311,19 +313,20 @@ SPECIAL INSTRUCTIONS:
       // Analyze user message for lead qualification
       analyzeUserMessage(text);
       
-      // Generate OpenAI response
+      // Generate GPT-4o-mini response (fast!)
       setIsProcessing(true);
       try {
-        // Get conversation history (last 10 messages for context)
-        const recentMessages = messages.slice(-10);
-        const response = await generateOpenAIResponse(text, recentMessages);
+        // Get conversation history (last 8 messages for optimal speed/context balance)
+        const recentMessages = messages.slice(-8);
+        const response = await generateGPT4oMiniResponse(text, recentMessages);
         
-        console.log('🤖 OPENAI RESPONSE:', response);
+        console.log('🤖 GPT-4o-mini RESPONSE:', response);
         
+        // Reduced delay for faster perceived speed
         setTimeout(() => {
           addMessage(response, 'bot');
           setIsProcessing(false);
-        }, 800); // Slight delay for natural feel
+        }, 400); // Faster than before - GPT-4o-mini is quick!
         
       } catch (error) {
         console.error('Response generation failed:', error);
