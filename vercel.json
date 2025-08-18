@@ -11,8 +11,12 @@
   ],
   "rewrites": [
     {
-      "source": "/((?!api).*)",
-      "destination": "/client/index.html"
+      "source": "/static/(.*)",
+      "destination": "/client/build/static/$1"
+    },
+    {
+      "source": "/((?!api|static).*)",
+      "destination": "/client/build/index.html"
     }
   ],
   "headers": [
