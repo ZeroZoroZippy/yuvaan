@@ -1,8 +1,29 @@
 {
   "version": 2,
-  "buildCommand": "npm run vercel-build",
-  "outputDirectory": "client/build",
-  "installCommand": "echo 'No install needed'",
+  "builds": [
+    {
+      "src": "client/package.json",
+      "use": "@vercel/static-build",
+      "config": {
+        "distDir": "build"
+      }
+    }
+  ],
+  "routes": [
+    {
+      "handle": "filesystem"
+    },
+    {
+      "src": "/(.*)",
+      "dest": "/client/$1"
+    }
+  ],
+  "rewrites": [
+    {
+      "source": "/((?!api).*)",
+      "destination": "/client/index.html"
+    }
+  ],
   "headers": [
     {
       "source": "/(.*)",
