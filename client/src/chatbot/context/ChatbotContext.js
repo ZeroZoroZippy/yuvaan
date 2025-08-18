@@ -225,7 +225,7 @@ SPECIAL INSTRUCTIONS:
     
     console.log('📧 RECORDING LEAD DATA:', leadRecord);
     
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:8000';
+    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
     fetch(`${apiUrl}/api/leads`, {
       method: 'POST',
       headers: { 
