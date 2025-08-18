@@ -1,6 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Link } from 'react-router-dom';
 import { useAnalytics } from '../hooks/useAnalytics';
 import wellness from '../assets/Projects/mental-wellness.jpg'
 import dental from '../assets/Projects/Dental.jpg'

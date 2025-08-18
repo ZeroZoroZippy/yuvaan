@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PageTransitionProvider } from './contexts/PageTransitionContext';
-import { MobileMenuProvider, useMobileMenu } from './contexts/MobileMenuContext';
+import { MobileMenuProvider } from './contexts/MobileMenuContext';
 import { LenisProvider } from './contexts/LenisContext';
 import PageTransition from './components/ui/PageTransition';
 import { Chatbot, ChatbotTrigger, ChatbotProvider } from './chatbot';

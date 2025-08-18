@@ -9,8 +9,6 @@ import DesignStrategySection from '../components/DesignStrategySection';
 
 import me from '../assets/Hero/Hero3.jpg'
 import work from '../assets/About/work.jpg'
-import wirefrme from '../assets/About/wireframe.jpeg'
-import code from '../assets/About/code.jpeg'
 import contact from '../assets/About/contact.JPG'
 
 function AboutPage() {
@@ -35,7 +33,6 @@ function AboutPage() {
     const [showThankYou, setShowThankYou] = useState(false);
 
     // Animation and content loading state
-    const [animatedElements, setAnimatedElements] = useState(new Set());
     const [contentLoaded, setContentLoaded] = useState(false);
     const [showContent, setShowContent] = useState(false);
 
@@ -390,7 +387,6 @@ function AboutPage() {
                         setTimeout(() => {
                             element.classList.add(`animate-${animationType}`);
                             element.classList.remove('animate-hidden');
-                            setAnimatedElements(prev => new Set([...prev, element]));
                         }, parseInt(delay));
 
                         // Stop observing this element

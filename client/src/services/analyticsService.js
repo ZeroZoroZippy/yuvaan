@@ -636,7 +636,7 @@ class AnalyticsService {
                 throw new Error('counterType and itemName are required');
             }
 
-            const safeDocId = `${counterType}_${itemName}`.replace(/[\/\[\]#]/g, '_');
+            const safeDocId = `${counterType}_${itemName}`.replace(/[/[\]#]/g, '_');
             const counterRef = doc(db, 'analytics_counters', safeDocId);
 
             const counterData = this.sanitizeData({

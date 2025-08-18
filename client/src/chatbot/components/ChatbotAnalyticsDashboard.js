@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { collection, query, orderBy, limit, getDocs, where } from 'firebase/firestore';
 import { db } from '../../config/firebase';
 
@@ -23,11 +23,29 @@ const ChatbotAnalyticsDashboard = () => {
   const [selectedConversation, setSelectedConversation] = useState(null);
   const [conversationMessages, setConversationMessages] = useState([]);
 
-  useEffect(() => {
-    fetchChatbotAnalytics();
-  }, [timeRange]);
+  const processChatbotData = useCallback((interactions, conversations, messages) => {
+    // Process analytics data
+    const totalConversations = conversations.length;
+    const totalMessages = messages.length;
+    const averageConversationLength = totalConversations > 0 ? totalMessages / totalConversations : 0;
+    
+    return {
+      totalConversations,
+      totalMessages,
+      averageConversationLength,
+      topTopics: [],
+      topIntents: [],
+      sentimentBreakdown: {},
+      leadQualityBreakdown: {},
+      recentConversations: conversations.slice(0, 10),
+      conversionPotential: {},
+      popularQuestions: [],
+      responseEffectiveness: {},
+      recentMessages: messages.slice(0, 20)
+    };
+  }, []);
 
-  const fetchChatbotAnalytics = async () => {
+  const fetchChatbotAnalytics = useCallback(async () => {
     setLoading(true);
     try {
       const now = new Date();
@@ -172,7 +190,11 @@ const ChatbotAnalyticsDashboard = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [timeRange, processChatbotData]);
+
+  useEffect(() => {
+    fetchChatbotAnalytics();
+  }, [fetchChatbotAnalytics]);
 
   const fetchConversationMessages = async (conversationId) => {
     try {
@@ -189,141 +211,7 @@ const ChatbotAnalyticsDashboard = () => {
     }
   };
 
-  const processChatbotData = (interactions, conversations, messages) => {
-    let totalConversations = conversations.length;
-    let totalMessages = messages.length;
-    let conversationLengths = [];
-    const topicCounts = {};
-    const intentCounts = {};
-    const sentimentCounts = { positive: 0, negative: 0, neutral: 0 };
-    const leadQualityCounts = { high: 0, medium: 0, low: 0 };
-    const conversionPotentialCounts = { high: 0, medium: 0, low: 0 };
-    const questionTypes = {};
 
-    // Process conversations
-    conversations.forEach(conversation => {
-      conversationLengths.push(conversation.messageCount || 0);
-      
-      // Count topics
-      if (conversation.topics) {
-        conversation.topics.forEach(topic => {
-          topicCounts[topic] = (topicCounts[topic] || 0) + 1;
-        });
-      }
-      
-      // Count intents
-      if (conversation.intents) {
-        conversation.intents.forEach(intent => {
-          intentCounts[intent] = (intentCounts[intent] || 0) + 1;
-        });
-      }
-      
-      // Count sentiments
-      if (conversation.overallSentiment) {
-        sentimentCounts[conversation.overallSentiment] = (sentimentCounts[conversation.overallSentiment] || 0) + 1;
-      }
-      
-      // Count lead quality
-      if (conversation.leadQuality) {
-        leadQualityCounts[conversation.leadQuality] = (leadQualityCounts[conversation.leadQuality] || 0) + 1;
-      }
-      
-      // Count conversion potential
-      if (conversation.conversionPotential) {
-        conversionPotentialCounts[conversation.conversionPotential] = (conversionPotentialCounts[conversation.conversionPotential] || 0) + 1;
-      }
-    });
-
-    // Process messages for question types
-    messages.forEach(message => {
-      if (message.sender === 'user' && message.messageType) {
-        questionTypes[message.messageType] = (questionTypes[message.messageType] || 0) + 1;
-      }
-    });
-
-    // Calculate averages and sort data
-    const averageConversationLength = conversationLengths.length > 0 
-      ? conversationLengths.reduce((a, b) => a + b, 0) / conversationLengths.length 
-      : 0;
-
-    const topTopics = Object.entries(topicCounts)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 10)
-      .map(([topic, count]) => ({ topic, count }));
-
-    const topIntents = Object.entries(intentCounts)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 10)
-      .map(([intent, count]) => ({ intent, count }));
-
-    const popularQuestions = Object.entries(questionTypes)
-      .sort(([,a], [,b]) => b - a)
-      .slice(0, 10)
-      .map(([type, count]) => ({ type, count }));
-
-    // Recent conversations with enhanced data
-    const recentConversations = conversations.slice(0, 10).map(conv => ({
-      id: conv.conversationId,
-      sessionId: conv.sessionId,
-      duration: conv.duration,
-      messageCount: conv.messageCount,
-      topics: conv.topics || [],
-      sentiment: conv.overallSentiment,
-      leadQuality: conv.leadQuality,
-      conversionPotential: conv.conversionPotential,
-      outcome: conv.outcome,
-      startTime: conv.startTime?.toDate ? conv.startTime.toDate() : new Date(conv.startTime),
-      endTime: conv.endTime?.toDate ? conv.endTime.toDate() : new Date(conv.endTime)
-    }));
-
-    // Recent messages with enhanced data
-    const recentMessages = messages.slice(0, 50).map(msg => ({
-      id: msg.id,
-      conversationId: msg.conversationId,
-      sender: msg.sender,
-      content: msg.content,
-      messageType: msg.messageType,
-      sentiment: msg.sentiment,
-      topics: msg.topics || [],
-      intent: msg.intent,
-      containsContact: msg.containsContact,
-      timestamp: msg.timestamp?.toDate ? msg.timestamp.toDate() : new Date(msg.timestamp),
-      wordCount: msg.wordCount,
-      responseTime: msg.responseTime
-    }));
-
-    return {
-      totalConversations,
-      totalMessages,
-      averageConversationLength: Math.round(averageConversationLength * 10) / 10,
-      topTopics,
-      topIntents,
-      sentimentBreakdown: sentimentCounts,
-      leadQualityBreakdown: leadQualityCounts,
-      recentConversations,
-      conversionPotential: conversionPotentialCounts,
-      popularQuestions,
-      responseEffectiveness: calculateResponseEffectiveness(conversations),
-      recentMessages
-    };
-  };
-
-  const calculateResponseEffectiveness = (conversations) => {
-    let effectiveResponses = 0;
-    let totalResponses = conversations.length;
-    
-    conversations.forEach(conversation => {
-      if (conversation.messageCount > 3 && conversation.overallSentiment === 'positive') {
-        effectiveResponses++;
-      }
-    });
-    
-    return {
-      effectivenessRate: totalResponses > 0 ? Math.round((effectiveResponses / totalResponses) * 100) : 0,
-      totalResponses,
-      effectiveResponses
-    };
-  };
 
   const formatTime = (timestamp) => {
     if (!timestamp) return 'Unknown';

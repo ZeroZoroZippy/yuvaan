@@ -7,16 +7,17 @@ export const useAnalytics = () => {
   // Track component mount/unmount
   useEffect(() => {
     const componentName = new Error().stack?.split('\n')[2]?.match(/at (\w+)/)?.[1] || 'Unknown';
+    const mountTime = mountTimeRef.current;
     
     analyticsService.trackEvent('component_mount', {
       componentName,
-      mountTime: mountTimeRef.current
+      mountTime
     });
 
     return () => {
       analyticsService.trackEvent('component_unmount', {
         componentName,
-        timeOnComponent: Date.now() - mountTimeRef.current
+        timeOnComponent: Date.now() - mountTime
       });
     };
   }, []);
@@ -116,10 +117,6 @@ export const useAnalytics = () => {
 
   // Mouse click tracking for heatmaps
   const trackClick = useCallback((event, elementName = '') => {
-    const rect = event.target.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-    
     analyticsService.trackMouseClick(
       event.clientX, 
       event.clientY, 
@@ -153,6 +150,7 @@ export const useAnalytics = () => {
 export const withAnalytics = (WrappedComponent, componentName) => {
   return function AnalyticsWrappedComponent(props) {
     const { trackEvent } = useAnalytics();
+    const { onClick } = props;
 
     useEffect(() => {
       trackEvent('component_render', { componentName });
@@ -166,10 +164,10 @@ export const withAnalytics = (WrappedComponent, componentName) => {
       });
 
       // Call original onClick if it exists
-      if (props.onClick) {
-        props.onClick(event);
+      if (onClick) {
+        onClick(event);
       }
-    }, [trackEvent, props.onClick]);
+    }, [trackEvent, onClick]);
 
     return <WrappedComponent {...props} onClick={handleClick} />;
   };
