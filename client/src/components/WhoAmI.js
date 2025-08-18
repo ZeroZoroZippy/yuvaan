@@ -22,7 +22,7 @@ function WhoAmI() {
   const handleOrbClick = () => {
     // Start teleportation animation
     setIsOrbTeleporting(true);
-    
+
     // Open chatbot after scale down animation completes
     setTimeout(() => {
       openChatbot();
@@ -35,13 +35,12 @@ function WhoAmI() {
       style={{ backgroundColor: '#161711' }}
     >
       {/* Orb Component - Top Left with teleportation effect */}
-      <div 
+      <div
         className="absolute top-4 left-4 lg:top-6 lg:left-6 cursor-pointer"
         onClick={handleOrbClick}
       >
-        <div className={`relative w-16 h-16 lg:w-20 lg:h-20 transition-all duration-300 ease-in-out ${
-          isOrbTeleporting || isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
-        }`}>
+        <div className={`relative w-16 h-16 lg:w-20 lg:h-20 transition-all duration-300 ease-in-out ${isOrbTeleporting || isOpen ? 'scale-0 opacity-0' : 'scale-100 opacity-100'
+          }`}>
           <Orb
             hue={220}
             hoverIntensity={0.3}
