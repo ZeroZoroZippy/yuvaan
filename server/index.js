@@ -13,11 +13,13 @@ const PORT = process.env.PORT || 5000;
 app.use(cors({
   origin: [
     'http://localhost:3000',
-    'https://yuvaan-vithlani.vercel.app',
-    /\.vercel\.app$/
+    'https://yuvaanvithlani.com',           // Your custom domain
+    'https://www.yuvaanvithlani.com',       // Include www version
+    'https://yuvaan-vithlani.vercel.app',   // Keep old domain during transition
+    /\.vercel\.app$/                        // Preview deployments
   ],
   credentials: true
-}));;
+}));
 app.use(express.json());
 
 // Configuration for chatbot notifications
