@@ -177,8 +177,11 @@ SPECIAL INSTRUCTIONS:
       ];
 
       // Call API with GPT-4o-mini optimized settings
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5000';
-      const response = await fetch(`${apiUrl}/api/chat`, {
+      const apiUrl = process.env.NODE_ENV === 'development' 
+        ? 'http://localhost:5000/api/chat'
+        : '/api/chat';  // Uses Vercel Function in production
+
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
