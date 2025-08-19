@@ -2,6 +2,88 @@ import React, { useState, useRef, useEffect } from 'react';
 import { useChatbot } from '../context/ChatbotContext';
 import { useAnalytics } from '../../hooks/useAnalytics';
 
+// TypewriterMessage Component
+const TypewriterMessage = ({ text, isLatest, timestamp, onComplete }) => {
+    const [displayedText, setDisplayedText] = useState('');
+    const [isTyping, setIsTyping] = useState(true);
+
+    useEffect(() => {
+        if (!isLatest) {
+            setDisplayedText(text);
+            setIsTyping(false);
+            return;
+        }
+
+        setDisplayedText('');
+        setIsTyping(true);
+
+        let index = 0;
+        let timeoutId;
+
+        const typeNextChar = () => {
+            if (index < text.length) {
+                const char = text[index];
+                setDisplayedText(prev => prev + char);
+                
+                let delay = 40; // Base typing speed
+                
+                if (char === '.' || char === '!' || char === '?') {
+                    delay = 180; // Pause after sentences
+                } else if (char === ',' || char === ';' || char === ':') {
+                    delay = 100; // Pause after clauses
+                } else if (char === ' ') {
+                    delay = 20; // Faster through spaces
+                }
+                
+                index++;
+                timeoutId = setTimeout(typeNextChar, delay);
+            } else {
+                setIsTyping(false);
+                onComplete && onComplete();
+            }
+        };
+
+        // Start typing after a brief delay
+        timeoutId = setTimeout(typeNextChar, 300);
+
+        return () => {
+            clearTimeout(timeoutId);
+        };
+    }, [text, isLatest, onComplete]);
+
+    const formatTime = (timestamp) => {
+        return timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    };
+
+    // Dynamic width based on message length (same as original)
+    const getMessageWidth = (text) => {
+        if (text.length <= 10) return 'max-w-[35%]';
+        if (text.length <= 20) return 'max-w-[50%]';
+        if (text.length <= 40) return 'max-w-[65%]';
+        if (text.length <= 80) return 'max-w-[75%]';
+        if (text.length <= 150) return 'max-w-[85%]';
+        return 'max-w-[95%]';
+    };
+
+    return (
+        <div className="w-full">
+            <div className={`${getMessageWidth(text)} bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 rounded-2xl px-4 py-3 shadow-md`}>
+                <p className="text-lg leading-relaxed" style={{ fontFamily: "Neuton, serif" }}>
+                    {displayedText}
+                    {isTyping && (
+                        <span className="inline-block w-0.5 h-5 bg-[#A8977A] ml-1 animate-pulse" />
+                    )}
+                </p>
+                {!isTyping && (
+                    <p className="text-xs mt-2 text-[#A8977A]/60">
+                        {formatTime(timestamp)}
+                    </p>
+                )}
+            </div>
+        </div>
+    );
+};
+
 const Chatbot = () => {
     const {
         isOpen,
@@ -246,7 +328,7 @@ const Chatbot = () => {
                             </button>
                         </div>
 
-                        {/* Enhanced Messages with full-width left alignment */}
+                        {/* Enhanced Messages with typewriter effect */}
                         <div
                             ref={messagesContainerRef}
                             className="flex-1 min-h-0 overflow-y-auto p-4 space-y-4 scroll-smooth"
@@ -256,7 +338,7 @@ const Chatbot = () => {
                                 WebkitOverflowScrolling: 'touch'
                             }}
                         >
-                            {messages.map((message) => {
+                            {messages.map((message, index) => {
                                 // More precise dynamic width based on message length
                                 const getMessageWidth = (text) => {
                                     if (text.length <= 10) return 'max-w-[35%]';  // Very short: "hello", "ok", "yes"
@@ -267,27 +349,39 @@ const Chatbot = () => {
                                     return 'max-w-[95%]';                          // Maximum width
                                 };
 
-                                return (
-                                    <div key={message.id} className="w-full">
-                                        <div
-                                            className={`${getMessageWidth(message.text)} rounded-2xl px-4 py-3 ${message.sender === 'user'
-                                                    ? 'bg-gradient-to-r from-[#A8977A] to-[#8B7355] text-white shadow-lg'
-                                                    : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
-                                                }`}
-                                        >
-                                            <p className={`text-lg leading-relaxed ${message.sender === 'user' ? 'font-semibold' : ''
-                                                }`} style={{
-                                                    fontFamily: message.sender === 'user' ? "Bubblegum Sans, sans-serif" : "Neuton, serif"
-                                                }}>
-                                                {message.text}
-                                            </p>
-                                            <p className={`text-xs mt-2 ${message.sender === 'user' ? 'text-white/80' : 'text-[#A8977A]/60'
-                                                }`}>
-                                                {formatTime(message.timestamp)}
-                                            </p>
+                                if (message.sender === 'ai') {
+                                    const isLatestAI = index === messages.length - 1;
+                                    return (
+                                        <TypewriterMessage
+                                            key={message.id}
+                                            text={message.text}
+                                            isLatest={isLatestAI}
+                                            timestamp={message.timestamp}
+                                        />
+                                    );
+                                } else {
+                                    return (
+                                        <div key={message.id} className="w-full">
+                                            <div
+                                                className={`${getMessageWidth(message.text)} rounded-2xl px-4 py-3 ${message.sender === 'user'
+                                                        ? 'bg-gradient-to-r from-[#A8977A] to-[#8B7355] text-white shadow-lg'
+                                                        : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
+                                                    }`}
+                                            >
+                                                <p className={`text-lg leading-relaxed ${message.sender === 'user' ? 'font-semibold' : ''
+                                                    }`} style={{
+                                                        fontFamily: message.sender === 'user' ? "Bubblegum Sans, sans-serif" : "Neuton, serif"
+                                                    }}>
+                                                    {message.text}
+                                                </p>
+                                                <p className={`text-xs mt-2 ${message.sender === 'user' ? 'text-white/80' : 'text-[#A8977A]/60'
+                                                    }`}>
+                                                    {formatTime(message.timestamp)}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                );
+                                    );
+                                }
                             })}
 
                             {/* Professional typing indicator */}
@@ -384,7 +478,7 @@ const Chatbot = () => {
                                 WebkitOverflowScrolling: 'touch'
                             }}
                         >
-                            {messages.map((message) => {
+                            {messages.map((message, index) => {
                                 // More precise dynamic width based on message length  
                                 const getMessageWidth = (text) => {
                                     if (text.length <= 10) return 'max-w-[35%]';  // Very short: "hello", "ok", "yes"
@@ -395,27 +489,39 @@ const Chatbot = () => {
                                     return 'max-w-[95%]';                          // Maximum width
                                 };
 
-                                return (
-                                    <div key={message.id} className="w-full">
-                                        <div
-                                            className={`${getMessageWidth(message.text)} rounded-2xl px-4 py-3 ${message.sender === 'user'
-                                                    ? 'bg-gradient-to-r from-[#A8977A] to-[#8B7355] text-white shadow-lg'
-                                                    : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
-                                                }`}
-                                        >
-                                            <p className={`text-lg leading-relaxed ${message.sender === 'user' ? 'font-semibold' : ''
-                                                }`} style={{
-                                                    fontFamily: message.sender === 'user' ? "Bubblegum Sans, sans-serif" : "Neuton, serif"
-                                                }}>
-                                                {message.text}
-                                            </p>
-                                            <p className={`text-sm mt-2 ${message.sender === 'user' ? 'text-white/80' : 'text-[#A8977A]/60'
-                                                }`}>
-                                                {formatTime(message.timestamp)}
-                                            </p>
+                                if (message.sender === 'ai') {
+                                    const isLatestAI = index === messages.length - 1;
+                                    return (
+                                        <TypewriterMessage
+                                            key={message.id}
+                                            text={message.text}
+                                            isLatest={isLatestAI}
+                                            timestamp={message.timestamp}
+                                        />
+                                    );
+                                } else {
+                                    return (
+                                        <div key={message.id} className="w-full">
+                                            <div
+                                                className={`${getMessageWidth(message.text)} rounded-2xl px-4 py-3 ${message.sender === 'user'
+                                                        ? 'bg-gradient-to-r from-[#A8977A] to-[#8B7355] text-white shadow-lg'
+                                                        : 'bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 shadow-md'
+                                                    }`}
+                                            >
+                                                <p className={`text-lg leading-relaxed ${message.sender === 'user' ? 'font-semibold' : ''
+                                                    }`} style={{
+                                                        fontFamily: message.sender === 'user' ? "Bubblegum Sans, sans-serif" : "Neuton, serif"
+                                                    }}>
+                                                    {message.text}
+                                                </p>
+                                                <p className={`text-sm mt-2 ${message.sender === 'user' ? 'text-white/80' : 'text-[#A8977A]/60'
+                                                    }`}>
+                                                    {formatTime(message.timestamp)}
+                                                </p>
+                                            </div>
                                         </div>
-                                    </div>
-                                );
+                                    );
+                                }
                             })}
 
                             {showTypingIndicator && <TypingIndicator />}
