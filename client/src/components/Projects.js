@@ -54,7 +54,7 @@ function Projects() {
     // Track project expansion
     const projectNames = {
       project1: 'Sarvodaya Dental Clinic',
-      project2: 'Wellness Website'
+      project2: 'Therapy With Aakanksha'
     };
     
     trackProject(projectNames[projectKey], projectKey, 'expand');
@@ -107,7 +107,7 @@ function Projects() {
   const handleCloseProject = (projectKey) => {
     const projectNames = {
       project1: 'Sarvodaya Dental Clinic',
-      project2: 'Wellness Website'
+      project2: 'Therapy With Aakanksha'
     };
     
     trackProject(projectNames[projectKey], projectKey, 'collapse');
@@ -175,7 +175,7 @@ function Projects() {
   // Project data for cleaner code
   const projects = [
     { key: 'project1', title: 'Sarvodaya Dental Clinic', ref: project1Ref, image: dental },
-    { key: 'project2', title: 'Wellness Website', ref: project2Ref, image: wellness }
+    { key: 'project2', title: 'Therapy With Aakanksha', ref: project2Ref, image: wellness }
   ];
 
   return (
@@ -237,9 +237,9 @@ function Projects() {
                       } else if (project.key === 'project2') {
                         // For Wellness Website, open the live site
                         e.preventDefault();
-                        trackProject('Wellness Website', 'project2', 'external_link');
+                        trackProject('Therapy With Aakanksha', 'project2', 'external_link');
                         trackCTA('project_wellness_external_link', 'external_link', {
-                          projectName: 'Wellness Website',
+                          projectName: 'Therapy With Aakanksha',
                           destination: 'https://therapy-with-aakanksha.vercel.app/',
                           currentPage: window.location.pathname
                         });

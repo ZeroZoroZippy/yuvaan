@@ -29,7 +29,7 @@ export const yuvaanKnowledge = {
   
   For Sarvodaya Dental Clinic, I transformed their outdated website into something that makes patients feel comfortable about booking appointments. Dr. Shruti Shetty said I "curated the website exactly how she wanted - from patient testimonials to booking appointments all at one place." 
   
-  I also worked on a mental wellness practice website where the challenge was making therapy feel approachable rather than intimidating. These projects taught me how important it is to understand not just what people need, but how they feel when they're looking for it.`,
+  I also worked on a mental wellness practice website "Therapy With Aakanksha" where the challenge was making therapy feel approachable rather than intimidating. These projects taught me how important it is to understand not just what people need, but how they feel when they're looking for it.`,
   
       technologies: `I work with modern web technologies - React, Node.js, Express, and everything that makes websites fast, reliable, and user-friendly. But honestly, the specific tech stack is less important than choosing the right tools for each project.
   
