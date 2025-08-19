@@ -144,7 +144,10 @@ function AboutPage() {
                         data-delay="400"
                         style={{ fontFamily: 'Neuton, serif' }}
                     >
-                        I make digital experiences feel natural and effortless. I focus on what matters: clear design, smooth interactions, and details that quietly make everything work better. Every project starts with understanding your goals and ends with something people genuinely enjoy using.
+                        I design and build websites that work beautifully and make sense to your visitors. Whether you need a brand new website, want to redesign an existing one, or improve how your current site performs, I create solutions that are clean, professional, and easy to navigate.
+                        <br/>
+                        <br/>
+                        I believe good design shouldn't just look nice—it should help your business achieve its goals while giving visitors exactly what they're looking for.
                     </p>
                     <div
                         data-animation="slide-up-fade"
@@ -210,20 +213,12 @@ function AboutPage() {
                         What I Can Do For You
                     </h2>
                     <p
-                        className="text-xl sm:text-xl lg:text-xl text-[#A8977A] leading-relaxed mb-4 sm:mb-6"
+                        className="text-xl sm:text-xl lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-6"
                         data-animation="slide-up-fade"
                         data-delay="200"
                         style={{ fontFamily: 'Neuton, serif' }}
                     >
-                        The best work happens when creativity and collaboration meet — every project is a conversation, not just a checklist.
-                    </p>
-                    <p
-                        className="text-xl sm:text-xl lg:text-xl text-[#A8977A] leading-relaxed mb-6 sm:mb-8 lg:mb-12"
-                        data-animation="slide-up-fade"
-                        data-delay="400"
-                        style={{ fontFamily: 'Neuton, serif' }}
-                    >
-                        I design or refine websites that are enjoyable to use and easy to maintain. Interfaces stay clear, interactions feel smooth, and decisions remain practical.
+                        I help businesses create websites that actually work for them. This means:
                     </p>
                     <div
                         className="space-y-3 sm:space-y-4 lg:space-y-5 mb-6"
