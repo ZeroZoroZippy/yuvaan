@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useRef } from 'react';
 import G1 from '../../assets/Gallery/G1.JPG'
 import G2 from '../../assets/Gallery/G2.jpg'
 import G3 from '../../assets/Gallery/G3.JPG'
@@ -10,6 +10,8 @@ import G8 from '../../assets/Gallery/G8.JPG'
 import G9 from '../../assets/Gallery/G9.jpg'
 
 function ScrollingGallery() {
+    const scrollRef = useRef(null);
+    
     const galleryItems = [
         { id: 1, image: G1, alt: "Puppy"},
         { id: 2, image: G8, alt: "My Workspace"},
@@ -19,10 +21,84 @@ function ScrollingGallery() {
         { id: 6, image: G9, alt: "Pose" }
     ];
 
+    useEffect(() => {
+        const scrollContainer = scrollRef.current;
+        if (!scrollContainer) return;
+
+        // Calculate exact dimensions for smooth animation
+        const calculateDimensions = () => {
+            const screenWidth = window.innerWidth;
+            
+            // Match your Tailwind breakpoints exactly
+            let itemWidth, gap;
+            if (screenWidth >= 1024) { // lg
+                itemWidth = 256; // w-64
+                gap = 24; // space-x-6
+            } else if (screenWidth >= 640) { // sm
+                itemWidth = 224; // w-56
+                gap = 24; // space-x-6
+            } else {
+                itemWidth = 192; // w-48
+                gap = 16; // space-x-4
+            }
+            
+            return { itemWidth, gap };
+        };
+
+        const { itemWidth, gap } = calculateDimensions();
+        const singleSetWidth = (itemWidth + gap) * galleryItems.length - gap; // Subtract last gap
+        
+        // Create and inject proper CSS animation
+        const styleId = 'scroll-gallery-animation';
+        let existingStyle = document.getElementById(styleId);
+        
+        if (existingStyle) {
+            existingStyle.remove();
+        }
+        
+        const style = document.createElement('style');
+        style.id = styleId;
+        style.textContent = `
+            @keyframes scroll-gallery {
+                0% { transform: translateX(0); }
+                100% { transform: translateX(-${singleSetWidth}px); }
+            }
+            
+            .scroll-animation {
+                animation: scroll-gallery 25s linear infinite;
+                will-change: transform;
+            }
+            
+            .scroll-animation:hover {
+                animation-play-state: paused;
+            }
+        `;
+        
+        document.head.appendChild(style);
+        
+        // Apply the animation class
+        scrollContainer.classList.add('scroll-animation');
+        
+        // Cleanup function
+        return () => {
+            const styleToRemove = document.getElementById(styleId);
+            if (styleToRemove) {
+                styleToRemove.remove();
+            }
+            if (scrollContainer) {
+                scrollContainer.classList.remove('scroll-animation');
+            }
+        };
+    }, []);
+
     return (
         <section className="w-full overflow-hidden">
             <div className="w-full overflow-hidden">
-                <div className="flex animate-scroll space-x-4 sm:space-x-6" style={{ width: '200%' }}>
+                <div 
+                    ref={scrollRef}
+                    className="flex space-x-4 sm:space-x-6" 
+                    style={{ width: 'fit-content' }}
+                >
                     {/* First set of images */}
                     <div className="flex space-x-4 sm:space-x-6 shrink-0">
                         {galleryItems.map((item) => (
@@ -31,10 +107,13 @@ function ScrollingGallery() {
                                     src={item.image}
                                     alt={item.alt}
                                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    loading="lazy"
                                 />
-                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
-                                    <p className="text-white font-medium text-sm sm:text-base" style={{ fontFamily: 'Neuton, serif' }}>{item.label}</p>
-                                </div>
+                                {item.label && (
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
+                                        <p className="text-white font-medium text-sm sm:text-base" style={{ fontFamily: 'Neuton, serif' }}>{item.label}</p>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
@@ -46,10 +125,13 @@ function ScrollingGallery() {
                                     src={item.image}
                                     alt={item.alt}
                                     className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
+                                    loading="lazy"
                                 />
-                                <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
-                                    <p className="text-white font-medium text-sm sm:text-base" style={{ fontFamily: 'Neuton, serif' }}>{item.label}</p>
-                                </div>
+                                {item.label && (
+                                    <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3 sm:p-4">
+                                        <p className="text-white font-medium text-sm sm:text-base" style={{ fontFamily: 'Neuton, serif' }}>{item.label}</p>
+                                    </div>
+                                )}
                             </div>
                         ))}
                     </div>
