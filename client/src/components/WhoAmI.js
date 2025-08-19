@@ -31,7 +31,7 @@ function WhoAmI() {
 
   return (
     <div
-      className="rounded-2xl shadow-lg w-full lg:w-[590px] h-[500px] lg:h-[400px] p-4 relative"
+      className="rounded-2xl shadow-lg w-full lg:w-[590px] h-[350px] lg:h-[400px] p-4 relative"
       style={{ backgroundColor: '#161711' }}
     >
       {/* Orb Component - Top Left with teleportation effect */}

@@ -39,7 +39,7 @@ SLACK_WEBHOOK_URL=https://hooks.slack.com/services/your/webhook/url
 
 # Server Configuration
 NODE_ENV=development
-PORT=8000
+PORT=5001
 EOL
     echo "⚠️  Please update server/.env with your actual credentials!"
 fi
@@ -60,7 +60,7 @@ fi
 if [ ! -f .env.local ]; then
     echo "📝 Creating client .env template..."
     cat > .env.local << EOL
-REACT_APP_API_URL=http://localhost:8000
+REACT_APP_API_URL=http://localhost:5001
 REACT_APP_ENVIRONMENT=development
 EOL
 fi
