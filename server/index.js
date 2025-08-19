@@ -39,7 +39,7 @@ const openai = new OpenAI({
 
 // Create email transporter (reusable for both contact form and chatbot)
 const createEmailTransporter = () => {
-  return nodemailer.createTransporter({
+  return nodemailer.createTransport({
     host: 'smtp.gmail.com',
     port: 587,
     secure: false,
