@@ -240,10 +240,10 @@ function Projects() {
                         trackProject('Therapy With Aakanksha', 'project2', 'external_link');
                         trackCTA('project_wellness_external_link', 'external_link', {
                           projectName: 'Therapy With Aakanksha',
-                          destination: 'https://therapy-with-aakanksha.vercel.app/',
+                          destination: 'https://www.therapywithaakanksha.com',
                           currentPage: window.location.pathname
                         });
-                        window.open('https://therapy-with-aakanksha.vercel.app/', '_blank');
+                        window.open('https://www.therapywithaakanksha.com', '_blank');
                       } else {
                         // For other projects, close the project
                         handleCloseProject(project.key);
