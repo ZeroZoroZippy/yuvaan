@@ -5,8 +5,17 @@
   <meta charset="utf-8" />
   <link rel="icon" type="image/png" href="/favicon.png" />
   <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
   <meta name="theme-color" content="#45372B" />
+  
+  <!-- Performance hints -->
+  <meta http-equiv="x-dns-prefetch-control" content="on">
+  <link rel="preload" href="/favicon.png" as="image" type="image/png">
+  
+  <!-- Prevent render blocking -->
+  <link rel="preconnect" href="https://vitals.vercel-insights.com">
+  
+  <!-- Critical CSS will be inlined here by build process -->
   
   <!-- SEO Meta Tags -->
   <meta name="description" content="Yuvaan Vithlani - Digital Solutions Strategist & AI-Powered Web Creator specializing in client-focused web solutions and strategic digital experiences. Transforming business needs into compelling digital realities." />
@@ -33,10 +42,13 @@
   <!-- Performance optimized fonts with preconnect -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Kaushan+Script&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400..800&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Neuton:ital,wght@0,200;0,300;0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Bubblegum+Sans&display=swap" rel="stylesheet">
+  <!-- Only load essential fonts with display=swap for better performance -->
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;800&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Neuton:wght@400;700&display=swap" rel="stylesheet">
+  
+  <!-- Resource hints for better performance -->
+  <link rel="dns-prefetch" href="//fonts.googleapis.com">
+  <link rel="dns-prefetch" href="//fonts.gstatic.com">
   
   <!-- Structured Data -->
   <script type="application/ld+json">

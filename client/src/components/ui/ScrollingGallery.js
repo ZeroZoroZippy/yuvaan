@@ -1,13 +1,13 @@
 import React, { useEffect, useRef } from 'react';
 import G1 from '../../assets/Gallery/G1.JPG'
-import G2 from '../../assets/Gallery/G2.jpg'
+import G2 from '../../assets-optimized/Gallery/G2.jpg'
 import G3 from '../../assets/Gallery/G3.JPG'
-import G4 from '../../assets/Gallery/G4.jpg'
-import G5 from '../../assets/Gallery/G5.jpg'
-import G6 from '../../assets/Gallery/G6.jpg'
-import G7 from '../../assets/Gallery/G7.jpg'
+import G4 from '../../assets-optimized/Gallery/G4.jpg'
+import G5 from '../../assets-optimized/Gallery/G5.jpg'
+import G6 from '../../assets-optimized/Gallery/G6.jpg'
+import G7 from '../../assets-optimized/Gallery/G7.jpg'
 import G8 from '../../assets/Gallery/G8.JPG'
-import G9 from '../../assets/Gallery/G9.jpg'
+import G9 from '../../assets-optimized/Gallery/G9.jpg'
 
 function ScrollingGallery() {
     const scrollRef = useRef(null);

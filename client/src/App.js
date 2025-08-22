@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { PageTransitionProvider } from './contexts/PageTransitionContext';
 import { MobileMenuProvider } from './contexts/MobileMenuContext';
@@ -6,38 +6,51 @@ import { LenisProvider } from './contexts/LenisContext';
 import PageTransition from './components/ui/PageTransition';
 import { Chatbot, ChatbotTrigger, ChatbotProvider } from './chatbot';
 import ErrorBoundary from './components/ErrorBoundary';
-import HeroPage from './pages/HeroPage';
-import AboutPage from './pages/AboutPage';
-import ProjectPage from './pages/ProjectPage';
-import BlogsPage from './pages/BlogsPage';
-import BlogPostPage from './pages/BlogPostPage';
-import AnalyticsTest from './components/AnalyticsTest';
-import { ChatbotAnalyticsDashboard } from './chatbot';
+import LoadingFallback from './components/LoadingFallback';
 import analyticsService from './services/analyticsService';
 import { db } from './config/firebase'; // Add this import for diagnostics
 
+// Lazy load pages for code splitting
+const HeroPage = lazy(() => import('./pages/HeroPage'));
+const AboutPage = lazy(() => import('./pages/AboutPage'));
+const ProjectPage = lazy(() => import('./pages/ProjectPage'));
+const BlogsPage = lazy(() => import('./pages/BlogsPage'));
+const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
+const AnalyticsTest = lazy(() => import('./components/AnalyticsTest'));
+const ChatbotAnalyticsDashboard = lazy(() => import('./chatbot/components/ChatbotAnalyticsDashboard'));
+
 const AppContent = () => {
   useEffect(() => {
-    // Track page timing when app loads
-    if (window.performance && window.performance.timing) {
-      setTimeout(() => {
-        analyticsService.trackPageTiming();
-      }, 1000);
+    // Defer analytics setup to not block initial render
+    const initializeAnalytics = () => {
+      // Track page timing when app loads
+      if (window.performance && window.performance.timing) {
+        setTimeout(() => {
+          analyticsService.trackPageTiming();
+        }, 2000);
+      }
+
+      // Track page visibility changes
+      const handleVisibilityChange = () => {
+        analyticsService.trackEvent('page_visibility', {
+          action: document.hidden ? 'hidden' : 'visible',
+          timestamp: Date.now()
+        });
+      };
+
+      document.addEventListener('visibilitychange', handleVisibilityChange);
+
+      return () => {
+        document.removeEventListener('visibilitychange', handleVisibilityChange);
+      };
+    };
+
+    // Use requestIdleCallback to run analytics when browser is idle
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(initializeAnalytics);
+    } else {
+      setTimeout(initializeAnalytics, 1000);
     }
-
-    // Track page visibility changes
-    const handleVisibilityChange = () => {
-      analyticsService.trackEvent('page_visibility', {
-        action: document.hidden ? 'hidden' : 'visible',
-        timestamp: Date.now()
-      });
-    };
-
-    document.addEventListener('visibilitychange', handleVisibilityChange);
-
-    return () => {
-      document.removeEventListener('visibilitychange', handleVisibilityChange);
-    };
   }, []);
 
   return (
@@ -45,15 +58,17 @@ const AppContent = () => {
       <PageTransition />
       <Chatbot />
       <ChatbotTrigger />
-      <Routes>
-        <Route path="/" element={<HeroPage />} />
-        <Route path="/about" element={<AboutPage />} />
-        <Route path="/projects/:projectId" element={<ProjectPage />} />
-        <Route path="/blog" element={<BlogsPage />} />
-        <Route path="/blog/:id" element={<BlogPostPage />} />
-        <Route path="/analytics-test" element={<AnalyticsTest />} />
-        <Route path="/chatbot-analytics" element={<ChatbotAnalyticsDashboard />} />
-      </Routes>
+      <Suspense fallback={<LoadingFallback />}>
+        <Routes>
+          <Route path="/" element={<HeroPage />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/projects/:projectId" element={<ProjectPage />} />
+          <Route path="/blog" element={<BlogsPage />} />
+          <Route path="/blog/:id" element={<BlogPostPage />} />
+          <Route path="/analytics-test" element={<AnalyticsTest />} />
+          <Route path="/chatbot-analytics" element={<ChatbotAnalyticsDashboard />} />
+        </Routes>
+      </Suspense>
     </div>
   );
 };
@@ -61,18 +76,14 @@ const AppContent = () => {
 function App() {
 
   useEffect(() => {
-    // ENHANCED: Firebase setup with comprehensive diagnostics
+    // Defer Firebase setup to avoid blocking initial render
     const setupFirebaseAnalytics = async () => {
       try {
-        // Step 1: Diagnostic check
-        console.log('🔍 Firebase Diagnostic Check:');
-        console.log('- Project ID:', process.env.REACT_APP_FIREBASE_PROJECT_ID);
-        console.log('- API Key exists:', !!process.env.REACT_APP_FIREBASE_API_KEY);
-        console.log('- Auth Domain:', process.env.REACT_APP_FIREBASE_AUTH_DOMAIN);
-        console.log('- DB initialized:', !!db);
-        console.log('- Analytics service exists:', !!analyticsService);
+        if (process.env.NODE_ENV === 'development') {
+          console.log('🔍 Firebase setup deferred to improve performance');
+        }
         
-        // Step 2: Check required environment variables
+        // Check required environment variables
         const requiredEnvVars = [
           'REACT_APP_FIREBASE_API_KEY',
           'REACT_APP_FIREBASE_AUTH_DOMAIN', 
@@ -85,72 +96,52 @@ function App() {
         const missingVars = requiredEnvVars.filter(varName => !process.env[varName]);
         
         if (missingVars.length > 0) {
-          console.error('❌ Missing environment variables:', missingVars);
-          console.error('📋 Please check your .env file');
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('⚠️ Missing Firebase env vars, running in local mode');
+          }
           return;
         }
         
-        console.log('✅ All environment variables present');
-        
-        // Step 3: Test database connection
+        // Test database connection
         if (!db) {
-          console.error('❌ Firebase database not initialized');
-          console.error('📋 Check your firebase.js configuration');
+          if (process.env.NODE_ENV === 'development') {
+            console.warn('⚠️ Firebase database not initialized');
+          }
           return;
         }
         
-        console.log('✅ Firebase database initialized');
-        
-        // Step 4: Enable Firebase writes
+        // Enable Firebase writes
         analyticsService.enableFirebase();
-        console.log('🔥 Firebase writes enabled for analytics');
         
-        // Step 5: Test basic analytics event (non-Firestore)
-        try {
-          analyticsService.trackEvent('app_initialized', {
-            timestamp: Date.now(),
-            userAgent: navigator.userAgent.substring(0, 100),
-            test: true
-          });
-          console.log('✅ Basic analytics event tracked');
-        } catch (eventError) {
-          console.error('❌ Basic analytics event failed:', eventError.message);
-        }
-        
-        // Step 6: Delayed test of Firestore operations
-        setTimeout(async () => {
+        // Test basic analytics event (non-blocking)
+        setTimeout(() => {
           try {
-            // Test a simple counter update (this is what's failing)
-            await analyticsService.updateClickCounter('test_counter', 'app_startup');
-            console.log('✅ Firestore counter test successful');
-          } catch (firestoreError) {
-            console.error('❌ Firestore counter test failed:', firestoreError.message);
-            console.error('📋 This suggests Firestore security rules or permissions issue');
-            
-            // Provide helpful error resolution
-            if (firestoreError.message.includes('Missing or insufficient permissions')) {
-              console.error('🔧 Solution: Update Firestore security rules to allow write access');
-            } else if (firestoreError.message.includes('not-found')) {
-              console.error('🔧 Solution: Ensure Firestore is enabled in Firebase Console');
-            } else {
-              console.error('🔧 Full error details:', firestoreError);
+            analyticsService.trackEvent('app_initialized', {
+              timestamp: Date.now(),
+              test: true
+            });
+          } catch (error) {
+            // Silent fail for performance
+            if (process.env.NODE_ENV === 'development') {
+              console.warn('Analytics event failed:', error.message);
             }
           }
-        }, 2000);
-        
-        if (process.env.NODE_ENV === 'development') {
-          console.log('📊 Chatbot messages will now be stored in Firestore');
-          console.log('🎯 Visit /analytics-test to verify data collection');
-        }
+        }, 3000);
         
       } catch (setupError) {
-        console.error('❌ Firebase setup failed:', setupError.message);
-        console.error('📋 Analytics will run in local-only mode');
+        // Silent fail in production for performance
+        if (process.env.NODE_ENV === 'development') {
+          console.warn('⚠️ Firebase setup failed, running in local mode');
+        }
       }
     };
     
-    // Run setup
-    setupFirebaseAnalytics();
+    // Use requestIdleCallback to defer Firebase setup
+    if (window.requestIdleCallback) {
+      window.requestIdleCallback(() => setupFirebaseAnalytics());
+    } else {
+      setTimeout(setupFirebaseAnalytics, 2000);
+    }
     
   }, []);
   

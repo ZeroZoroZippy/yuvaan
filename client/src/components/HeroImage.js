@@ -9,7 +9,7 @@ function HeroImage() {
     >
       <img
         src={Hero}
-        alt="Hero"
+        alt="Yuvaan Vithlani - Digital Solutions Strategist"
         className="w-full h-full object-cover object-top"
       />
     </div>
