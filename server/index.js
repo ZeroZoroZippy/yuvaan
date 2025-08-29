@@ -9,16 +9,36 @@ const rateLimit = require('express-rate-limit');
 const app = express();
 const PORT = process.env.PORT || 5001;
 
-// Middleware
+// Enhanced CORS configuration for Safari compatibility
 app.use(cors({
-  origin: [
-    'http://localhost:3000',
-    'https://yuvaanvithlani.com',           // Your custom domain
-    'https://www.yuvaanvithlani.com',       // Include www version
-    'https://yuvaan-vithlani.vercel.app',   // Keep old domain during transition
-    /\.vercel\.app$/                        // Preview deployments
-  ],
-  credentials: true
+  origin: function (origin, callback) {
+    // Allow requests with no origin (like mobile apps or curl requests)
+    if (!origin) return callback(null, true);
+    
+    const allowedOrigins = [
+      'http://localhost:3000',
+      'http://127.0.0.1:3000',              // Safari sometimes uses 127.0.0.1
+      'https://yuvaanvithlani.com',
+      'https://www.yuvaanvithlani.com',
+      'https://yuvaan-vithlani.vercel.app'
+    ];
+    
+    // Allow Vercel preview deployments
+    if (origin.endsWith('.vercel.app')) {
+      return callback(null, true);
+    }
+    
+    if (allowedOrigins.indexOf(origin) !== -1) {
+      callback(null, true);
+    } else {
+      console.log('CORS blocked origin:', origin);
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization', 'Accept'],
+  optionsSuccessStatus: 200 // Some legacy browsers (IE11, various SmartTVs) choke on 204
 }));
 app.use(express.json({ limit: '10mb' })); // Increased limit for full conversations
 
@@ -183,8 +203,20 @@ app.post('/api/contact', async (req, res) => {
   }
 });
 
+// Handle preflight requests for leads endpoint
+app.options('/api/leads', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
+
 // ENHANCED: Complete conversation lead recording endpoint
 app.post('/api/leads', async (req, res) => {
+  // Set CORS headers explicitly for Safari
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
   try {
     const lead = req.body;
     console.log('🎯 COMPLETE CHATBOT CONVERSATION RECEIVED:', {
@@ -240,8 +272,20 @@ app.post('/api/leads', async (req, res) => {
   }
 });
 
+// Handle preflight requests for unknown-questions endpoint
+app.options('/api/unknown-questions', (req, res) => {
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Methods', 'POST, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Accept');
+  res.header('Access-Control-Allow-Credentials', 'true');
+  res.sendStatus(200);
+});
+
 // ENHANCED: Complete conversation unknown questions endpoint
 app.post('/api/unknown-questions', async (req, res) => {
+  // Set CORS headers explicitly for Safari
+  res.header('Access-Control-Allow-Origin', req.headers.origin || '*');
+  res.header('Access-Control-Allow-Credentials', 'true');
   try {
     const { conversationId, fullConversation, unknownTopics, userQuestions, sessionData } = req.body;
     

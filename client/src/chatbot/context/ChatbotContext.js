@@ -506,8 +506,11 @@ SPECIAL INSTRUCTIONS:
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache'
       },
+      credentials: 'include',
+      mode: 'cors',
       body: JSON.stringify(completeLeadRecord)
     })
     .then(response => {
@@ -561,8 +564,11 @@ SPECIAL INSTRUCTIONS:
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
-        'Accept': 'application/json'
+        'Accept': 'application/json',
+        'Cache-Control': 'no-cache'
       },
+      credentials: 'include',
+      mode: 'cors',
       body: JSON.stringify(unknownTopicsData)
     })
     .then(response => response.json())
