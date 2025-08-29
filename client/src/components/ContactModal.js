@@ -130,7 +130,8 @@ function ContactModal({ isOpen, onClose }) {
         {/* Close button */}
         <button
           onClick={handleClose}
-          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl transition-all duration-200 ease-out transform hover:scale-110 hover:rotate-90 active:scale-95"
+          className="absolute top-4 right-4 text-gray-500 hover:text-gray-700 text-2xl transition-all duration-200 ease-out transform hover:scale-110 hover:rotate-90 active:scale-95 focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2 rounded-md"
+          aria-label="Close contact form"
         >
           ×
         </button>
@@ -191,13 +192,13 @@ function ContactModal({ isOpen, onClose }) {
             <div className="flex gap-3 transition-all duration-300 ease-out delay-500">
               <button
                 onClick={handleBackToForm}
-                className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-200 ease-out transform hover:scale-[1.02] active:scale-[0.98]"
+                className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-200 ease-out transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
               >
                 <span style={{ fontFamily: 'Neuton, serif' }}>Send Another</span>
               </button>
               <button
                 onClick={handleClose}
-                className="flex-1 bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-all duration-200 ease-out transform hover:scale-[1.02] active:scale-[0.98]"
+                className="flex-1 bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-all duration-200 ease-out transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2"
               >
                 <span style={{ fontFamily: 'Neuton, serif' }}>Close</span>
               </button>
@@ -270,7 +271,7 @@ function ContactModal({ isOpen, onClose }) {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="w-full bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] delay-400"
+                className="w-full bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] delay-400 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2"
               >
                 <span style={{ fontFamily: 'Neuton, serif' }} className="transition-all duration-200 ease-out">
                   {isSubmitting ? (

@@ -4,9 +4,10 @@ import { useAnalytics } from '../hooks/useAnalytics';
 function Contact({ onOpenModal }) {
   const { trackCTA } = useAnalytics();
   return (
-    <div
+    <section
       className="rounded-2xl shadow-lg w-full lg:w-[470px] h-[250px] sm:h-[280px] lg:h-[300px] relative"
       style={{ backgroundColor: '#A8977A' }}
+      aria-labelledby="contact-heading"
     >
       {/* "Got an idea?" text at top left */}
       <div className="absolute top-3 left-3 sm:top-4 sm:left-4 lg:top-6 lg:left-6">
@@ -15,7 +16,21 @@ function Contact({ onOpenModal }) {
 
       {/* Diagonal Arrow at top right - slightly bigger than Description */}
       <div
-        className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-2 lg:right-4 cursor-pointer"
+        className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-2 lg:right-4 cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#45372B] focus:ring-offset-2 focus:ring-offset-[#A8977A] rounded-md p-1"
+        role="button"
+        tabIndex={0}
+        aria-label="Open contact form"
+        onKeyDown={(e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            trackCTA('contact_arrow', 'contact_modal_trigger', { 
+              context: 'hero_page',
+              currentPage: window.location.pathname,
+              position: 'top_right'
+            });
+            onOpenModal();
+          }
+        }}
         onClick={() => {
           trackCTA('contact_arrow', 'contact_modal_trigger', { 
             context: 'hero_page',
@@ -42,9 +57,9 @@ function Contact({ onOpenModal }) {
 
       {/* "Contact Me" heading at bottom left */}
       <div className="absolute bottom-3 left-3 sm:bottom-4 sm:left-4 lg:bottom-6 lg:left-6">
-        <h2 className="text-[2rem] sm:text-2xl lg:text-4xl font-bold text-[#45372B]" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Contact Me</h2>
+        <h2 id="contact-heading" className="text-[2rem] sm:text-2xl lg:text-4xl font-bold text-[#45372B]" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Contact Me</h2>
       </div>
-    </div>
+    </section>
   );
 }
 

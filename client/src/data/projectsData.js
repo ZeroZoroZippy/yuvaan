@@ -11,6 +11,7 @@ export const projectsData = {
         client: 'Local Dental Practice',
         duration: '6 weeks',
         mainImage: dental,
+        mainImageAlt: "Modern dental practice website homepage showing clean, professional design with appointment booking interface and patient-friendly navigation",
         
         problem: {
             title: 'The Professional Image Problem',
@@ -21,7 +22,8 @@ export const projectsData = {
                 'Difficult to find essential practice information',
                 'Not optimized for mobile devices'
             ],
-            image: dental
+            image: dental,
+            imageAlt: "Screenshot of outdated dental practice website showing poor design and lack of modern features"
         },
         
         solution: {
@@ -39,7 +41,8 @@ export const projectsData = {
         challenge: {
             title: 'The Technical Integration Challenge',
             description: 'The biggest challenge was integrating a modern booking system while maintaining HIPAA compliance and ensuring the design worked seamlessly across all devices. Healthcare websites require special attention to privacy regulations and professional presentation standards.',
-            image: dental
+            image: dental,
+            imageAlt: "Technical diagram showing HIPAA-compliant booking system integration with responsive design elements"
         },
         
         results: {
@@ -51,7 +54,8 @@ export const projectsData = {
                 'Mobile-friendly experience for all visitors',
                 'Clear, accessible information about services and policies'
             ],
-            image: dental
+            image: dental,
+            imageAlt: "Final dental practice website showing professional design with integrated appointment booking and mobile-responsive layout"
         }
     },
     
@@ -64,6 +68,7 @@ export const projectsData = {
         client: 'Mental Wellness Practitioner',
         duration: '8 weeks',
         mainImage: wellness,
+        mainImageAlt: "Mental wellness practice website homepage featuring warm, approachable design with calming colors and welcoming messaging for therapy clients",
         
         problem: {
             title: 'The Accessibility Barrier',
@@ -74,7 +79,8 @@ export const projectsData = {
                 'No easy way to take the first step toward booking',
                 'Design didn\'t convey warmth and approachability'
             ],
-            image: wellness
+            image: wellness,
+            imageAlt: "Before screenshot of clinical, intimidating mental health website with formal language and cold design"
         },
         
         solution: {
@@ -92,7 +98,8 @@ export const projectsData = {
         challenge: {
             title: 'The Trust and Credibility Balance',
             description: 'Mental health websites must balance approachability with professionalism. The design needed to feel welcoming and safe while still conveying the practitioner\'s expertise and credentials. Finding the right tone and visual approach required understanding both the client\'s needs and the visitor\'s emotional state.',
-            image: wellness
+            image: wellness,
+            imageAlt: "Design mockups showing balance between professional credentials and warm, approachable mental health website design"
         },
         
         results: {
@@ -104,7 +111,8 @@ export const projectsData = {
                 'Multiple ways for visitors to connect at their comfort level',
                 'Professional credibility combined with personal warmth'
             ],
-            image: wellness
+            image: wellness,
+            imageAlt: "Final mental wellness website showing warm, welcoming design with clear therapy information and multiple contact options"
         }
     }
 };

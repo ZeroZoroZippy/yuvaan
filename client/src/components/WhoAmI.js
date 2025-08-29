@@ -30,9 +30,10 @@ function WhoAmI() {
   };
 
   return (
-    <div
+    <section
       className="rounded-2xl shadow-lg w-full lg:w-[590px] h-[350px] lg:h-[400px] p-4 relative"
       style={{ backgroundColor: '#161711' }}
+      aria-labelledby="about-heading"
     >
       {/* Orb Component - Top Left with teleportation effect */}
       <div
@@ -71,10 +72,10 @@ function WhoAmI() {
       </div>
 
       {/* Text Content */}
-      <div className="absolute top-[6rem] left-2 lg:top-[7rem] lg:left-4">
-        <h2 className="text-[1.75rem] lg:text-[2rem] font-medium text-[#A8977A] text-left px-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
-          Where vision becomes reality.
-        </h2>
+      <div className="absolute top-[5rem] left-2 lg:top-[6rem] lg:left-4">
+        <h1 id="about-heading" className="text-[1.5rem] lg:text-[1.75rem] font-medium text-[#A8977A] text-left px-4 mb-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
+          Yuvaan Vithlani - Web Designer & Developer
+        </h1>
       </div>
 
       {/* Description Container - positioned at bottom */}
@@ -83,7 +84,7 @@ function WhoAmI() {
           I bring ideas to life in ways people love to use. Blending creativity with technical precision, I create digital experiences that work beautifully and feel effortless.
         </p>
       </div>
-    </div>
+    </section>
   );
 }
 

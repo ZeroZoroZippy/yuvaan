@@ -3,6 +3,8 @@ import { useParams, Link } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import Navbar from '../components/Navbar';
 import { getProjectById, getAllProjects } from '../data/projectsData'; // Import the data
+import MetaManager from '../components/SEO/MetaManager';
+import { getMetaConfig } from '../config/metaConfigs';
 
 function ProjectPage() {
   const { projectId } = useParams();
@@ -10,6 +12,9 @@ function ProjectPage() {
   // Get project data from our optimized structure
   const project = getProjectById(projectId);
   const allProjects = getAllProjects();
+  
+  // Get meta configuration for project page
+  const metaConfig = project ? getMetaConfig(`/projects/${projectId}`, project) : getMetaConfig('/projects');
 
   // Fallback if project not found
   if (!project) {
@@ -38,14 +43,21 @@ function ProjectPage() {
   };
 
   return (
-    <motion.div
-      variants={pageVariants}
-      initial="initial"
-      animate="animate"
-      exit="exit"
-      transition={{ duration: 0.5 }}
-      className="min-h-screen bg-[#161711]"
+    <MetaManager
+      title={metaConfig.title}
+      description={metaConfig.description}
+      keywords={metaConfig.keywords}
+      canonicalUrl={metaConfig.canonicalUrl}
+      ogImage={metaConfig.ogImage}
     >
+      <motion.div
+        variants={pageVariants}
+        initial="initial"
+        animate="animate"
+        exit="exit"
+        transition={{ duration: 0.5 }}
+        className="min-h-screen bg-[#161711]"
+      >
       <Navbar />
 
       <div className="max-w-6xl mx-auto px-6 pb-20">
@@ -107,7 +119,7 @@ function ProjectPage() {
           <div className="rounded-2xl overflow-hidden shadow-2xl">
             <img
               src={project.mainImage}
-              alt={project.title}
+              alt={project.mainImageAlt || `${project.title} - Main project showcase image`}
               className="w-full h-[400px] md:h-[600px] object-cover"
             />
           </div>
@@ -147,7 +159,7 @@ function ProjectPage() {
             <div className="rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={project.problem.image}
-                alt="Problem illustration"
+                alt={project.problem.imageAlt || "Problem illustration showing challenges faced before website redesign"}
                 className="w-full h-[300px] object-cover"
               />
             </div>
@@ -190,7 +202,7 @@ function ProjectPage() {
               <div key={index} className="rounded-2xl overflow-hidden shadow-xl">
                 <img
                   src={image}
-                  alt={`Solution view ${index + 1}`}
+                  alt={`${project.title} solution implementation view ${index + 1} - Detailed showcase of the website design and functionality improvements`}
                   className="w-full h-[250px] object-cover hover:scale-105 transition-transform duration-300"
                 />
               </div>
@@ -216,7 +228,7 @@ function ProjectPage() {
             <div className="rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={project.challenge.image}
-                alt="Challenge illustration"
+                alt={project.challenge.imageAlt || "Challenge illustration showing technical and design obstacles overcome"}
                 className="w-full h-[300px] object-cover"
               />
             </div>
@@ -257,7 +269,7 @@ function ProjectPage() {
             <div className="rounded-2xl overflow-hidden shadow-xl">
               <img
                 src={project.results.image}
-                alt="Results illustration"
+                alt={project.results.imageAlt || "Results illustration showing successful project outcomes and improvements"}
                 className="w-full h-[300px] object-cover"
               />
             </div>
@@ -286,7 +298,7 @@ function ProjectPage() {
                   <div className="rounded-2xl overflow-hidden shadow-xl bg-[#45372B] hover:bg-[#A8977A] transition-all duration-300">
                     <img
                       src={otherProject.mainImage}
-                      alt={otherProject.title}
+                      alt={otherProject.mainImageAlt || `${otherProject.title} - Project preview showing professional website design`}
                       className="w-full h-[200px] object-cover group-hover:scale-105 transition-transform duration-300"
                     />
                     <div className="p-6">
@@ -323,7 +335,8 @@ function ProjectPage() {
           </Link>
         </motion.footer>
       </div>
-    </motion.div>
+      </motion.div>
+    </MetaManager>
   );
 }
 

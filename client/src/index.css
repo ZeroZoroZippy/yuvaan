@@ -422,12 +422,42 @@
   transition-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Prevent layout shifts during animations */
+/* FIXED: Prevent layout shifts and glitches during animations */
 .animate-fade-scale-in,
 .animate-slide-up-fade {
   will-change: transform, opacity;
   backface-visibility: hidden;
   transform: translateZ(0);
+  /* Additional fixes for smoother animations */
+  -webkit-transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  -webkit-perspective: 1000;
+}
+
+/* FIXED: Prevent animation glitches and double-load flash */
+.animate-hidden {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  transform: translateZ(0);
+}
+
+/* Ensure elements with animation data attributes start hidden */
+[data-animation] {
+  opacity: 0;
+  transform: translateY(20px);
+  transition: none;
+}
+
+/* Only show animations when they're triggered */
+[data-animation].animate-fade-scale-in,
+[data-animation].animate-slide-up-fade {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Prevent re-triggering of animations */
+.animate-triggered {
+  transition: opacity 0.6s ease-out, transform 0.6s ease-out;
 }
 
 /* Ensure smooth rendering during page transitions */
@@ -878,6 +908,12 @@ clamp utilities for blog cards */
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
   overflow: hidden;
+}
+
+/* FIXED: Contact image rotation issue */
+.contact-image-fix {
+  image-orientation: from-image;
+  transform: rotate(0deg) !important;
 }
 
 /* Blog-specific styles */

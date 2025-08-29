@@ -4,6 +4,8 @@ import Navbar from '../components/Navbar';
 import { getBlogPost, getRecentPosts } from '../data/blogData';
 import { usePageNavigation } from '../hooks/usePageNavigation';
 import { useLenisContext } from '../contexts/LenisContext';
+import MetaManager from '../components/SEO/MetaManager';
+import { getMetaConfig } from '../config/metaConfigs';
 
 function BlogPostPage() {
   const { id } = useParams();
@@ -18,6 +20,9 @@ function BlogPostPage() {
 
   // Get Lenis instance from context
   const lenis = useLenisContext();
+  
+  // Get meta configuration for blog post
+  const metaConfig = post ? getMetaConfig(`/blog/${id}`, post) : getMetaConfig('/blog');
 
   // Immediate scroll reset on component mount/ID change
   React.useLayoutEffect(() => {
@@ -197,7 +202,13 @@ function BlogPostPage() {
   };
 
   return (
-    <>
+    <MetaManager
+      title={metaConfig.title}
+      description={metaConfig.description}
+      keywords={metaConfig.keywords}
+      canonicalUrl={metaConfig.canonicalUrl}
+      ogImage={metaConfig.ogImage}
+    >
       <div className={`page-transition ${showContent ? 'loaded' : ''}`} />
 
       {/* Reading Progress Bar */}
@@ -237,7 +248,7 @@ function BlogPostPage() {
               <div className="absolute inset-0">
                 <img
                   src={post.image}
-                  alt={post.title}
+                  alt={`Hero visual for blog post: ${post.title} - Illustration of the main topic and themes discussed in the article`}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#161711] via-[#161711]/60 to-transparent" />
@@ -399,7 +410,7 @@ function BlogPostPage() {
                         <div className="aspect-[16/10] overflow-hidden">
                           <img
                             src={relatedPost.image}
-                            alt={relatedPost.title}
+                            alt={`Related article preview: ${relatedPost.title} - Thumbnail representing the content and themes of this related blog post`}
                             className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
                           />
                           <div className="absolute inset-0 bg-gradient-to-t from-[#161711] via-transparent to-transparent" />
@@ -439,7 +450,7 @@ function BlogPostPage() {
               <div className="absolute inset-0">
                 <img
                   src={post.image}
-                  alt={post.title}
+                  alt={`Mobile hero visual for blog post: ${post.title} - Illustration of the main topic and themes discussed in the article`}
                   className="w-full h-full object-cover"
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-[#161711] via-[#161711]/40 to-transparent" />
@@ -554,7 +565,7 @@ function BlogPostPage() {
                       <div className="aspect-[16/9] overflow-hidden">
                         <img
                           src={relatedPost.image}
-                          alt={relatedPost.title}
+                          alt={`Related article preview: ${relatedPost.title} - Thumbnail representing the content and themes of this related blog post`}
                           className="w-full h-full object-cover"
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-[#161711] via-transparent to-transparent" />
@@ -579,7 +590,7 @@ function BlogPostPage() {
           )}
         </div>
       </div>
-    </>
+    </MetaManager>
   );
 }
 

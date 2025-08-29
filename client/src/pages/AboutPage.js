@@ -6,6 +6,9 @@ import Navbar from '../components/Navbar';
 import ScrollingGallery from '../components/ui/ScrollingGallery';
 import Footer from '../components/Footer';
 import DesignStrategySection from '../components/DesignStrategySection';
+import MetaManager from '../components/SEO/MetaManager';
+import OptimizedImage from '../components/OptimizedImage';
+import { useMeta } from '../hooks/useMeta';
 
 import me from '../assets/Hero/Hero3.jpg'
 import work from '../assets/About/work.jpg'
@@ -22,6 +25,9 @@ function AboutPage() {
         creativeProblemSolving: false
     });
 
+    // Get meta configuration for about page
+    const metaConfig = useMeta();
+
     // Contact form state
     const [formData, setFormData] = useState({
         name: '',
@@ -32,13 +38,11 @@ function AboutPage() {
     const [submitStatus, setSubmitStatus] = useState('');
     const [showThankYou, setShowThankYou] = useState(false);
 
-    // Animation and content loading state
-    const [contentLoaded, setContentLoaded] = useState(false);
-    const [showContent, setShowContent] = useState(false);
+    // FIXED: Simplified state management to prevent glitches
+    const [isReady, setIsReady] = useState(false);
 
     // Get Lenis instance from context
     const lenis = useLenisContext();
-    const observerRef = useRef();
     const sectionObserverRef = useRef();
 
     const toggleSection = (section) => {
@@ -48,7 +52,7 @@ function AboutPage() {
             action: isCurrentlyOpen ? 'collapse' : 'expand',
             currentPage: window.location.pathname
         });
-        
+
         setToggleStates(prev => ({
             ...prev,
             [section]: !prev[section]
@@ -59,7 +63,7 @@ function AboutPage() {
     const handleInputChange = (e) => {
         const { name, value } = e.target;
         trackFormField('about_contact_form', name, 'input', value);
-        
+
         setFormData({
             ...formData,
             [name]: value
@@ -110,11 +114,69 @@ function AboutPage() {
             context: 'thank_you_screen',
             currentPage: window.location.pathname
         });
-        
+
         setShowThankYou(false);
         setSubmitStatus('');
         setFormData({ name: '', email: '', message: '' });
     };
+
+    // FIXED: Simplified initialization to prevent glitches
+    useEffect(() => {
+        if (!isTransitioning) {
+            const timer = setTimeout(() => {
+                setIsReady(true);
+            }, 200);
+            return () => clearTimeout(timer);
+        }
+    }, [isTransitioning]);
+
+    // Initialize Lenis smooth scroll and section observer
+    useEffect(() => {
+        if (isReady && lenis) {
+            lenis.scrollTo(0, { immediate: true });
+        }
+
+        // Initialize section observer for image switching
+        if (isReady) {
+            sectionObserverRef.current = new IntersectionObserver(
+                (entries) => {
+                    // Find the entry with the highest intersection ratio
+                    let mostVisibleEntry = null;
+                    let highestRatio = 0;
+
+                    entries.forEach((entry) => {
+                        if (entry.isIntersecting && entry.intersectionRatio > highestRatio) {
+                            mostVisibleEntry = entry;
+                            highestRatio = entry.intersectionRatio;
+                        }
+                    });
+
+                    // Only update if we have a clear winner and we're on desktop
+                    if (mostVisibleEntry && highestRatio > 0.4 && window.innerWidth >= 1024) {
+                        const sectionIndex = parseInt(mostVisibleEntry.target.dataset.sectionIndex);
+                        if (!isNaN(sectionIndex) && sectionIndex !== activeSection) {
+                            setActiveSection(sectionIndex);
+                        }
+                    }
+                },
+                {
+                    threshold: [0.2, 0.4, 0.6, 0.8],
+                    rootMargin: '-20% 0px -20% 0px'
+                }
+            );
+
+            // Observe sections for image switching
+            const sections = document.querySelectorAll('[data-section-index]');
+            sections.forEach(section => {
+                sectionObserverRef.current?.observe(section);
+            });
+        }
+
+        // Cleanup
+        return () => {
+            sectionObserverRef.current?.disconnect();
+        };
+    }, [isReady, lenis, activeSection]);
 
     // Content sections with corresponding images
     const contentSections = [
@@ -124,35 +186,26 @@ function AboutPage() {
                 <div>
                     <h1
                         className="text-5xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-10"
-                        data-animation="fade-scale-in"
-                        data-delay="0"
                         style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
                     >
                         About Me
                     </h1>
                     <h3
                         className="text-3xl sm:text-2xl lg:text-3xl font-light text-[#A8977A] mb-3 sm:mb-4 lg:mb-6"
-                        data-animation="slide-up-fade"
-                        data-delay="200"
                         style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
                     >
                         Hi, I'm Yuvaan
                     </h3>
                     <p
                         className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-20"
-                        data-animation="slide-up-fade"
-                        data-delay="400"
                         style={{ fontFamily: 'Neuton, serif' }}
                     >
                         I design and build websites that work beautifully and make sense to your visitors. Whether you need a brand new website, want to redesign an existing one, or improve how your current site performs, I create solutions that are clean, professional, and easy to navigate.
-                        <br/>
-                        <br/>
+                        <br />
+                        <br />
                         I believe good design shouldn't just look nice—it should help your business achieve its goals while giving visitors exactly what they're looking for.
                     </p>
-                    <div
-                        data-animation="slide-up-fade"
-                        data-delay="600"
-                    >
+                    <div>
                         <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-6">
                             <a
                                 href="https://linkedin.com/in/yuvaanvithlani"
@@ -198,7 +251,7 @@ function AboutPage() {
                 </div>
             ),
             image: me,
-            alt: "Developer at work"
+            alt: "Yuvaan Vithlani - Professional web designer and developer portrait"
         },
         {
             id: 1,
@@ -206,25 +259,17 @@ function AboutPage() {
                 <div>
                     <h2
                         className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-4 sm:mb-6 lg:mb-8"
-                        data-animation="fade-scale-in"
-                        data-delay="0"
                         style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
                     >
                         What I Can Do For You
                     </h2>
                     <p
                         className="text-xl sm:text-xl lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-6"
-                        data-animation="slide-up-fade"
-                        data-delay="200"
                         style={{ fontFamily: 'Neuton, serif' }}
                     >
                         I help businesses create websites that actually work for them. This means:
                     </p>
-                    <div
-                        className="space-y-3 sm:space-y-4 lg:space-y-5 mb-6"
-                        data-animation="slide-up-fade"
-                        data-delay="600"
-                    >
+                    <div className="space-y-3 sm:space-y-4 lg:space-y-5 mb-6">
                         {/* Web Design */}
                         <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
@@ -246,7 +291,7 @@ function AboutPage() {
                             {toggleStates.webDesign && (
                                 <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
-                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1 animate-fade-scale-in">
+                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1">
                                             <svg className="w-2.5 h-2.5 text-[#45372B]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -280,7 +325,7 @@ function AboutPage() {
                             {toggleStates.webDevelopment && (
                                 <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
-                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1 animate-fade-scale-in">
+                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1">
                                             <svg className="w-2.5 h-2.5 text-[#45372B]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -314,7 +359,7 @@ function AboutPage() {
                             {toggleStates.brandExperience && (
                                 <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
-                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1 animate-fade-scale-in">
+                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1">
                                             <svg className="w-2.5 h-2.5 text-[#45372B]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -348,7 +393,7 @@ function AboutPage() {
                             {toggleStates.creativeProblemSolving && (
                                 <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
-                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1 animate-fade-scale-in">
+                                        <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1">
                                             <svg className="w-2.5 h-2.5 text-[#45372B]" fill="currentColor" viewBox="0 0 20 20">
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
@@ -364,161 +409,52 @@ function AboutPage() {
                 </div>
             ),
             image: work,
-            alt: "Creative process"
+            alt: "Professional web development workspace"
         }
     ];
 
-    // Animation utility functions
-    const createIntersectionObserver = () => {
-        return new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting) {
-                        const element = entry.target;
-                        const animationType = element.dataset.animation || 'fade-scale-in';
-                        const delay = element.dataset.delay || '0';
-
-                        // Add animation class with delay
-                        setTimeout(() => {
-                            element.classList.add(`animate-${animationType}`);
-                            element.classList.remove('animate-hidden');
-                        }, parseInt(delay));
-
-                        // Stop observing this element
-                        observerRef.current?.unobserve(element);
-                    }
-                });
-            },
-            {
-                threshold: 0.1,
-                rootMargin: '0px 0px -50px 0px'
-            }
-        );
-    };
-
-    // Create section observer for image switching
-    const createSectionObserver = () => {
-        return new IntersectionObserver(
-            (entries) => {
-                entries.forEach((entry) => {
-                    if (entry.isIntersecting && entry.intersectionRatio > 0.3) {
-                        const sectionIndex = parseInt(entry.target.dataset.sectionIndex);
-                        if (!isNaN(sectionIndex) && window.innerWidth >= 1024) {
-                            console.log('Setting active section:', sectionIndex); // Debug log
-                            setActiveSection(sectionIndex);
-                        }
-                    }
-                });
-            },
-            {
-                threshold: [0.3, 0.5, 0.7],
-                rootMargin: '-10% 0px -30% 0px' // Trigger when section is more centered
-            }
-        );
-    };
-
-    // Handle content loading after page transition
-    useEffect(() => {
-        if (!isTransitioning) {
-            // Wait for page transition to complete, then start loading content
-            const loadContentTimer = setTimeout(() => {
-                setContentLoaded(true);
-
-                // Show content immediately after loading
-                const showContentTimer = setTimeout(() => {
-                    setShowContent(true);
-                }, 100);
-
-                return () => clearTimeout(showContentTimer);
-            }, 200); // Shorter delay after transition ends
-
-            return () => clearTimeout(loadContentTimer);
-        }
-    }, [isTransitioning]);
-
-    // Initialize Lenis smooth scroll and animations
-    useEffect(() => {
-        if (!showContent) return;
-
-        // Smooth scroll to top when component mounts with animation
-        if (lenis) {
-            lenis.scrollTo(0, { immediate: false, duration: 0.8 });
-        }
-
-        // Initialize Intersection Observer for animations
-        observerRef.current = createIntersectionObserver();
-
-        // Initialize Section Observer for image switching
-        sectionObserverRef.current = createSectionObserver();
-
-        // Observe all elements with animation data attributes
-        const animatedElements = document.querySelectorAll('[data-animation]');
-        animatedElements.forEach(el => {
-            el.classList.add('animate-hidden');
-            observerRef.current?.observe(el);
-        });
-
-        // Observe sections for image switching
-        const sections = document.querySelectorAll('[data-section-index]');
-        console.log('Found sections:', sections.length); // Debug log
-        sections.forEach(section => {
-            sectionObserverRef.current?.observe(section);
-        });
-
-        // Cleanup
-        return () => {
-            observerRef.current?.disconnect();
-            sectionObserverRef.current?.disconnect();
-        };
-    }, [showContent, lenis]);
-
-    // Debug effect to track activeSection changes
-    useEffect(() => {
-        console.log('Active section changed to:', activeSection);
-    }, [activeSection]);
-
     return (
-        <div className="min-h-screen relative z-10" style={{ backgroundColor: '#45372B' }}>
-            {/* Show content with smooth slide-in animation */}
-            {contentLoaded && (
-                <div className={`${showContent ? 'animate-slide-in-bottom' : 'opacity-0 translate-y-12'}`}>
-                    {/* Navbar component (already has fixed positioning built-in) */}
-                    <Navbar />
-                    
-                    {/* Main content with proper top spacing */}
-                    <div className={`text-[#A8977A] px-4 sm:px-8 lg:px-16 py-6 pt-24 sm:pt-28 lg:pt-32 relative z-0 ${showContent ? 'animate-slide-in-stagger delay-400' : 'opacity-0'}`}>
-                        <div className="w-full max-w-6xl mx-auto">
+        <MetaManager
+            title={metaConfig.title}
+            description={metaConfig.description}
+            keywords={metaConfig.keywords}
+            canonicalUrl={metaConfig.canonicalUrl}
+            ogImage={metaConfig.ogImage}
+        >
+            <div className="min-h-screen relative z-10" style={{ backgroundColor: '#45372B' }}>
+                {/* Navbar */}
+                <Navbar />
 
+                {/* Main content - FIXED: Simple structure without complex animations */}
+                <div className={`transition-opacity duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}>
+                    <div className="text-[#A8977A] px-4 sm:px-8 lg:px-16 py-6 pt-24 sm:pt-28 lg:pt-32 relative z-0">
+                        <div className="w-full max-w-6xl mx-auto">
                             {/* Main content */}
                             <div className="space-y-12 sm:space-y-16 lg:space-y-40">
                                 {/* Split Screen Content Section */}
                                 <section className="px-0 sm:px-2 lg:px-4">
                                     <div className="w-full max-w-6xl mx-auto">
-                                        {/* Enhanced Mobile Image - Shows on small screens at the top */}
-                                        <div className="block lg:hidden mb-8 sm:mb-12 pt-12" data-animation="slide-up-fade" data-delay="300">
-                                            <div className="relative w-full h-[50vh] sm:h-[50vh] rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl">
-                                                <img
+                                        {/* Mobile Image */}
+                                        <div className="block lg:hidden mb-8 sm:mb-12 pt-12">
+                                            <div className="relative w-full h-[50vh] sm:h-[50vh] rounded-2xl overflow-hidden shadow-2xl">
+                                                <OptimizedImage
                                                     src={contentSections[0].image}
                                                     alt={contentSections[0].alt}
-                                                    className="w-full h-full object-cover transform transition-transform duration-700 hover:scale-110"
+                                                    className="w-full h-full object-cover"
+                                                    lazy={true}
                                                 />
-                                                <div className="absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent"></div>
-                                                {/* Subtle border glow */}
-                                                <div className="absolute inset-0 rounded-2xl border-2 border-[#A8977A]/20 hover:border-[#A8977A]/40 transition-all duration-500"></div>
                                             </div>
                                         </div>
 
                                         <div className="grid grid-cols-1 lg:grid-cols-[50%_35%] gap-8 lg:gap-[15%] min-h-screen">
-                                            {/* Left Side - Scrollable Text Content */}
+                                            {/* Left Side - Content */}
                                             <div className="space-y-16 sm:space-y-24 lg:space-y-60">
                                                 {contentSections.map((section, index) => (
                                                     <div
                                                         key={section.id}
-                                                        className={`content-section min-h-[52vh] sm:min-h-[50vh] lg:min-h-[60vh] flex ${index === 0
+                                                        className={`min-h-[52vh] sm:min-h-[50vh] lg:min-h-[60vh] flex ${index === 0
                                                             ? 'items-start pt-8 lg:pt-24'
-                                                            : index === 1
-                                                                ? 'items-center mt-16 sm:mt-24 lg:mt-40'
-                                                                : 'items-center'
+                                                            : 'items-center'
                                                             }`}
                                                         data-section-index={index}
                                                     >
@@ -527,47 +463,34 @@ function AboutPage() {
                                                 ))}
                                             </div>
 
-                                            {/* Right Side - Enhanced Fixed Image Container (hidden on mobile, shown on desktop) */}
-                                            <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[50vh] lg:h-[70vh] group">
-                                                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl transform transition-all duration-700 hover:scale-105 hover:shadow-3xl hover:-translate-y-2">
-                                                    {/* Background blur effect */}
-                                                    <div className="absolute inset-0 bg-gradient-to-br from-[#A8977A]/20 to-transparent backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity duration-500 z-10"></div>
-
+                                            {/* Right Side - Fixed Image (Desktop) with slide-up transition */}
+                                            <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[50vh] lg:h-[70vh]">
+                                                <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-2xl">
                                                     {contentSections.map((section, index) => (
                                                         <div
                                                             key={section.id}
-                                                            className={`absolute inset-0 transition-all duration-1000 ease-out ${activeSection === index
-                                                                ? 'opacity-100 scale-100 rotate-0'
-                                                                : 'opacity-0 scale-110 rotate-1'
+                                                            className={`absolute inset-0 transition-all duration-700 ease-out ${activeSection === index
+                                                                    ? 'opacity-100 translate-y-0'
+                                                                    : activeSection > index
+                                                                        ? 'opacity-0 -translate-y-full'
+                                                                        : 'opacity-0 translate-y-full'
                                                                 }`}
                                                         >
-                                                            <img
+                                                            <OptimizedImage
                                                                 src={section.image}
                                                                 alt={section.alt}
-                                                                className="w-full h-full object-cover transform transition-transform duration-1000 group-hover:scale-110"
+                                                                className="w-full h-full object-cover"
+                                                                lazy={true}
                                                             />
-                                                            {/* Animated overlay */}
-                                                            <div className={`absolute inset-0 bg-gradient-to-t from-black/30 via-transparent to-transparent transition-opacity duration-1000 ${activeSection === index ? 'opacity-100' : 'opacity-60'
-                                                                }`}></div>
                                                         </div>
                                                     ))}
-
-                                                    {/* Floating particles effect */}
-                                                    <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-700 pointer-events-none">
-                                                        <div className="absolute top-1/4 left-1/4 w-2 h-2 bg-[#A8977A]/40 rounded-full animate-pulse"></div>
-                                                        <div className="absolute top-3/4 right-1/4 w-1 h-1 bg-[#A8977A]/60 rounded-full animate-pulse" style={{ animationDelay: '0.5s' }}></div>
-                                                        <div className="absolute top-1/2 right-1/3 w-1.5 h-1.5 bg-[#A8977A]/30 rounded-full animate-pulse" style={{ animationDelay: '1s' }}></div>
-                                                    </div>
-
-                                                    {/* Border glow effect */}
-                                                    <div className="absolute inset-0 rounded-2xl border-2 border-[#A8977A]/0 group-hover:border-[#A8977A]/30 transition-all duration-700"></div>
                                                 </div>
                                             </div>
                                         </div>
                                     </div>
                                 </section>
 
-                                {/* Design with Strategy and Creativity Section */}
+                                {/* Design Strategy Section */}
                                 <DesignStrategySection />
 
                                 {/* When I'm not working Section */}
@@ -575,27 +498,17 @@ function AboutPage() {
                                     <div className="w-full max-w-6xl mx-auto">
                                         <h2
                                             className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
-                                            data-animation="fade-scale-in"
-                                            data-delay="0"
                                             style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
                                         >
                                             When I'm Not Working
                                         </h2>
                                         <p
                                             className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
-                                            data-animation="slide-up-fade"
-                                            data-delay="200"
                                             style={{ fontFamily: 'Neuton, serif' }}
                                         >
                                             When I'm not building or designing, you'll probably find me with a good book and freshly brewed coffee, cheering for my favorite football team, experimenting with new recipes in the kitchen, or curled up with my dog for a cozy movie night.
                                         </p>
-
-                                        <div
-                                            data-animation="fade-scale-in"
-                                            data-delay="400"
-                                        >
-                                            <ScrollingGallery />
-                                        </div>
+                                        <ScrollingGallery />
                                     </div>
                                 </section>
 
@@ -607,16 +520,12 @@ function AboutPage() {
                                             <div>
                                                 <h2
                                                     className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
-                                                    data-animation="fade-scale-in"
-                                                    data-delay="0"
                                                     style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
                                                 >
                                                     Let's Work Together
                                                 </h2>
                                                 <p
                                                     className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16"
-                                                    data-animation="slide-up-fade"
-                                                    data-delay="200"
                                                     style={{ fontFamily: 'Neuton, serif' }}
                                                 >
                                                     Let's build something impactful together—whether it's your brand, your website, or your next big idea.
@@ -626,55 +535,15 @@ function AboutPage() {
                                                     /* Thank You Message */
                                                     <div className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8">
                                                         <div className="text-center">
-                                                            {/* Success Icon */}
                                                             <div className="mx-auto mb-6 w-16 h-16 bg-blue-500/20 rounded-full flex items-center justify-center">
-                                                                <svg
-                                                                    className="w-8 h-8 text-blue-900"
-                                                                    fill="none"
-                                                                    stroke="currentColor"
-                                                                    viewBox="0 0 24 24"
-                                                                >
-                                                                    <path
-                                                                        strokeLinecap="round"
-                                                                        strokeLinejoin="round"
-                                                                        strokeWidth={2}
-                                                                        d="M5 13l4 4L19 7"
-                                                                    />
+                                                                <svg className="w-8 h-8 text-blue-900" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                                                 </svg>
                                                             </div>
-
                                                             <h3 className="text-2xl font-bold text-[#161711] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Thank You!</h3>
-
                                                             <p className="text-[#161711]/80 mb-6 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
                                                                 Your message has been sent successfully. I'll get back to you as soon as possible!
                                                             </p>
-
-                                                            <div className="bg-[#BAE1EE] border border-[#161711]/30 rounded-lg p-4 mb-6">
-                                                                <div className="flex items-start">
-                                                                    <svg
-                                                                        className="w-5 h-5 text-[#161711] mt-0.5 mr-3 flex-shrink-0"
-                                                                        fill="none"
-                                                                        stroke="currentColor"
-                                                                        viewBox="0 0 24 24"
-                                                                    >
-                                                                        <path
-                                                                            strokeLinecap="round"
-                                                                            strokeLinejoin="round"
-                                                                            strokeWidth={2}
-                                                                            d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                                                                        />
-                                                                    </svg>
-                                                                    <div className="text-left">
-                                                                        <p className="text-sm font-medium text-[#161711] mb-1" style={{ fontFamily: 'Neuton, serif' }}>
-                                                                            Check your email
-                                                                        </p>
-                                                                        <p className="text-xl text-[#161711]/90" style={{ fontFamily: 'Neuton, serif' }}>
-                                                                            You'll receive a confirmation email shortly with details about next steps.
-                                                                        </p>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-
                                                             <button
                                                                 onClick={handleBackToForm}
                                                                 className="bg-[#BAE1EE] text-[#161711] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 font-medium"
@@ -685,13 +554,9 @@ function AboutPage() {
                                                     </div>
                                                 ) : (
                                                     /* Contact Form */
-                                                    <div
-                                                        className="bg-transparent"
-                                                        data-animation="slide-up-fade"
-                                                        data-delay="400"
-                                                    >
+                                                    <div className="bg-transparent">
                                                         {submitStatus === 'error' && (
-                                                            <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6 animate-slide-up-fade">
+                                                            <div className="bg-red-500/20 border border-red-500/30 text-red-400 px-4 py-3 rounded-lg mb-6">
                                                                 Failed to send message. Please try again.
                                                             </div>
                                                         )}
@@ -709,7 +574,7 @@ function AboutPage() {
                                                                         value={formData.name}
                                                                         onChange={handleInputChange}
                                                                         required
-                                                                        className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
+                                                                        className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300"
                                                                         placeholder="Your name"
                                                                     />
                                                                 </div>
@@ -725,7 +590,7 @@ function AboutPage() {
                                                                         value={formData.email}
                                                                         onChange={handleInputChange}
                                                                         required
-                                                                        className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
+                                                                        className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 transition-all duration-300"
                                                                         placeholder="your.email@example.com"
                                                                     />
                                                                 </div>
@@ -742,7 +607,7 @@ function AboutPage() {
                                                                     onChange={handleInputChange}
                                                                     required
                                                                     rows="5"
-                                                                    className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 resize-none transition-all duration-300 hover:border-[#A8977A]/60 hover:shadow-lg focus:scale-[1.02]"
+                                                                    className="w-full px-4 py-3 bg-transparent border border-[#A8977A]/30 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:border-transparent text-[#A8977A] placeholder-[#A8977A]/50 resize-none transition-all duration-300"
                                                                     placeholder="Tell me about your project..."
                                                                 />
                                                             </div>
@@ -750,7 +615,7 @@ function AboutPage() {
                                                             <button
                                                                 type="submit"
                                                                 disabled={isSubmitting}
-                                                                className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium hover:scale-105 hover:shadow-xl transform active:scale-95"
+                                                                className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                                                             >
                                                                 <span style={{ fontFamily: 'Neuton, serif' }}>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
                                                             </button>
@@ -759,13 +624,14 @@ function AboutPage() {
                                                 )}
                                             </div>
 
-                                            {/* Right Side - Fixed Image Container */}
+                                            {/* Right Side - Contact Image (FIXED rotation) */}
                                             <div className="hidden lg:block lg:sticky lg:top-48 lg:w-[50vh] lg:h-[70vh]">
                                                 <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
-                                                    <img
+                                                    <OptimizedImage
                                                         src={contact}
-                                                        alt="Let's work together"
-                                                        className="w-full h-full object-cover"
+                                                        alt="Contact Yuvaan Vithlani - Professional collaboration invitation"
+                                                        className="w-full h-full object-cover contact-image-fix"
+                                                        lazy={true}
                                                     />
                                                     <div className="absolute inset-0 bg-black/10"></div>
                                                 </div>
@@ -778,8 +644,8 @@ function AboutPage() {
                         <Footer />
                     </div>
                 </div>
-            )}
-        </div>
+            </div>
+        </MetaManager>
     );
 }
 

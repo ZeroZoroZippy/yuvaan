@@ -4,6 +4,8 @@ import { blogPosts } from '../data/blogData';
 import { usePageNavigation } from '../hooks/usePageNavigation';
 import { useLenisContext } from '../contexts/LenisContext';
 import { useAnalytics } from '../hooks/useAnalytics';
+import MetaManager from '../components/SEO/MetaManager';
+import { useMeta } from '../hooks/useMeta';
 
 function BlogsPage() {
   const [animationStage, setAnimationStage] = useState(0);
@@ -14,6 +16,9 @@ function BlogsPage() {
 
   // Get Lenis instance from context
   const lenis = useLenisContext();
+  
+  // Get meta configuration for blog page
+  const metaConfig = useMeta();
 
   // Immediate scroll reset on component mount
   React.useLayoutEffect(() => {
@@ -56,12 +61,26 @@ function BlogsPage() {
   };
 
   return (
-    <>
+    <MetaManager
+      title={metaConfig.title}
+      description={metaConfig.description}
+      keywords={metaConfig.keywords}
+      canonicalUrl={metaConfig.canonicalUrl}
+      ogImage={metaConfig.ogImage}
+    >
       <div className={`page-transition ${showContent ? 'loaded' : ''}`} />
       
       <Navbar />
       
       <div className="pt-24 min-h-screen" style={{ backgroundColor: '#45372B' }}>
+        {/* Page Header */}
+        <div className="mx-6 mb-8">
+          <h1 className="text-4xl lg:text-5xl font-bold text-[#A8977A]" 
+              style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
+            Blog - Web Development & Design Insights
+          </h1>
+        </div>
+        
         {/* Desktop Layout - Enhanced Grid */}
         <div className="hidden lg:block">
           <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-6 mx-6 mt-0">
@@ -108,7 +127,7 @@ function BlogsPage() {
                     <div className="relative w-full h-[240px] overflow-hidden">
                       <img 
                         src={post.image} 
-                        alt={post.title}
+                        alt={`Featured visual for blog post: ${post.title} - Illustration of the article's key concepts`}
                         className="w-full h-full object-cover transition-transform duration-700 
                           group-hover:scale-110"
                       />
@@ -259,7 +278,7 @@ function BlogsPage() {
                   <div className="relative w-full h-[200px] overflow-hidden">
                     <img 
                       src={post.image} 
-                      alt={post.title}
+                      alt={`Featured visual for blog post: ${post.title} - Illustration of the article's key concepts`}
                       className="w-full h-full object-cover transition-transform duration-500 
                         group-active:scale-105"
                     />
@@ -331,7 +350,7 @@ function BlogsPage() {
           })}
         </div>
       </div>
-    </>
+    </MetaManager>
   );
 }
 

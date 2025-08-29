@@ -1,4 +1,5 @@
 import React from 'react';
+import OptimizedImage from './OptimizedImage';
 import wirefrme from '../assets/About/wireframe.jpeg';
 import code from '../assets/About/code.jpeg';
 
@@ -8,16 +9,12 @@ function DesignStrategySection() {
             <div className="w-full max-w-6xl mx-auto">
                 <h2
                     className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
-                    data-animation="fade-scale-in"
-                    data-delay="0"
                     style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
                 >
                     Design with Strategy and Creativity
                 </h2>
                 <p
                     className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
-                    data-animation="slide-up-fade"
-                    data-delay="200"
                     style={{ fontFamily: 'Neuton, serif' }}
                 >
                     Every great digital experience starts with understanding the why behind the what. I combine strategic thinking with creative execution to build solutions that not only look exceptional but solve real problems for real people.
@@ -28,8 +25,6 @@ function DesignStrategySection() {
                     {/* Process Step 01 */}
                     <div
                         className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                        data-animation="fade-scale-in"
-                        data-delay="400"
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>01.</h2>
                         <div className="self-start">
@@ -43,17 +38,13 @@ function DesignStrategySection() {
                     {/* Image 1 */}
                     <div
                         className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                        data-animation="fade-scale-in"
-                        data-delay="500"
                     >
-                        <img src="https://picsum.photos/seed/research/300/300" alt="Research process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                        <OptimizedImage src="https://picsum.photos/seed/research/300/300" alt="User research and analysis phase for healthcare website design showing data collection, patient interviews, and medical practice market research materials used by Yuvaan Vithlani to understand user needs and accessibility requirements" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" lazy={true} />
                     </div>
 
                     {/* Process Step 02 */}
                     <div
                         className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                        data-animation="fade-scale-in"
-                        data-delay="600"
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>02.</h2>
                         <div className="self-start">
@@ -67,17 +58,13 @@ function DesignStrategySection() {
                     {/* Image 2 */}
                     <div
                         className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                        data-animation="fade-scale-in"
-                        data-delay="700"
                     >
-                        <img src={wirefrme} alt="Ideation process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                        <OptimizedImage src={wirefrme} alt="Design ideation and wireframing process for healthcare websites showing sketches, patient user flow diagrams, and initial design concepts focused on accessibility and medical practice needs by Yuvaan Vithlani" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" lazy={true} />
                     </div>
 
                     {/* Process Step 03 - Spans 2 columns on larger screens */}
                     <div
                         className="md:col-span-2 bg-[#A8977A] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                        data-animation="fade-scale-in"
-                        data-delay="800"
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#45372B] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>03.</h2>
                         <div className="self-start max-w-2xl">
@@ -91,8 +78,6 @@ function DesignStrategySection() {
                     {/* Process Step 04 */}
                     <div
                         className="bg-[#161711] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                        data-animation="fade-scale-in"
-                        data-delay="900"
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>04.</h2>
                         <div className="self-start">
@@ -106,17 +91,13 @@ function DesignStrategySection() {
                     {/* Image 3 */}
                     <div
                         className="bg-[#A8977A]/10 border border-[#A8977A]/20 rounded-2xl h-80 sm:h-96 flex items-center justify-center overflow-hidden transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                        data-animation="fade-scale-in"
-                        data-delay="1000"
                     >
-                        <img src={code} alt="Testing process" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" />
+                        <OptimizedImage src={code} alt="Development and testing phase for healthcare websites showing responsive code implementation, accessibility testing, quality assurance, and patient user testing procedures by Yuvaan Vithlani ensuring HIPAA compliance and optimal user experience" className="w-full h-full object-cover transition-transform duration-700 hover:scale-110" lazy={true} />
                     </div>
 
                     {/* Process Step 05 */}
                     <div
                         className="bg-[#64BBD8] border border-[#A8977A]/20 rounded-2xl p-6 sm:p-8 h-80 sm:h-96 flex flex-col justify-between transform transition-all duration-500 hover:scale-105 hover:shadow-2xl hover:-translate-y-2"
-                        data-animation="fade-scale-in"
-                        data-delay="1100"
                     >
                         <h2 className="text-4xl sm:text-5xl lg:text-6xl font-light text-[#161711] self-start transition-transform duration-300 hover:scale-110" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>05.</h2>
                         <div className="self-start">

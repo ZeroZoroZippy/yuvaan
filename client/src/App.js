@@ -1,5 +1,6 @@
 import React, { useEffect, lazy, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { HelmetProvider } from 'react-helmet-async';
 import { PageTransitionProvider } from './contexts/PageTransitionContext';
 import { MobileMenuProvider } from './contexts/MobileMenuContext';
 import { LenisProvider } from './contexts/LenisContext';
@@ -146,19 +147,21 @@ function App() {
   }, []);
   
   return (
-    <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
-      <LenisProvider>
-        <PageTransitionProvider>
-          <MobileMenuProvider>
-            <ChatbotProvider>
-              <ErrorBoundary>
-                <AppContent />
-              </ErrorBoundary>
-            </ChatbotProvider>
-          </MobileMenuProvider>
-        </PageTransitionProvider>
-      </LenisProvider>
-    </Router>
+    <HelmetProvider>
+      <Router future={{ v7_startTransition: true, v7_relativeSplatPath: true }}>
+        <LenisProvider>
+          <PageTransitionProvider>
+            <MobileMenuProvider>
+              <ChatbotProvider>
+                <ErrorBoundary>
+                  <AppContent />
+                </ErrorBoundary>
+              </ChatbotProvider>
+            </MobileMenuProvider>
+          </PageTransitionProvider>
+        </LenisProvider>
+      </Router>
+    </HelmetProvider>
   );
 }
 

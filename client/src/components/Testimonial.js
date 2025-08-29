@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import OptimizedImage from './OptimizedImage';
 import Shruti from '../assets/Testimonials/Shruti.png';
 import Aakanksha from '../assets/Testimonials/Aakanksha.JPG';
 
@@ -8,14 +9,14 @@ function Testimonial() {
   const testimonials = [
     {
       image: Shruti,
-      altText: "Dr. Shruti Shetty",
+      altText: "Professional headshot of Dr. Shruti Shetty, Lead Dentist at Sarvodaya Dental Clinic, smiling warmly in clinical setting - satisfied client of Yuvaan Vithlani's dental website design services featuring appointment booking and patient testimonials",
       name: "Dr. Shruti Shetty",
       title: "Lead Dentist, Sarvodaya Dental Clinic",
       quote: "Big shoutout to Yuvaan Vithlani for curating the website exactly how I wanted - From Patient testimonials to booking appointments all at one place !!"
     },
     {
       image: Aakanksha,
-      altText: "Aakanksha Panday",
+      altText: "Professional portrait of Aakanksha Panday, Counseling Therapist at Therapy With Aakanksha, in welcoming therapeutic environment - satisfied client of Yuvaan Vithlani's mental health website design services with clean, modern, and personal approach",
       name: "Aakanksha Panday",
       title: "Counseling Therapist, Therapy With Aakanksha",
       quote: "Working with Yuvaan was such a smooth and inspiring experience. He has this rare gift of turning scattered ideas into a design that feels clean, modern, and deeply personal. I'd recommend him in a heartbeat! ❤️"
@@ -38,17 +39,19 @@ function Testimonial() {
   };
 
   return (
-    <div
+    <section
       className="rounded-2xl shadow-lg w-full lg:w-[470px] h-[250px] sm:h-[280px] lg:h-[300px] relative overflow-hidden"
       style={{ backgroundColor: '#161711' }}
+      aria-label="Client testimonials"
     >
       {/* Circular Profile Image at top left */}
       <div className="absolute top-3 left-3 sm:top-4 sm:left-4 lg:top-6 lg:left-6">
-        <img
+        <OptimizedImage
           src={currentTestimonial.image}
           alt={currentTestimonial.altText}
           className="w-12 h-12 sm:w-16 sm:h-16 lg:w-10 lg:h-10 rounded-full object-cover transition-all duration-700 ease-in-out transform"
           key={currentIndex}
+          lazy={true}
         />
       </div>
 
@@ -93,7 +96,7 @@ function Testimonial() {
           />
         ))}
       </div>
-    </div>
+    </section>
   );
 }
 

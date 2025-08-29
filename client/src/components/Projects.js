@@ -1,6 +1,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAnalytics } from '../hooks/useAnalytics';
+import OptimizedImage from './OptimizedImage';
 import wellness from '../assets/Projects/mental-wellness.jpg'
 import dental from '../assets/Projects/Dental.jpg'
 
@@ -179,9 +180,10 @@ function Projects() {
   ];
 
   return (
-    <div
+    <section
       className="rounded-2xl shadow-lg w-full lg:w-[465px] h-[600px] lg:h-[630px] overflow-hidden"
       style={{ backgroundColor: '#161711' }}
+      aria-labelledby="projects-heading"
     >
       {/* Sidebar Container - Projects */}
       <div
@@ -192,7 +194,7 @@ function Projects() {
           scrollBehavior: 'smooth'
         }}
       >
-        <h2 className="text-3xl font-bold mb-4 text-[#A8977A]" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Work</h2>
+        <h2 id="projects-heading" className="text-3xl font-bold mb-4 text-[#A8977A]" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Work</h2>
 
 
 
@@ -201,7 +203,7 @@ function Projects() {
             <div key={project.key} className="p-3 lg:p-4 rounded-lg" ref={project.ref}>
               <div className="flex justify-between items-center">
                 <h3
-                  className="font-semibold text-[#A8977A] cursor-pointer hover:text-[#45372B] transition-colors"
+                  className="font-semibold text-[#A8977A] cursor-pointer hover:text-[#45372B] transition-colors focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md px-2 py-1"
                   style={{ fontSize: '1.25rem', fontFamily: 'Bubblegum Sans, sans-serif' }}
                   onClick={() => handleOpenProject(project.key)}
                   role="button"
@@ -213,6 +215,7 @@ function Projects() {
                     }
                   }}
                   aria-expanded={toggleStates[project.key]}
+                  aria-label={`${toggleStates[project.key] ? 'Collapse' : 'Expand'} ${project.title} project details`}
                 >
                   {project.title}
                 </h3>
@@ -222,7 +225,32 @@ function Projects() {
                     animate={{ opacity: 1, scale: 1 }}
                     exit={{ opacity: 0, scale: 0.8 }}
                     transition={{ duration: 0.2 }}
-                    className="cursor-pointer"
+                    className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md p-1"
+                    role="button"
+                    tabIndex={0}
+                    aria-label={`Visit ${project.title} website`}
+                    onKeyDown={(e) => {
+                      if (e.key === 'Enter' || e.key === ' ') {
+                        e.preventDefault();
+                        if (project.key === 'project1') {
+                          trackProject('Sarvodaya Dental Clinic', 'project1', 'external_link');
+                          trackCTA('project_dental_external_link', 'external_link', {
+                            projectName: 'Sarvodaya Dental Clinic',
+                            destination: 'https://www.sarvodayadental.com/',
+                            currentPage: window.location.pathname
+                          });
+                          window.open('https://www.sarvodayadental.com/', '_blank');
+                        } else if (project.key === 'project2') {
+                          trackProject('Therapy With Aakanksha', 'project2', 'external_link');
+                          trackCTA('project_wellness_external_link', 'external_link', {
+                            projectName: 'Therapy With Aakanksha',
+                            destination: 'https://www.therapywithaakanksha.com',
+                            currentPage: window.location.pathname
+                          });
+                          window.open('https://www.therapywithaakanksha.com', '_blank');
+                        }
+                      }
+                    }}
                     onClick={(e) => {
                       if (project.key === 'project1') {
                         // For Dental Website, open the live site
@@ -278,10 +306,14 @@ function Projects() {
                   >
                     <div className="mt-3">
                       <div className="relative rounded-2xl overflow-hidden bg-gray-100">
-                        <img
+                        <OptimizedImage
                           src={project.image}
-                          alt={project.title}
+                          alt={project.key === 'project1' ? 
+                            "Sarvodaya Dental Clinic website homepage - Modern dental practice website designed by Yuvaan Vithlani featuring online appointment booking, patient testimonials, service information, and mobile-responsive design for healthcare accessibility" :
+                            "Therapy With Aakanksha website homepage - Professional mental health therapy website designed by Yuvaan Vithlani with calming, approachable design, therapy service information, and welcoming user experience for mental wellness support"
+                          }
                           className="w-full h-56 object-cover"
+                          lazy={true}
                         />
 
                       </div>
@@ -294,7 +326,7 @@ function Projects() {
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 }
 

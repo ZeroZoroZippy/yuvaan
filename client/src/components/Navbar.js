@@ -54,14 +54,14 @@ const Navbar = () => {
         onClick={closeMenu}
       />
 
-      <div className="fixed w-full z-50 p-3 backdrop-blur-lg">
-        <nav className="rounded-2xl max-w-[90rem] mx-auto shadow-lg bg-[#161711]">
+      <header className="fixed w-full z-50 p-3 backdrop-blur-lg" role="banner">
+        <nav className="rounded-2xl max-w-[90rem] mx-auto shadow-lg bg-[#161711]" aria-label="Main navigation">
           <div className="px-6 py-1">
             <div className="flex justify-between h-16 items-center">
               {/* Logo */}
               <button
                 onClick={handleLogoClick}
-                className="text-[1.5rem] font-bold text-[#A8977A] hover:text-white transition-colors duration-300"
+                className="text-[1.5rem] font-bold text-[#A8977A] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md px-2 py-1"
                 style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
               >
                 Yuvaan Vithlani
@@ -71,7 +71,7 @@ const Navbar = () => {
               <div className="hidden md:flex items-center space-x-12">
                 <a
                   href="about"
-                  className="text-xl text-[#A8977A] hover:text-white transition-colors duration-300"
+                  className="text-xl text-[#A8977A] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md px-2 py-1"
                   style={{ fontFamily: 'Neuton, serif' }}
                   onClick={() => {
                     trackCTA('navbar_about_desktop', 'navigation', { 
@@ -86,15 +86,16 @@ const Navbar = () => {
                 </a>
                 <button
                   onClick={handleBlogClick}
-                  className="text-xl text-[#A8977A] hover:text-white transition-colors duration-300"
+                  className="text-xl text-[#A8977A] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md px-2 py-1"
                   style={{ fontFamily: 'Neuton, serif' }}
                 >
                   Blogs
                 </button>
                 <button
                   onClick={handleTalkToSaarthClick}
-                  className="px-6 py-2 rounded-full bg-[#A8977A] text-xl text-[#161711] hover:bg-[#161711] hover:text-[#A8977A] transition-colors duration-300"
+                  className="px-6 py-2 rounded-full bg-[#A8977A] text-xl text-[#161711] hover:bg-[#161711] hover:text-[#A8977A] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#161711]"
                   style={{ fontFamily: 'Neuton, serif' }}
+                  aria-label="Open Saarth chatbot for assistance"
                 >
                   Talk to Saarth
                 </button>
@@ -110,7 +111,9 @@ const Navbar = () => {
                     });
                     toggleMenu();
                   }}
-                  className="text-[#A8977A] hover:text-white focus:outline-none transition-colors duration-300"
+                  className="text-[#A8977A] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md p-1 transition-colors duration-300"
+                  aria-label="Open navigation menu"
+                  aria-expanded={isOpen}
                 >
                   <svg className="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                     {isOpen ? (
@@ -131,7 +134,7 @@ const Navbar = () => {
                   }`}>
                   <a
                     href="about"
-                    className="block px-3 py-2 text-lg text-[#A8977A] hover:text-white transition-colors duration-300"
+                    className="block px-3 py-2 text-lg text-[#A8977A] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md"
                     style={{ fontFamily: 'Neuton, serif' }}
                     onClick={() => {
                       trackCTA('navbar_about_mobile', 'navigation', { 
@@ -147,15 +150,16 @@ const Navbar = () => {
                   </a>
                   <button
                     onClick={handleBlogClick}
-                    className="block px-3 py-2 text-lg text-[#A8977A] hover:text-white transition-colors duration-300 text-left w-full"
+                    className="block px-3 py-2 text-lg text-[#A8977A] hover:text-white transition-colors duration-300 text-left w-full focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md"
                     style={{ fontFamily: 'Neuton, serif' }}
                   >
                     Blogs
                   </button>
                   <button
                     onClick={handleTalkToSaarthClick}
-                    className="mx-3 mt-6 px-6 py-2 rounded-full bg-[#A8977A] text-[#161711] hover:bg-[#161711] hover:text-[#A8977A] transition-colors duration-200 w-[calc(100%-1.5rem)] active:scale-95 transform"
+                    className="mx-3 mt-6 px-6 py-2 rounded-full bg-[#A8977A] text-[#161711] hover:bg-[#161711] hover:text-[#A8977A] transition-colors duration-200 w-[calc(100%-1.5rem)] active:scale-95 transform focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#161711]"
                     style={{ fontFamily: 'Neuton, serif' }}
+                    aria-label="Open Saarth chatbot for assistance"
                   >
                     Talk to Saarth
                   </button>
@@ -164,7 +168,7 @@ const Navbar = () => {
             </div>
           </div>
         </nav>
-      </div>
+      </header>
     </>
   );
 };

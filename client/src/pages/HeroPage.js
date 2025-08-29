@@ -7,7 +7,9 @@ import Testimonial from '../components/Testimonial';
 import Contact from '../components/Contact';
 import SocialMedia from '../components/SocialMedia';
 import ContactModal from '../components/ContactModal';
+import MetaManager from '../components/SEO/MetaManager';
 import { useLenisContext } from '../contexts/LenisContext';
+import { useMeta } from '../hooks/useMeta';
 
 function HeroPage() {
   const [animationStage, setAnimationStage] = useState(0);
@@ -16,6 +18,9 @@ function HeroPage() {
 
   // Get Lenis instance from context
   const lenis = useLenisContext();
+  
+  // Get meta configuration for homepage
+  const metaConfig = useMeta();
 
   const openContactModal = () => {
     setIsContactModalOpen(true);
@@ -46,12 +51,18 @@ function HeroPage() {
   }, [lenis]);
 
   return (
-    <>
+    <MetaManager
+      title={metaConfig.title}
+      description={metaConfig.description}
+      keywords={metaConfig.keywords}
+      canonicalUrl={metaConfig.canonicalUrl}
+      ogImage={metaConfig.ogImage}
+    >
       {/* Optional: Subtle loading transition */}
       <div className={`page-transition ${showContent ? 'loaded' : ''}`} />
 
       <Navbar />
-      <div className="pt-24">
+      <main className="pt-24" role="main">
         {/* Desktop Layout */}
         <div className="hidden lg:block">
           <div className="flex justify-start mx-4 mt-0 gap-4">
@@ -109,14 +120,14 @@ function HeroPage() {
             <SocialMedia />
           </div>
         </div>
-      </div>
+      </main>
 
       {/* Contact Modal - positioned at page level for full-screen centering */}
       <ContactModal
         isOpen={isContactModalOpen}
         onClose={closeContactModal}
       />
-    </>
+    </MetaManager>
   );
 }
 
