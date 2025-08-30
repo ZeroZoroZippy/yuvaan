@@ -79,7 +79,8 @@ function AboutPage() {
         trackFormSubmit('about_contact_form', formData, false, null);
 
         try {
-            const response = await fetch('http://localhost:5001/api/contact', {
+            const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
+            const response = await fetch(`${apiUrl}/api/contact`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
