@@ -42,10 +42,10 @@ class ErrorBoundary extends React.Component {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.268 16.5c-.77.833.192 2.5 1.732 2.5z" />
                                 </svg>
                             </div>
-                            <h1 className="text-2xl font-bold text-[#A8977A] mb-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
+                            <h1 className="text-2xl font-bold text-[#A8977A] mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
                                 Oops! Something went wrong
                             </h1>
-                            <p className="text-[#A8977A]/70 mb-6" style={{ fontFamily: 'Neuton, serif' }}>
+                            <p className="text-[#A8977A]/70 mb-6" style={{ fontFamily: 'var(--font-sans)' }}>
                                 We're sorry, but something unexpected happened. Please try refreshing the page.
                             </p>
                         </div>
@@ -54,7 +54,7 @@ class ErrorBoundary extends React.Component {
                             <button
                                 onClick={this.handleRefresh}
                                 className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-300 font-medium"
-                                style={{ fontFamily: 'Neuton, serif' }}
+                                style={{ fontFamily: 'var(--font-sans)' }}
                             >
                                 Refresh Page
                             </button>
@@ -62,7 +62,7 @@ class ErrorBoundary extends React.Component {
                             <button
                                 onClick={() => window.location.href = '/'}
                                 className="w-full border border-[#A8977A]/30 text-[#A8977A] py-3 px-6 rounded-lg hover:bg-[#A8977A]/10 transition-colors duration-300"
-                                style={{ fontFamily: 'Neuton, serif' }}
+                                style={{ fontFamily: 'var(--font-sans)' }}
                             >
                                 Go to Homepage
                             </button>

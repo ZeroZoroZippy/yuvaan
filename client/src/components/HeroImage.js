@@ -10,7 +10,7 @@ function HeroImage() {
     >
       <OptimizedImage
         src={Hero}
-        alt="Yuvaan Vithlani - Professional web designer and developer portrait showcasing expertise in UI/UX design and modern web development"
+        alt="Portrait of Yuvaan Vithlani for his product systems and AI portfolio"
         className="w-full h-full object-cover object-top"
         lazy={false}
       />

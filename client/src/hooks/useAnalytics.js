@@ -259,11 +259,6 @@ export const useAnalytics = () => {
     }
   }, []);
 
-  // Blog tracking
-  const trackBlog = useCallback((action, blogId = null, blogTitle = null) => {
-    analyticsService.trackBlogInteraction(action, blogId, blogTitle);
-  }, []);
-
   // Error tracking with enhanced context
   const trackError = useCallback((errorType, errorMessage, context = null, additionalData = {}) => {
     analyticsService.trackError(errorType, errorMessage, context);
@@ -356,7 +351,6 @@ export const useAnalytics = () => {
     trackNavigation,
     trackProject,
     trackSocial,
-    trackBlog,
     trackError,
     trackEvent,
     trackClick,
@@ -399,17 +393,21 @@ export const useAnalytics = () => {
 
 // Higher-order component for automatic click tracking (enhanced)
 export const withAnalytics = (WrappedComponent, componentName) => {
-  return function AnalyticsWrappedComponent(props) {
+  return function AnalyticsWrappedComponent({ onClick, ...restProps }) {
     const { trackEvent, trackClick } = useAnalytics();
-    const { onClick } = props;
+    const propKeys = Object.keys(restProps);
+    if (onClick) {
+      propKeys.push('onClick');
+    }
+    const propNames = propKeys.sort().join('|');
 
     useEffect(() => {
       trackEvent('component_render', { 
         componentName,
         renderTime: Date.now(),
-        props: Object.keys(props)
+        props: propNames ? propNames.split('|') : []
       });
-    }, [trackEvent]);
+    }, [trackEvent, propNames]);
 
     const handleClick = useCallback((event) => {
       // Enhanced click tracking with more context
@@ -435,31 +433,32 @@ export const withAnalytics = (WrappedComponent, componentName) => {
       }
     }, [trackEvent, trackClick, onClick]);
 
-    return <WrappedComponent {...props} onClick={handleClick} />;
+    return <WrappedComponent {...restProps} onClick={handleClick} />;
   };
 };
 
 // ENHANCED: Higher-order component for chatbot conversation tracking
 export const withChatbotAnalytics = (WrappedComponent) => {
-  return function ChatbotAnalyticsWrappedComponent(props) {
+  return function ChatbotAnalyticsWrappedComponent({ onMessageSent, onConversationEnd, ...restProps }) {
     const { trackChatbot, trackConversationQuality } = useAnalytics();
-    
-    const enhancedProps = {
-      ...props,
-      // Inject enhanced tracking methods
-      onMessageSent: useCallback((messageData) => {
-        trackChatbot('message', 0, 'user_message', { messageData });
-        props.onMessageSent?.(messageData);
-      }, [trackChatbot, props.onMessageSent]),
-      
-      onConversationEnd: useCallback((conversationData) => {
-        trackChatbot('conversation_analysis', 0, 'session_end', { analysisData: conversationData });
-        trackConversationQuality(conversationData.qualityMetrics);
-        props.onConversationEnd?.(conversationData);
-      }, [trackChatbot, trackConversationQuality, props.onConversationEnd])
-    };
-    
-    return <WrappedComponent {...enhancedProps} />;
+    const handleMessageSent = useCallback((messageData) => {
+      trackChatbot('message', 0, 'user_message', { messageData });
+      onMessageSent?.(messageData);
+    }, [trackChatbot, onMessageSent]);
+
+    const handleConversationEnd = useCallback((conversationData) => {
+      trackChatbot('conversation_analysis', 0, 'session_end', { analysisData: conversationData });
+      trackConversationQuality(conversationData.qualityMetrics);
+      onConversationEnd?.(conversationData);
+    }, [trackChatbot, trackConversationQuality, onConversationEnd]);
+
+    return (
+      <WrappedComponent
+        {...restProps}
+        onMessageSent={handleMessageSent}
+        onConversationEnd={handleConversationEnd}
+      />
+    );
   };
 };
 

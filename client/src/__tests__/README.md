@@ -19,8 +19,8 @@ This directory contains comprehensive automated tests for SEO and accessibility 
 #### metaConfigs.test.js (`/config/__tests__/`)
 - **Purpose**: Tests page-specific meta configurations
 - **Coverage**:
-  - Static page configurations (home, about, blog, projects)
-  - Dynamic page configurations (project details, blog posts)
+  - Static page configurations (home, about, projects)
+  - Dynamic page configurations (project details)
   - Character limit compliance across all pages
   - Required keyword presence
   - URL formatting validation

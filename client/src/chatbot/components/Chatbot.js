@@ -68,7 +68,7 @@ const TypewriterMessage = ({ text, isLatest, timestamp, onComplete }) => {
     return (
         <div className="w-full">
             <div className={`${getMessageWidth(text)} bg-[#161711] text-[#A8977A] border border-[#A8977A]/20 rounded-2xl px-4 py-3 shadow-md`}>
-                <p className="text-lg leading-relaxed" style={{ fontFamily: "Neuton, serif" }}>
+                <p className="text-lg leading-relaxed" style={{ fontFamily: "var(--font-sans)" }}>
                     {displayedText}
                     {isTyping && (
                         <span className="inline-block w-0.5 h-5 bg-[#A8977A] ml-1 animate-pulse" />
@@ -265,7 +265,7 @@ const Chatbot = () => {
                         <div className="w-2 h-2 bg-[#A8977A] rounded-full animate-bounce" style={{ animationDelay: '150ms' }}></div>
                         <div className="w-2 h-2 bg-[#A8977A] rounded-full animate-bounce" style={{ animationDelay: '300ms' }}></div>
                     </div>
-                    <span className="text-xs text-[#A8977A]/60 ml-2" style={{ fontFamily: "Neuton, serif" }}>
+                    <span className="text-xs text-[#A8977A]/60 ml-2" style={{ fontFamily: "var(--font-sans)" }}>
                         Analyzing your needs...
                     </span>
                 </div>
@@ -310,10 +310,10 @@ const Chatbot = () => {
                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-semibold" style={{ fontFamily: "Bubblegum Sans, sans-serif" }}>
+                                    <h3 className="text-white font-semibold" style={{ fontFamily: "var(--font-sans)" }}>
                                         Saarth
                                     </h3>
-                                    <p className="text-white/70 text-xs" style={{ fontFamily: "Neuton, serif" }}>
+                                    <p className="text-white/70 text-xs" style={{ fontFamily: "var(--font-sans)" }}>
                                         AI Assistant
                                     </p>
                                 </div>
@@ -370,7 +370,7 @@ const Chatbot = () => {
                                             >
                                                 <p className={`text-lg leading-relaxed ${message.sender === 'user' ? 'font-semibold' : ''
                                                     }`} style={{
-                                                        fontFamily: message.sender === 'user' ? "Bubblegum Sans, sans-serif" : "Neuton, serif"
+                                                        fontFamily: message.sender === 'user' ? "var(--font-sans)" : "var(--font-sans)"
                                                     }}>
                                                     {message.text}
                                                 </p>
@@ -401,7 +401,7 @@ const Chatbot = () => {
                                         placeholder="Discuss your project needs..."
                                         disabled={isProcessing}
                                         className="w-full bg-white/10 border border-white/20 rounded-full px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#A8977A] focus:ring-1 focus:ring-[#A8977A] transition-all disabled:opacity-50"
-                                        style={{ fontFamily: "Neuton, serif" }}
+                                        style={{ fontFamily: "var(--font-sans)" }}
                                     />
                                     {/* Character count for longer messages */}
                                     {inputValue.length > 100 && (
@@ -414,7 +414,7 @@ const Chatbot = () => {
                                     type="submit"
                                     disabled={!inputValue.trim() || isProcessing}
                                     className="bg-gradient-to-r from-[#A8977A] to-[#8B7355] hover:from-[#8B7355] hover:to-[#6D5D42] disabled:from-white/20 disabled:to-white/20 text-white rounded-full px-6 py-3 transition-all disabled:cursor-not-allowed shadow-lg hover:shadow-xl transform hover:scale-105 disabled:transform-none"
-                                    style={{ fontFamily: "Neuton, serif" }}
+                                    style={{ fontFamily: "var(--font-sans)" }}
                                 >
                                     {isProcessing ? (
                                         <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">
@@ -450,10 +450,10 @@ const Chatbot = () => {
                                     <div className="absolute -bottom-1 -right-1 w-3 h-3 bg-green-400 rounded-full border-2 border-white"></div>
                                 </div>
                                 <div>
-                                    <h3 className="text-white font-semibold text-lg" style={{ fontFamily: "Bubblegum Sans, sans-serif" }}>
+                                    <h3 className="text-white font-semibold text-lg" style={{ fontFamily: "var(--font-sans)" }}>
                                         Saarth
                                     </h3>
-                                    <p className="text-white/70 text-sm" style={{ fontFamily: "Neuton, serif" }}>
+                                    <p className="text-white/70 text-sm" style={{ fontFamily: "var(--font-sans)" }}>
                                         AI Assistant • Online
                                     </p>
                                 </div>
@@ -510,7 +510,7 @@ const Chatbot = () => {
                                             >
                                                 <p className={`text-lg leading-relaxed ${message.sender === 'user' ? 'font-semibold' : ''
                                                     }`} style={{
-                                                        fontFamily: message.sender === 'user' ? "Bubblegum Sans, sans-serif" : "Neuton, serif"
+                                                        fontFamily: message.sender === 'user' ? "var(--font-sans)" : "var(--font-sans)"
                                                     }}>
                                                     {message.text}
                                                 </p>
@@ -539,13 +539,13 @@ const Chatbot = () => {
                                     placeholder="Type your message..."
                                     disabled={isProcessing}
                                     className="flex-1 bg-white/10 border border-white/20 rounded-full px-4 py-3 text-white placeholder-white/50 focus:outline-none focus:border-[#A8977A] focus:ring-1 focus:ring-[#A8977A] transition-all disabled:opacity-50 text-lg"
-                                    style={{ fontFamily: "Neuton, serif" }}
+                                    style={{ fontFamily: "var(--font-sans)" }}
                                 />
                                 <button
                                     type="submit"
                                     disabled={!inputValue.trim() || isProcessing}
                                     className="bg-gradient-to-r from-[#A8977A] to-[#8B7355] hover:from-[#8B7355] hover:to-[#6D5D42] disabled:from-white/20 disabled:to-white/20 text-white rounded-full px-6 py-3 transition-all disabled:cursor-not-allowed shadow-lg font-medium"
-                                    style={{ fontFamily: "Neuton, serif" }}
+                                    style={{ fontFamily: "var(--font-sans)" }}
                                 >
                                     {isProcessing ? (
                                         <svg className="animate-spin w-5 h-5" fill="none" viewBox="0 0 24 24">

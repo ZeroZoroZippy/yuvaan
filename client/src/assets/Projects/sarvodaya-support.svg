@@ -1,0 +1,31 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" rx="40" fill="#161711"/>
+  <rect x="36" y="36" width="1528" height="928" rx="32" fill="url(#bg)"/>
+  <rect x="136" y="136" width="1328" height="728" rx="32" fill="#1B1B16" stroke="#C8A56E" stroke-opacity="0.18"/>
+  <text x="190" y="206" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="30" font-weight="700">Sarvodaya Dental Clinic</text>
+  <text x="190" y="240" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">Trust first. Clarity first. Simple appointment intent.</text>
+  <rect x="190" y="298" width="360" height="120" rx="22" fill="#232119"/>
+  <rect x="574" y="298" width="360" height="120" rx="22" fill="#232119"/>
+  <rect x="958" y="298" width="360" height="120" rx="22" fill="#232119"/>
+  <rect x="190" y="454" width="1128" height="180" rx="24" fill="#201E18"/>
+  <rect x="190" y="662" width="520" height="136" rx="22" fill="#232119"/>
+  <rect x="738" y="662" width="580" height="136" rx="22" fill="#232119"/>
+  <path d="M248 372H490" stroke="#C8A56E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M632 372H880" stroke="#8FA278" stroke-width="4" stroke-linecap="round"/>
+  <path d="M1016 372H1266" stroke="#6F8FA6" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="260" cy="342" r="18" fill="#C8A56E"/>
+  <circle cx="644" cy="342" r="18" fill="#8FA278"/>
+  <circle cx="1028" cy="342" r="18" fill="#6F8FA6"/>
+  <text x="256" y="488" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="28" font-weight="700">Calm layout</text>
+  <text x="256" y="526" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">Services, benefits, and booking path arranged in a readable sequence</text>
+  <rect x="252" y="710" width="210" height="20" rx="10" fill="#2D2B23"/>
+  <rect x="252" y="746" width="260" height="20" rx="10" fill="#2D2B23"/>
+  <rect x="800" y="704" width="420" height="22" rx="11" fill="#2D2B23"/>
+  <rect x="800" y="742" width="340" height="22" rx="11" fill="#2D2B23"/>
+  <defs>
+    <linearGradient id="bg" x1="92" y1="82" x2="1508" y2="918" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C1A15"/>
+      <stop offset="1" stop-color="#242118"/>
+    </linearGradient>
+  </defs>
+</svg>

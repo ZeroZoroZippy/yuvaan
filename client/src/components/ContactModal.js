@@ -35,8 +35,7 @@ function ContactModal({ isOpen, onClose }) {
     trackFormSubmit('contact_modal', formData, false, null);
 
     try {
-      const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
-      const response = await fetch(`${apiUrl}/api/contact`, {
+      const response = await fetch('/api/contact', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -158,9 +157,9 @@ function ContactModal({ isOpen, onClose }) {
               </svg>
             </div>
 
-            <h3 className="text-2xl font-bold text-[#45372B] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Thank You!</h3>
+            <h3 className="text-2xl font-bold text-[#45372B] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>Thank You!</h3>
 
-            <p className="text-gray-600 mb-6 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+            <p className="text-gray-600 mb-6 leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
               Your message has been sent successfully. I'll get back to you as soon as possible!
             </p>
 
@@ -180,10 +179,10 @@ function ContactModal({ isOpen, onClose }) {
                   />
                 </svg>
                 <div className="text-left">
-                  <p className="text-sm font-medium text-blue-800 mb-1" style={{ fontFamily: 'Neuton, serif' }}>
+                  <p className="text-sm font-medium text-blue-800 mb-1" style={{ fontFamily: 'var(--font-sans)' }}>
                     Check your email
                   </p>
-                  <p className="text-sm text-blue-600" style={{ fontFamily: 'Neuton, serif' }}>
+                  <p className="text-sm text-blue-600" style={{ fontFamily: 'var(--font-sans)' }}>
                     You'll receive a confirmation email shortly with details about next steps.
                   </p>
                 </div>
@@ -195,13 +194,13 @@ function ContactModal({ isOpen, onClose }) {
                 onClick={handleBackToForm}
                 className="flex-1 bg-gray-100 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-200 transition-all duration-200 ease-out transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-gray-400 focus:ring-offset-2"
               >
-                <span style={{ fontFamily: 'Neuton, serif' }}>Send Another</span>
+                <span style={{ fontFamily: 'var(--font-sans)' }}>Send Another</span>
               </button>
               <button
                 onClick={handleClose}
                 className="flex-1 bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-all duration-200 ease-out transform hover:scale-[1.02] active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2"
               >
-                <span style={{ fontFamily: 'Neuton, serif' }}>Close</span>
+                <span style={{ fontFamily: 'var(--font-sans)' }}>Close</span>
               </button>
             </div>
           </div>
@@ -209,7 +208,7 @@ function ContactModal({ isOpen, onClose }) {
           /* Contact Form */
           <div className={`transition-all duration-500 ease-out ${!showThankYou ? 'opacity-100 transform translate-y-0' : 'opacity-0 transform translate-y-4'
             }`}>
-            <h3 className="text-2xl font-bold text-[#45372B] mb-6 transition-all duration-300 ease-out delay-100" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Send me a message</h3>
+            <h3 className="text-2xl font-bold text-[#45372B] mb-6 transition-all duration-300 ease-out delay-100" style={{ fontFamily: 'var(--font-sans)' }}>Send me a message</h3>
 
             {submitStatus === 'error' && (
               <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4 transition-all duration-300 ease-out transform animate-pulse">
@@ -274,7 +273,7 @@ function ContactModal({ isOpen, onClose }) {
                 disabled={isSubmitting}
                 className="w-full bg-[#A8977A] text-white py-2 px-4 rounded-lg hover:bg-[#9a8a6d] transition-all duration-200 ease-out disabled:opacity-50 disabled:cursor-not-allowed transform hover:scale-[1.02] active:scale-[0.98] delay-400 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2"
               >
-                <span style={{ fontFamily: 'Neuton, serif' }} className="transition-all duration-200 ease-out">
+                <span style={{ fontFamily: 'var(--font-sans)' }} className="transition-all duration-200 ease-out">
                   {isSubmitting ? (
                     <span className="flex items-center justify-center">
                       <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

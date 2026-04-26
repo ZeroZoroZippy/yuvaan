@@ -1,0 +1,27 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" rx="40" fill="#161711"/>
+  <rect x="36" y="36" width="1528" height="928" rx="32" fill="url(#bg)"/>
+  <rect x="138" y="136" width="1324" height="728" rx="32" fill="#1B1B16" stroke="#C8A56E" stroke-opacity="0.18"/>
+  <text x="190" y="206" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="30" font-weight="700">Therapy With Aakanksha</text>
+  <text x="190" y="240" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">Warmth, trust, and low-pressure contact</text>
+  <circle cx="392" cy="470" r="188" fill="#C8A56E" fill-opacity="0.08"/>
+  <circle cx="392" cy="470" r="126" stroke="#8FA278" stroke-opacity="0.22" stroke-width="2"/>
+  <circle cx="392" cy="470" r="74" stroke="#6F8FA6" stroke-opacity="0.22" stroke-width="2"/>
+  <rect x="700" y="300" width="700" height="112" rx="22" fill="#232119"/>
+  <rect x="700" y="444" width="700" height="112" rx="22" fill="#232119"/>
+  <rect x="700" y="588" width="700" height="112" rx="22" fill="#232119"/>
+  <rect x="700" y="732" width="700" height="64" rx="18" fill="#2A261E"/>
+  <path d="M228 470C288 418 334 396 392 396C450 396 500 418 560 470C500 522 450 544 392 544C334 544 288 522 228 470Z" fill="#C8A56E" fill-opacity="0.22"/>
+  <path d="M752 356H1266" stroke="#C8A56E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M752 500H1228" stroke="#8FA278" stroke-width="4" stroke-linecap="round"/>
+  <path d="M752 644H1294" stroke="#6F8FA6" stroke-width="4" stroke-linecap="round"/>
+  <text x="760" y="358" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="22" font-weight="700">gentle introduction</text>
+  <text x="760" y="502" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="22" font-weight="700">clear services</text>
+  <text x="760" y="646" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="22" font-weight="700">calm contact path</text>
+  <defs>
+    <linearGradient id="bg" x1="92" y1="82" x2="1508" y2="918" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C1A15"/>
+      <stop offset="1" stop-color="#242118"/>
+    </linearGradient>
+  </defs>
+</svg>

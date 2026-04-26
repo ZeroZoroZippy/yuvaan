@@ -12,8 +12,8 @@ This document summarizes the comprehensive automated testing suite implemented f
 - **Coverage**:
   - Meta tag generation and structure validation
   - Character limit compliance (titles ≤75 chars, descriptions ≤160 chars)
-  - Page-specific meta configurations (home, about, blog, projects)
-  - Dynamic meta generation for project and blog pages
+  - Page-specific meta configurations (home, about, projects)
+  - Dynamic meta generation for project pages
   - SEO best practices validation
   - Structured data (JSON-LD) validation
 

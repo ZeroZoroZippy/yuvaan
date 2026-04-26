@@ -19,10 +19,10 @@ function AboutPage() {
     const { trackSocial, trackCTA, trackFormField, trackFormSubmit } = useAnalytics();
     const [activeSection, setActiveSection] = useState(0);
     const [toggleStates, setToggleStates] = useState({
-        webDesign: false,
-        webDevelopment: false,
-        brandExperience: false,
-        creativeProblemSolving: false
+        systemsThinking: false,
+        problemDefinition: false,
+        aiAssistedExecution: false,
+        userEmpathy: false
     });
 
     // Get meta configuration for about page
@@ -79,8 +79,7 @@ function AboutPage() {
         trackFormSubmit('about_contact_form', formData, false, null);
 
         try {
-            const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
-            const response = await fetch(`${apiUrl}/api/contact`, {
+            const response = await fetch('/api/contact', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -187,24 +186,24 @@ function AboutPage() {
                 <div>
                     <h1
                         className="text-5xl sm:text-5xl lg:text-6xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-10"
-                        style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
+                        style={{ fontFamily: 'var(--font-sans)' }}
                     >
                         About Me
                     </h1>
                     <h3
                         className="text-3xl sm:text-2xl lg:text-3xl font-light text-[#A8977A] mb-3 sm:mb-4 lg:mb-6"
-                        style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
+                        style={{ fontFamily: 'var(--font-sans)' }}
                     >
                         Hi, I'm Yuvaan
                     </h3>
                     <p
                         className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-20"
-                        style={{ fontFamily: 'Neuton, serif' }}
+                        style={{ fontFamily: 'var(--font-sans)' }}
                     >
-                        I design and build websites that work beautifully and make sense to your visitors. Whether you need a brand new website, want to redesign an existing one, or improve how your current site performs, I create solutions that are clean, professional, and easy to navigate.
+                        I am most interested in what happens when unclear ideas become usable systems. That can mean client websites, AI experiments, or product work inside a company. The medium changes, but the core of my work stays the same: understand the problem deeply, structure it clearly, and make the result feel more human.
                         <br />
                         <br />
-                        I believe good design shouldn't just look nice—it should help your business achieve its goals while giving visitors exactly what they're looking for.
+                        Right now, that thinking shows up across three lanes: current product work at Brandintelle, client work for real businesses, and AI projects that let me explore how intelligence can become more useful and more grounded.
                     </p>
                     <div>
                         <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-6">
@@ -225,7 +224,7 @@ function AboutPage() {
                                 <svg className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:rotate-12" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433c-1.144 0-2.063-.926-2.063-2.065 0-1.138.92-2.063 2.063-2.063 1.14 0 2.064.925 2.064 2.063 0 1.139-.925 2.065-2.064 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z" />
                                 </svg>
-                                <span className="text-base sm:text-lg" style={{ fontFamily: 'Neuton, serif' }}>LinkedIn</span>
+                                <span className="text-base sm:text-lg" style={{ fontFamily: 'var(--font-sans)' }}>LinkedIn</span>
                             </a>
 
                             <a
@@ -245,14 +244,14 @@ function AboutPage() {
                                 <svg className="w-5 h-5 sm:w-6 sm:h-6 transition-transform duration-300 group-hover:rotate-12" fill="currentColor" viewBox="0 0 24 24">
                                     <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
                                 </svg>
-                                <span className="text-base sm:text-lg" style={{ fontFamily: 'Neuton, serif' }}>Instagram</span>
+                                <span className="text-base sm:text-lg" style={{ fontFamily: 'var(--font-sans)' }}>Instagram</span>
                             </a>
                         </div>
                     </div>
                 </div>
             ),
             image: me,
-            alt: "Yuvaan Vithlani - Professional web designer and developer portrait"
+            alt: "Portrait of Yuvaan Vithlani"
         },
         {
             id: 1,
@@ -260,28 +259,28 @@ function AboutPage() {
                 <div>
                     <h2
                         className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-4 sm:mb-6 lg:mb-8"
-                        style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
+                        style={{ fontFamily: 'var(--font-sans)' }}
                     >
-                        What I Can Do For You
+                        How My Work Shows Up
                     </h2>
                     <p
                         className="text-xl sm:text-xl lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-6"
-                        style={{ fontFamily: 'Neuton, serif' }}
+                        style={{ fontFamily: 'var(--font-sans)' }}
                     >
-                        I help businesses create websites that actually work for them. This means:
+                        I do not think of myself as just a frontend designer, a dashboard person, or an AI person. The real pattern is broader than that:
                     </p>
                     <div className="space-y-3 sm:space-y-4 lg:space-y-5 mb-6">
-                        {/* Web Design */}
+                        {/* Systems Thinking */}
                         <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
                                 className="flex items-center justify-between cursor-pointer group"
-                                onClick={() => toggleSection('webDesign')}
+                                onClick={() => toggleSection('systemsThinking')}
                             >
-                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
-                                    Web Design
+                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'var(--font-sans)' }}>
+                                    Systems Thinking
                                 </h3>
                                 <svg
-                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.webDesign ? 'rotate-180' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.systemsThinking ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -289,7 +288,7 @@ function AboutPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
-                            {toggleStates.webDesign && (
+                            {toggleStates.systemsThinking && (
                                 <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
                                         <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1">
@@ -297,25 +296,25 @@ function AboutPage() {
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
-                                            User‑focused layouts and typography that feel clear, consistent, and accessible.
+                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
+                                            I like finding the structure underneath a messy problem so the product stops feeling accidental and starts feeling intentional.
                                         </span>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* Web Development */}
+                        {/* Problem Definition */}
                         <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
                                 className="flex items-center justify-between cursor-pointer group"
-                                onClick={() => toggleSection('webDevelopment')}
+                                onClick={() => toggleSection('problemDefinition')}
                             >
-                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
-                                    Web Development
+                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'var(--font-sans)' }}>
+                                    Problem Definition
                                 </h3>
                                 <svg
-                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.webDevelopment ? 'rotate-180' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.problemDefinition ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -323,7 +322,7 @@ function AboutPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
-                            {toggleStates.webDevelopment && (
+                            {toggleStates.problemDefinition && (
                                 <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
                                         <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1">
@@ -331,25 +330,25 @@ function AboutPage() {
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
-                                            Fast, responsive builds that turn designs into reliable, scalable products.
+                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
+                                            I am at my best when I can clarify what the user is really dealing with and shape a solution from that, rather than decorating the wrong answer.
                                         </span>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* Brand Experience */}
+                        {/* AI-Assisted Execution */}
                         <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
                                 className="flex items-center justify-between cursor-pointer group"
-                                onClick={() => toggleSection('brandExperience')}
+                                onClick={() => toggleSection('aiAssistedExecution')}
                             >
-                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
-                                    Brand Experience
+                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'var(--font-sans)' }}>
+                                    AI-Assisted Execution
                                 </h3>
                                 <svg
-                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.brandExperience ? 'rotate-180' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.aiAssistedExecution ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -357,7 +356,7 @@ function AboutPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
-                            {toggleStates.brandExperience && (
+                            {toggleStates.aiAssistedExecution && (
                                 <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
                                         <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1">
@@ -365,25 +364,25 @@ function AboutPage() {
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
-                                            Turning your story into visuals, interactions, and moments people remember.
+                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
+                                            AI matters to me as a layer for speed, prototyping, and better thinking. I use it to break problems down faster, not to avoid doing the hard thinking.
                                         </span>
                                     </div>
                                 </div>
                             )}
                         </div>
 
-                        {/* Creative Problem-Solving */}
+                        {/* User Empathy */}
                         <div className="border-b border-[#A8977A]/20 pb-3 sm:pb-4 transform transition-all duration-300 hover:scale-[1.02] hover:bg-[#A8977A]/5 hover:rounded-lg hover:px-4 hover:py-2">
                             <div
                                 className="flex items-center justify-between cursor-pointer group"
-                                onClick={() => toggleSection('creativeProblemSolving')}
+                                onClick={() => toggleSection('userEmpathy')}
                             >
-                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
-                                    Creative Problem-Solving
+                                <h3 className="text-2xl sm:text-2xl lg:text-3xl font-medium text-[#A8977A] group-hover:text-white transition-all duration-500 group-hover:translate-x-2" style={{ fontFamily: 'var(--font-sans)' }}>
+                                    User Empathy
                                 </h3>
                                 <svg
-                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.creativeProblemSolving ? 'rotate-180' : ''}`}
+                                    className={`w-4 h-4 sm:w-5 sm:h-5 text-[#A8977A] transition-all duration-500 group-hover:text-white group-hover:scale-110 ${toggleStates.userEmpathy ? 'rotate-180' : ''}`}
                                     fill="none"
                                     stroke="currentColor"
                                     viewBox="0 0 24 24"
@@ -391,7 +390,7 @@ function AboutPage() {
                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                                 </svg>
                             </div>
-                            {toggleStates.creativeProblemSolving && (
+                            {toggleStates.userEmpathy && (
                                 <div className="mt-3 sm:mt-4 animate-slide-up-fade">
                                     <div className="flex items-start space-x-3">
                                         <div className="w-4 h-4 rounded border-2 border-[#A8977A] bg-[#A8977A] flex items-center justify-center flex-shrink-0 mt-1">
@@ -399,8 +398,8 @@ function AboutPage() {
                                                 <path fillRule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clipRule="evenodd" />
                                             </svg>
                                         </div>
-                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
-                                            Simple, smart solutions grounded in the problem — not buzzwords.
+                                        <span className="text-lg sm:text-base lg:text-lg text-[#A8977A] leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
+                                            Whether I am building for a clinic, a therapy practice, a BI module, or an AI companion, I care a lot about how the user feels when they arrive.
                                         </span>
                                     </div>
                                 </div>
@@ -410,7 +409,7 @@ function AboutPage() {
                 </div>
             ),
             image: work,
-            alt: "Professional web development workspace"
+            alt: "Workspace representing product thinking and execution"
         }
     ];
 
@@ -499,15 +498,15 @@ function AboutPage() {
                                     <div className="w-full max-w-6xl mx-auto">
                                         <h2
                                             className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
-                                            style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
+                                            style={{ fontFamily: 'var(--font-sans)' }}
                                         >
                                             When I'm Not Working
                                         </h2>
                                         <p
                                             className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed max-w-2xl mb-8 sm:mb-12 lg:mb-20"
-                                            style={{ fontFamily: 'Neuton, serif' }}
+                                            style={{ fontFamily: 'var(--font-sans)' }}
                                         >
-                                            When I'm not building or designing, you'll probably find me with a good book and freshly brewed coffee, cheering for my favorite football team, experimenting with new recipes in the kitchen, or curled up with my dog for a cozy movie night.
+                                            Outside work, I like slower things that reset my head: books, coffee, football, experimenting in the kitchen, and time with my dogs. A lot of my best thinking happens away from the screen.
                                         </p>
                                         <ScrollingGallery />
                                     </div>
@@ -521,15 +520,15 @@ function AboutPage() {
                                             <div>
                                                 <h2
                                                     className="text-3xl sm:text-3xl lg:text-5xl font-light text-[#A8977A] mb-6 sm:mb-8 lg:mb-12"
-                                                    style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
+                                                    style={{ fontFamily: 'var(--font-sans)' }}
                                                 >
-                                                    Let's Work Together
+                                                    Let&apos;s Build Something Thoughtful
                                                 </h2>
                                                 <p
                                                     className="text-xl sm:text-lg lg:text-xl text-[#A8977A] leading-relaxed mb-8 sm:mb-12 lg:mb-16"
-                                                    style={{ fontFamily: 'Neuton, serif' }}
+                                                    style={{ fontFamily: 'var(--font-sans)' }}
                                                 >
-                                                    Let's build something impactful together—whether it's your brand, your website, or your next big idea.
+                                                    If you&apos;re working on a product, an AI idea, or a digital experience that needs clearer thinking, reach out. I care most about useful conversations with real intent.
                                                 </p>
 
                                                 {showThankYou ? (
@@ -541,15 +540,15 @@ function AboutPage() {
                                                                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
                                                                 </svg>
                                                             </div>
-                                                            <h3 className="text-2xl font-bold text-[#161711] mb-4" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>Thank You!</h3>
-                                                            <p className="text-[#161711]/80 mb-6 leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
+                                                            <h3 className="text-2xl font-bold text-[#161711] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>Thank You!</h3>
+                                                            <p className="text-[#161711]/80 mb-6 leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
                                                                 Your message has been sent successfully. I'll get back to you as soon as possible!
                                                             </p>
                                                             <button
                                                                 onClick={handleBackToForm}
                                                                 className="bg-[#BAE1EE] text-[#161711] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-colors duration-200 font-medium"
                                                             >
-                                                                <span style={{ fontFamily: 'Neuton, serif' }}>Send Another Message</span>
+                                                                <span style={{ fontFamily: 'var(--font-sans)' }}>Send Another Message</span>
                                                             </button>
                                                         </div>
                                                     </div>
@@ -565,7 +564,7 @@ function AboutPage() {
                                                         <form onSubmit={handleSubmit} className="space-y-6">
                                                             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
                                                                 <div>
-                                                                    <label htmlFor="name" className="block text-lg font-medium text-[#A8977A] mb-2" style={{ fontFamily: 'Neuton, serif' }}>
+                                                                    <label htmlFor="name" className="block text-lg font-medium text-[#A8977A] mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
                                                                         Name
                                                                     </label>
                                                                     <input
@@ -581,7 +580,7 @@ function AboutPage() {
                                                                 </div>
 
                                                                 <div>
-                                                                    <label htmlFor="email" className="block text-sm font-medium text-[#A8977A] mb-2" style={{ fontFamily: 'Neuton, serif' }}>
+                                                                    <label htmlFor="email" className="block text-sm font-medium text-[#A8977A] mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
                                                                         Email
                                                                     </label>
                                                                     <input
@@ -598,7 +597,7 @@ function AboutPage() {
                                                             </div>
 
                                                             <div>
-                                                                <label htmlFor="message" className="block text-sm font-medium text-[#A8977A] mb-2" style={{ fontFamily: 'Neuton, serif' }}>
+                                                                <label htmlFor="message" className="block text-sm font-medium text-[#A8977A] mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
                                                                     Message
                                                                 </label>
                                                                 <textarea
@@ -618,7 +617,7 @@ function AboutPage() {
                                                                 disabled={isSubmitting}
                                                                 className="w-full bg-[#A8977A] text-[#45372B] py-3 px-6 rounded-lg hover:bg-[#9a8a6d] transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed font-medium"
                                                             >
-                                                                <span style={{ fontFamily: 'Neuton, serif' }}>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
+                                                                <span style={{ fontFamily: 'var(--font-sans)' }}>{isSubmitting ? 'Sending...' : 'Send Message'}</span>
                                                             </button>
                                                         </form>
                                                     </div>
@@ -630,7 +629,7 @@ function AboutPage() {
                                                 <div className="relative w-full h-full rounded-2xl overflow-hidden shadow-lg">
                                                     <OptimizedImage
                                                         src={contact}
-                                                        alt="Contact Yuvaan Vithlani - Professional collaboration invitation"
+                                                        alt="Contact Yuvaan Vithlani"
                                                         className="w-full h-full object-cover contact-image-fix"
                                                         lazy={true}
                                                     />

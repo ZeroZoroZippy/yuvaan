@@ -2,8 +2,10 @@ import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getAnalytics, isSupported } from 'firebase/analytics';
 
+const isTestEnv = process.env.NODE_ENV === 'test';
+
 // Check if Firebase configuration is available
-const hasFirebaseConfig = !!(
+const hasFirebaseConfig = !isTestEnv && !!(
   process.env.REACT_APP_FIREBASE_API_KEY &&
   process.env.REACT_APP_FIREBASE_PROJECT_ID &&
   process.env.REACT_APP_FIREBASE_AUTH_DOMAIN
@@ -76,7 +78,7 @@ if (hasFirebaseConfig) {
     console.error('❌ Firebase initialization failed:', error);
     firebaseReady = false;
   }
-} else {
+} else if (!isTestEnv) {
   console.warn('⚠️ Firebase configuration missing. Analytics will run in offline mode.');
 }
 

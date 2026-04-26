@@ -41,7 +41,7 @@ const ChatbotTrigger = () => {
                     
                     {/* Tooltip */}
                     <div className="absolute bottom-full right-0 mb-4 bg-[#161711] text-[#A8977A] px-3 py-2 rounded-lg text-sm opacity-0 group-hover:opacity-100 transition-all duration-300 transform translate-y-2 group-hover:translate-y-0 pointer-events-none whitespace-nowrap border border-[#A8977A]/20">
-                        <span style={{ fontFamily: 'Neuton, serif' }}>Talk to Saarth</span>
+                        <span style={{ fontFamily: 'var(--font-sans)' }}>Talk to Saarth</span>
                         <div className="absolute top-full right-4 w-0 h-0 border-l-4 border-r-4 border-t-4 border-transparent border-t-[#161711]"></div>
                     </div>
                 </div>

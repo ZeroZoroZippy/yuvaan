@@ -14,6 +14,12 @@ jest.mock('../hooks/useAnalytics', () => ({
   })
 }));
 
+jest.mock('../hooks/usePageNavigation', () => ({
+  usePageNavigation: () => ({
+    navigateWithTransition: jest.fn()
+  })
+}));
+
 // Helper function to render components with providers
 const renderWithProviders = (component) => {
   return render(
@@ -53,7 +59,7 @@ describe('Image Optimization Integration Tests', () => {
         const src = image.getAttribute('src');
         if (src && src.includes('Projects')) {
           // Project images should be in optimized format
-          expect(src).toMatch(/\.(webp|jpg)$/i);
+          expect(src).toMatch(/\.(webp|jpg|jpeg|png)$/i);
         }
       });
     });

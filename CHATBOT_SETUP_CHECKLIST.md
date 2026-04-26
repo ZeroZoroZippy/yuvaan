@@ -1,40 +1,22 @@
-# 🤖 Professional Chatbot Setup Checklist
+# Chatbot Setup Checklist
 
-## ✅ Completed by Script
-- [x] Created backup files
-- [x] Installed required dependencies
-- [x] Created .env templates
-- [x] Created chatbot configuration template
+## Required Configuration
 
-## 🔧 Manual Steps Required
+- [ ] Set `OPENAI_API_KEY`
+- [ ] Set `EMAIL_USER`
+- [ ] Set `EMAIL_PASS`
+- [ ] Update `client/src/config/chatbotConfig.js` if content needs to change
 
-### 1. Update Configuration Files
-- [ ] Update `server/.env` with your actual credentials
-- [ ] Update `client/src/config/chatbotConfig.js` with your information
-- [ ] Update `client/.env.local` if needed
+## Local Testing
 
-### 2. Set Up Notification Services
-- [ ] Sign up at [pushover.net](https://pushover.net) and get your tokens
-- [ ] Set up Gmail app password for email notifications
-- [ ] Optional: Set up Slack webhook
+- [ ] Run `npm run dev` from the project root
+- [ ] Verify chat requests hit `/api/chat`
+- [ ] Verify contact form requests hit `/api/contact`
+- [ ] Verify lead capture hits `/api/leads`
+- [ ] Verify unknown topic logging hits `/api/unknown-questions`
 
-### 3. Replace Component Files
-- [ ] Replace `client/src/contexts/ChatbotContext.js` with enhanced version
-- [ ] Replace `client/src/components/Chatbot.js` with enhanced version
-- [ ] Update `server/index.js` with new API endpoints
+## Notes
 
-### 4. Test Setup
-- [ ] Start server: `cd server && npm start`
-- [ ] Start client: `cd client && npm start`
-- [ ] Test chatbot conversation flow
-- [ ] Verify notifications are working
-- [ ] Check lead capture functionality
-
-## 🎯 Next Steps
-1. Customize response templates in ChatbotContext.js
-2. Add your actual project data
-3. Test lead qualification flow
-4. Monitor analytics and lead quality
-
-## 📞 Support
-If you need help with any step, refer to the detailed implementation guides or check the backup files in the `backups/` directory.
+- The project no longer requires a separate Express backend.
+- Frontend code uses relative `/api/*` routes in both development and production.
+- For full local behavior, use `npm run dev` from the project root.

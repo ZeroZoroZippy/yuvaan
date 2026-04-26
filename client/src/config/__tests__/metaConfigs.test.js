@@ -15,48 +15,38 @@ describe('Meta Configurations', () => {
     test('home page title meets SEO requirements', () => {
       const homeConfig = metaConfigs.home;
       
-      expect(homeConfig.title).toBe("Yuvaan Vithlani - Web Designer & Developer Portfolio | UI/UX Specialist");
+      expect(homeConfig.title).toBe("Yuvaan Vithlani - Product Systems & AI Portfolio");
       expect(homeConfig.title.length).toBeLessThanOrEqual(75); // Allow slightly longer for descriptive titles
       expect(homeConfig.title).toContain('Yuvaan Vithlani');
-      expect(homeConfig.title).toContain('Web Designer');
-      expect(homeConfig.title).toContain('Developer');
+      expect(homeConfig.title).toContain('Product');
+      expect(homeConfig.title).toContain('AI');
     });
 
     test('home page description meets SEO requirements', () => {
       const homeConfig = metaConfigs.home;
       
-      expect(homeConfig.description).toBe("Yuvaan Vithlani - Web Designer & Developer creating beautiful, functional digital experiences. View my portfolio of responsive websites and UI/UX projects.");
+      expect(homeConfig.description).toBe("Portfolio of Yuvaan Vithlani, a product-minded systems thinker using user empathy and AI-assisted building to turn ambiguity into clear digital products.");
       expect(homeConfig.description.length).toBeLessThanOrEqual(160);
-      expect(homeConfig.description.length).toBeGreaterThanOrEqual(120);
+      expect(homeConfig.description.length).toBeGreaterThanOrEqual(100);
     });
 
     test('about page meta config is properly configured', () => {
       const aboutConfig = metaConfigs.about;
       
       expect(aboutConfig.title).toContain('About Yuvaan Vithlani');
-      expect(aboutConfig.description).toContain('Learn about Yuvaan Vithlani');
+      expect(aboutConfig.description).toContain('Learn how Yuvaan Vithlani works');
       expect(aboutConfig.canonicalUrl).toBe('https://yuvaanvithlani.com/about');
       expect(aboutConfig.title.length).toBeLessThanOrEqual(75); // Allow slightly longer for descriptive titles
       expect(aboutConfig.description.length).toBeLessThanOrEqual(160);
     });
 
-    test('blog page meta config is properly configured', () => {
-      const blogConfig = metaConfigs.blog;
-      
-      expect(blogConfig.title).toContain('Blog - Yuvaan Vithlani');
-      expect(blogConfig.description).toContain('insights on web development');
-      expect(blogConfig.canonicalUrl).toBe('https://yuvaanvithlani.com/blog');
-      expect(blogConfig.title.length).toBeLessThanOrEqual(60);
-      expect(blogConfig.description.length).toBeLessThanOrEqual(160);
-    });
-
     test('projects page meta config is properly configured', () => {
       const projectsConfig = metaConfigs.projects;
       
-      expect(projectsConfig.title).toContain('Projects - Yuvaan Vithlani');
-      expect(projectsConfig.description).toContain('web development and design projects');
+      expect(projectsConfig.title).toContain('Work - Yuvaan Vithlani');
+      expect(projectsConfig.description).toContain('AI experiments');
       expect(projectsConfig.canonicalUrl).toBe('https://yuvaanvithlani.com/projects');
-      expect(projectsConfig.title.length).toBeLessThanOrEqual(60);
+      expect(projectsConfig.title.length).toBeLessThanOrEqual(75);
       expect(projectsConfig.description.length).toBeLessThanOrEqual(160);
     });
   });
@@ -67,15 +57,15 @@ describe('Meta Configurations', () => {
         id: 'test-project',
         title: 'Test Project',
         description: 'A test project for validation',
-        technologies: ['React', 'Node.js', 'MongoDB'],
-        image: '/test-image.jpg'
+        tags: ['AI', 'Product Thinking'],
+        mainImage: '/test-image.jpg'
       };
 
       const config = metaConfigs.projectDetail(projectData);
       
-      expect(config.title).toBe('Test Project - Project by Yuvaan Vithlani | Web Development Portfolio');
+      expect(config.title).toBe('Test Project - Work by Yuvaan Vithlani | Product & AI Portfolio');
       expect(config.description).toContain('A test project for validation');
-      expect(config.description).toContain('React, Node.js, MongoDB');
+      expect(config.description).toContain('Selected work by Yuvaan Vithlani');
       expect(config.canonicalUrl).toBe('https://yuvaanvithlani.com/projects/test-project');
       expect(config.ogImage).toBe('/test-image.jpg');
     });
@@ -89,39 +79,10 @@ describe('Meta Configurations', () => {
 
       const config = metaConfigs.projectDetail(projectData);
       
-      expect(config.description).toContain('modern web technologies');
+      expect(config.description).toContain('Selected work by Yuvaan Vithlani');
       expect(config.ogImage).toBe('/assets/Projects/default-project.webp');
     });
 
-    test('blog post meta config generates correctly', () => {
-      const postData = {
-        id: 'test-post',
-        title: 'Test Blog Post',
-        excerpt: 'This is a test blog post excerpt',
-        tags: ['React', 'JavaScript', 'Web Development'],
-        featuredImage: '/blog-image.jpg'
-      };
-
-      const config = metaConfigs.blogPost(postData);
-      
-      expect(config.title).toBe('Test Blog Post | Yuvaan Vithlani Blog');
-      expect(config.description).toBe('This is a test blog post excerpt');
-      expect(config.keywords).toContain('React, JavaScript, Web Development');
-      expect(config.canonicalUrl).toBe('https://yuvaanvithlani.com/blog/test-post');
-      expect(config.ogImage).toBe('/blog-image.jpg');
-    });
-
-    test('blog post meta config handles missing data', () => {
-      const postData = {
-        id: 'minimal-post',
-        title: 'Minimal Post'
-      };
-
-      const config = metaConfigs.blogPost(postData);
-      
-      expect(config.description).toContain('Read Minimal Post by Yuvaan Vithlani');
-      expect(config.ogImage).toBe('/assets/Hero/Hero.webp');
-    });
   });
 
   describe('getMetaConfig Helper Function', () => {
@@ -140,11 +101,6 @@ describe('Meta Configurations', () => {
       expect(config).toEqual(metaConfigs.about);
     });
 
-    test('returns blog config for /blog route', () => {
-      const config = getMetaConfig('/blog');
-      expect(config).toEqual(metaConfigs.blog);
-    });
-
     test('returns projects config for /projects route', () => {
       const config = getMetaConfig('/projects');
       expect(config).toEqual(metaConfigs.projects);
@@ -158,18 +114,7 @@ describe('Meta Configurations', () => {
       };
       
       const config = getMetaConfig('/projects/test-project', projectData);
-      expect(config.title).toContain('Test Project - Project by Yuvaan Vithlani');
-    });
-
-    test('returns dynamic blog config for blog post route', () => {
-      const postData = {
-        id: 'test-post',
-        title: 'Test Post',
-        excerpt: 'Test excerpt'
-      };
-      
-      const config = getMetaConfig('/blog/test-post', postData);
-      expect(config.title).toBe('Test Post | Yuvaan Vithlani Blog');
+      expect(config.title).toContain('Test Project - Work by Yuvaan Vithlani');
     });
 
     test('returns default config for unknown routes', () => {
@@ -180,7 +125,7 @@ describe('Meta Configurations', () => {
 
   describe('Character Limit Validation', () => {
     test('all static page titles are within SEO limits', () => {
-      const pages = ['home', 'about', 'blog', 'projects'];
+      const pages = ['home', 'about', 'projects'];
       
       pages.forEach(page => {
         const config = metaConfigs[page];
@@ -190,7 +135,7 @@ describe('Meta Configurations', () => {
     });
 
     test('all static page descriptions are within SEO limits', () => {
-      const pages = ['home', 'about', 'blog', 'projects'];
+      const pages = ['home', 'about', 'projects'];
       
       pages.forEach(page => {
         const config = metaConfigs[page];
@@ -212,14 +157,14 @@ describe('Meta Configurations', () => {
       const homeConfig = metaConfigs.home;
       
       expect(homeConfig.title.toLowerCase()).toContain('yuvaan vithlani');
-      expect(homeConfig.title.toLowerCase()).toContain('web designer');
-      expect(homeConfig.title.toLowerCase()).toContain('developer');
+      expect(homeConfig.title.toLowerCase()).toContain('product');
+      expect(homeConfig.title.toLowerCase()).toContain('ai');
       expect(homeConfig.description.toLowerCase()).toContain('portfolio');
-      expect(homeConfig.description.toLowerCase()).toContain('digital experiences');
+      expect(homeConfig.description.toLowerCase()).toContain('digital products');
     });
 
     test('all pages contain Yuvaan Vithlani name', () => {
-      const pages = ['home', 'about', 'blog', 'projects'];
+      const pages = ['home', 'about', 'projects'];
       
       pages.forEach(page => {
         const config = metaConfigs[page];
@@ -228,7 +173,7 @@ describe('Meta Configurations', () => {
     });
 
     test('canonical URLs are properly formatted', () => {
-      const pages = ['home', 'about', 'blog', 'projects'];
+      const pages = ['home', 'about', 'projects'];
       
       pages.forEach(page => {
         const config = metaConfigs[page];

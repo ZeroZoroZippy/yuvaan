@@ -59,14 +59,14 @@ function Testimonial() {
       <div className="absolute top-3 right-3 sm:top-4 sm:right-4 lg:top-6 lg:right-6 text-right">
         <h4 
           className="text-sm lg:text-base text-[#A8977A] font-medium transition-all duration-700 ease-in-out transform" 
-          style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
+          style={{ fontFamily: 'var(--font-sans)' }}
           key={`name-${currentIndex}`}
         >
           {currentTestimonial.name}
         </h4>
         <h5 
           className="text-xs lg:text-sm text-[#A8977A] opacity-75 transition-all duration-700 ease-in-out transform" 
-          style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
+          style={{ fontFamily: 'var(--font-sans)' }}
           key={`title-${currentIndex}`}
         >
           {currentTestimonial.title}
@@ -77,7 +77,7 @@ function Testimonial() {
       <div className="absolute bottom-8 left-3 right-3 sm:bottom-10 sm:left-4 sm:right-4 lg:bottom-12 lg:left-6 lg:right-6">
         <blockquote 
           className="text-lg sm:text-sm lg:text-[1.25rem] text-[#A8977A] leading-relaxed lg:leading-relaxed italic transition-all duration-700 ease-in-out transform" 
-          style={{ fontFamily: 'Neuton, serif' }}
+          style={{ fontFamily: 'var(--font-sans)' }}
           key={`quote-${currentIndex}`}
         >
 {currentTestimonial.quote}

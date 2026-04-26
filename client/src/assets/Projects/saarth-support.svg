@@ -1,0 +1,40 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" rx="40" fill="#161711"/>
+  <rect x="36" y="36" width="1528" height="928" rx="32" fill="url(#bg)"/>
+  <circle cx="1180" cy="240" r="150" fill="#C8A56E" fill-opacity="0.08"/>
+  <rect x="154" y="144" width="562" height="712" rx="28" fill="#201E18" stroke="#C8A56E" stroke-opacity="0.18"/>
+  <text x="202" y="212" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="30" font-weight="700">Saarth</text>
+  <text x="202" y="246" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">A wise companion for uncertain moments</text>
+  <rect x="202" y="292" width="466" height="92" rx="20" fill="#2A261E"/>
+  <rect x="202" y="410" width="466" height="92" rx="20" fill="#2A261E"/>
+  <rect x="202" y="528" width="466" height="92" rx="20" fill="#2A261E"/>
+  <rect x="202" y="646" width="466" height="92" rx="20" fill="#2A261E"/>
+  <circle cx="240" cy="338" r="12" fill="#C8A56E"/>
+  <circle cx="240" cy="456" r="12" fill="#8FA278"/>
+  <circle cx="240" cy="574" r="12" fill="#6F8FA6"/>
+  <circle cx="240" cy="692" r="12" fill="#D78558"/>
+  <text x="272" y="344" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Reflective replies</text>
+  <text x="272" y="462" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Late-night clarity</text>
+  <text x="272" y="580" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Not agreeable by default</text>
+  <text x="272" y="698" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Wisdom-led guidance</text>
+  <rect x="804" y="144" width="642" height="712" rx="28" fill="#1B1B16" stroke="#C8A56E" stroke-opacity="0.18"/>
+  <text x="862" y="212" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="28" font-weight="700">Conversation shape</text>
+  <path d="M892 308C986 260 1076 246 1180 262C1290 280 1368 336 1416 420" stroke="#C8A56E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M892 450C982 408 1068 406 1166 436C1264 466 1344 530 1412 626" stroke="#8FA278" stroke-width="4" stroke-linecap="round"/>
+  <path d="M892 606C986 580 1086 586 1184 618C1278 650 1342 708 1398 782" stroke="#6F8FA6" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="892" cy="308" r="16" fill="#C8A56E"/>
+  <circle cx="892" cy="450" r="16" fill="#8FA278"/>
+  <circle cx="892" cy="606" r="16" fill="#6F8FA6"/>
+  <rect x="1004" y="286" width="302" height="70" rx="18" fill="#232119"/>
+  <rect x="1004" y="428" width="302" height="70" rx="18" fill="#232119"/>
+  <rect x="1004" y="584" width="302" height="70" rx="18" fill="#232119"/>
+  <text x="1038" y="329" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">uncertainty</text>
+  <text x="1038" y="471" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">reflection</text>
+  <text x="1038" y="627" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">clearer next step</text>
+  <defs>
+    <linearGradient id="bg" x1="92" y1="82" x2="1508" y2="918" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C1A15"/>
+      <stop offset="1" stop-color="#242118"/>
+    </linearGradient>
+  </defs>
+</svg>

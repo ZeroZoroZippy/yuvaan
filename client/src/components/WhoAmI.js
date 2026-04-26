@@ -73,15 +73,15 @@ function WhoAmI() {
 
       {/* Text Content */}
       <div className="absolute top-[5rem] left-2 lg:top-[6rem] lg:left-4">
-        <h1 id="about-heading" className="text-[1.5rem] lg:text-[1.75rem] font-medium text-[#A8977A] text-left px-4 mb-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
-          Yuvaan Vithlani - Web Designer & Developer
+        <h1 id="about-heading" className="text-[1.5rem] lg:text-[1.75rem] font-medium text-[#A8977A] text-left px-4 mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
+          Yuvaan Vithlani - Product-Minded Systems Thinker
         </h1>
       </div>
 
       {/* Description Container - positioned at bottom */}
       <div className="absolute bottom-3 left-3 right-3 sm:bottom-4 sm:left-4 sm:right-4 lg:bottom-6 lg:left-6 lg:right-6">
-        <p className="text-lg sm:text-sm lg:text-[1.25rem] text-[#A8977A] leading-relaxed lg:leading-relaxed" style={{ fontFamily: 'Neuton, serif' }}>
-          I bring ideas to life in ways people love to use. Blending creativity with technical precision, I create digital experiences that work beautifully and feel effortless.
+        <p className="text-lg sm:text-sm lg:text-[1.25rem] text-[#A8977A] leading-relaxed lg:leading-relaxed" style={{ fontFamily: 'var(--font-sans)' }}>
+          I use systems thinking, user empathy, and AI-assisted building to turn ambiguity into digital products that feel clearer, calmer, and more useful.
         </p>
       </div>
     </section>

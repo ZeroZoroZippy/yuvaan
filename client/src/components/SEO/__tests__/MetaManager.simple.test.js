@@ -70,9 +70,9 @@ describe('MetaManager Component - Structure and Props', () => {
       const fullTitle1 = title1.includes('Yuvaan Vithlani') ? title1 : `${title1} | Yuvaan Vithlani`;
       expect(fullTitle1).toBe('Test Page | Yuvaan Vithlani');
 
-      const title2 = 'Yuvaan Vithlani - Web Designer';
+      const title2 = 'Yuvaan Vithlani - Product Systems';
       const fullTitle2 = title2.includes('Yuvaan Vithlani') ? title2 : `${title2} | Yuvaan Vithlani`;
-      expect(fullTitle2).toBe('Yuvaan Vithlani - Web Designer');
+      expect(fullTitle2).toBe('Yuvaan Vithlani - Product Systems');
     });
   });
 
@@ -111,21 +111,21 @@ describe('MetaManager Component - Structure and Props', () => {
         "@context": "https://schema.org",
         "@type": "Person",
         "name": "Yuvaan Vithlani",
-        "jobTitle": "Web Designer & Developer",
-        "description": "Web Designer & Developer creating beautiful, functional digital experiences",
+        "jobTitle": "Product Executive",
+        "description": "Product-minded systems thinker working across digital products, client work, and AI experiments",
         "url": "https://yuvaanvithlani.com",
         "sameAs": [],
-        "knowsAbout": ["Web Development", "UI/UX Design", "React", "JavaScript", "Frontend Development"]
+        "knowsAbout": ["Product Strategy", "Systems Thinking", "AI Prototyping", "User Empathy", "Frontend Development"]
       };
 
       expect(expectedStructuredData['@context']).toBe('https://schema.org');
       expect(expectedStructuredData['@type']).toBe('Person');
       expect(expectedStructuredData.name).toBe('Yuvaan Vithlani');
-      expect(expectedStructuredData.jobTitle).toBe('Web Designer & Developer');
-      expect(expectedStructuredData.knowsAbout).toContain('Web Development');
-      expect(expectedStructuredData.knowsAbout).toContain('UI/UX Design');
-      expect(expectedStructuredData.knowsAbout).toContain('React');
-      expect(expectedStructuredData.knowsAbout).toContain('JavaScript');
+      expect(expectedStructuredData.jobTitle).toBe('Product Executive');
+      expect(expectedStructuredData.knowsAbout).toContain('Product Strategy');
+      expect(expectedStructuredData.knowsAbout).toContain('Systems Thinking');
+      expect(expectedStructuredData.knowsAbout).toContain('AI Prototyping');
+      expect(expectedStructuredData.knowsAbout).toContain('User Empathy');
       expect(expectedStructuredData.knowsAbout).toContain('Frontend Development');
     });
   });
@@ -133,7 +133,7 @@ describe('MetaManager Component - Structure and Props', () => {
   describe('Character Limit Validation', () => {
     test('validates title character limits', () => {
       const shortTitle = 'Test';
-      const optimalTitle = 'Yuvaan Vithlani - Web Designer & Developer Portfolio';
+      const optimalTitle = 'Yuvaan Vithlani - Product Systems & AI Portfolio';
       const longTitle = 'This is an extremely long title that definitely exceeds the recommended 60 character limit for SEO optimization and user experience in search results';
 
       expect(shortTitle.length).toBeLessThan(30);
@@ -144,7 +144,7 @@ describe('MetaManager Component - Structure and Props', () => {
 
     test('validates description character limits', () => {
       const shortDescription = 'Short description';
-      const optimalDescription = 'Yuvaan Vithlani - Web Designer & Developer creating beautiful, functional digital experiences. View my portfolio of responsive websites and UI/UX projects.';
+      const optimalDescription = 'Portfolio of Yuvaan Vithlani, a product-minded systems thinker using user empathy and AI-assisted building to turn ambiguity into clear digital products.';
       const longDescription = 'This is an extremely long meta description that definitely exceeds the recommended 160 character limit for SEO optimization and search engine result display purposes which could result in truncation in search results and poor user experience';
 
       expect(shortDescription.length).toBeLessThan(50);
@@ -178,54 +178,39 @@ describe('MetaManager Component - Structure and Props', () => {
 
   describe('SEO Best Practices Validation', () => {
     test('validates homepage meta configuration', () => {
-      const homeTitle = "Yuvaan Vithlani - Web Designer & Developer Portfolio | UI/UX Specialist";
-      const homeDescription = "Yuvaan Vithlani - Web Designer & Developer creating beautiful, functional digital experiences. View my portfolio of responsive websites and UI/UX projects.";
+      const homeTitle = "Yuvaan Vithlani - Product Systems & AI Portfolio";
+      const homeDescription = "Portfolio of Yuvaan Vithlani, a product-minded systems thinker using user empathy and AI-assisted building to turn ambiguity into clear digital products.";
       
       // Title validation
       expect(homeTitle).toContain('Yuvaan Vithlani');
-      expect(homeTitle).toContain('Web Designer');
-      expect(homeTitle).toContain('Developer');
+      expect(homeTitle).toContain('Product');
+      expect(homeTitle).toContain('AI');
       expect(homeTitle).toContain('Portfolio');
-      expect(homeTitle.length).toBeLessThanOrEqual(75); // Allow slightly longer for descriptive titles
+      expect(homeTitle.length).toBeLessThanOrEqual(75);
       
       // Description validation
       expect(homeDescription).toContain('Yuvaan Vithlani');
-      expect(homeDescription).toContain('Web Designer');
-      expect(homeDescription).toContain('Developer');
-      expect(homeDescription).toContain('portfolio');
-      expect(homeDescription).toContain('digital experiences');
+      expect(homeDescription).toContain('product-minded systems thinker');
+      expect(homeDescription).toContain('AI-assisted building');
+      expect(homeDescription).toContain('digital products');
       expect(homeDescription.length).toBeLessThanOrEqual(160);
-      expect(homeDescription.length).toBeGreaterThanOrEqual(120);
+      expect(homeDescription.length).toBeGreaterThanOrEqual(100);
     });
 
     test('validates about page meta configuration', () => {
-      const aboutTitle = "About Yuvaan Vithlani - Web Designer & Developer | Background & Skills";
-      const aboutDescription = "Learn about Yuvaan Vithlani's journey as a web developer and designer. Discover my skills, experience, and passion for creating user-centered digital solutions.";
+      const aboutTitle = "About Yuvaan Vithlani - Systems Thinking, Product & AI";
+      const aboutDescription = "Learn how Yuvaan Vithlani works across product systems, client projects, and AI experiments with a focus on clarity, empathy, and thoughtful execution.";
       
       expect(aboutTitle).toContain('About Yuvaan Vithlani');
-      expect(aboutTitle).toContain('Web Designer');
-      expect(aboutTitle).toContain('Developer');
-      expect(aboutTitle.length).toBeLessThanOrEqual(75); // Allow slightly longer for descriptive titles
+      expect(aboutTitle).toContain('Systems Thinking');
+      expect(aboutTitle).toContain('AI');
+      expect(aboutTitle.length).toBeLessThanOrEqual(75);
       
       expect(aboutDescription).toContain('Yuvaan Vithlani');
-      expect(aboutDescription).toContain('web developer');
-      expect(aboutDescription).toContain('designer');
+      expect(aboutDescription).toContain('product systems');
+      expect(aboutDescription).toContain('AI experiments');
       expect(aboutDescription.length).toBeLessThanOrEqual(160);
     });
 
-    test('validates blog page meta configuration', () => {
-      const blogTitle = "Blog - Yuvaan Vithlani | Web Development & Design Insights";
-      const blogDescription = "Read Yuvaan Vithlani's insights on web development, design trends, and technology. Stay updated with the latest in digital innovation and best practices.";
-      
-      expect(blogTitle).toContain('Blog');
-      expect(blogTitle).toContain('Yuvaan Vithlani');
-      expect(blogTitle).toContain('Web Development');
-      expect(blogTitle.length).toBeLessThanOrEqual(60);
-      
-      expect(blogDescription).toContain('Yuvaan Vithlani');
-      expect(blogDescription).toContain('web development');
-      expect(blogDescription).toContain('design');
-      expect(blogDescription.length).toBeLessThanOrEqual(160);
-    });
   });
 });

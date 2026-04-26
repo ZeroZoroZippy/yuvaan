@@ -12,11 +12,13 @@ const AnalyticsDashboard = () => {
     formSubmissions: 0,
     chatbotInteractions: 0,
     socialClicks: 0,
-    projectViews: 0,
-    blogClicks: 0
+    projectViews: 0
   });
   const [loading, setLoading] = useState(true);
   const [timeRange, setTimeRange] = useState('7d'); // 1d, 7d, 30d
+  const conversionRate = analytics.totalSessions > 0
+    ? `${((analytics.formSubmissions / analytics.totalSessions) * 100).toFixed(1)}%`
+    : '0.0%';
 
   useEffect(() => {
     fetchAnalytics();
@@ -74,7 +76,6 @@ const AnalyticsDashboard = () => {
     let chatbotInteractions = 0;
     let socialClicks = 0;
     let projectViews = 0;
-    let blogClicks = 0;
     const ctaCounts = {};
     const pageCounts = {};
 
@@ -95,9 +96,6 @@ const AnalyticsDashboard = () => {
               break;
             case 'project_view':
               projectViews++;
-              break;
-            case 'blog_interaction':
-              blogClicks++;
               break;
             case 'cta_click':
               ctaCounts[interaction.ctaName] = (ctaCounts[interaction.ctaName] || 0) + 1;
@@ -127,9 +125,6 @@ const AnalyticsDashboard = () => {
         case 'project_views':
           projectViews += counter.count || 0;
           break;
-        case 'blog_clicks':
-          blogClicks += counter.count || 0;
-          break;
         case 'cta_clicks':
           ctaCounts[counter.itemName] = (ctaCounts[counter.itemName] || 0) + (counter.count || 0);
           break;
@@ -156,8 +151,7 @@ const AnalyticsDashboard = () => {
       formSubmissions,
       chatbotInteractions,
       socialClicks,
-      projectViews,
-      blogClicks
+      projectViews
     };
   };
 
@@ -173,7 +167,7 @@ const AnalyticsDashboard = () => {
     <div className="min-h-screen bg-[#45372B] p-6">
       <div className="max-w-7xl mx-auto">
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-[#A8977A]" style={{ fontFamily: 'Syne, sans-serif' }}>
+          <h1 className="text-4xl font-bold text-[#A8977A]" style={{ fontFamily: 'var(--font-sans)' }}>
             Analytics Dashboard
           </h1>
           <select
@@ -198,14 +192,13 @@ const AnalyticsDashboard = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <MetricCard title="Social Clicks" value={analytics.socialClicks} />
           <MetricCard title="Project Views" value={analytics.projectViews} />
-          <MetricCard title="Blog Clicks" value={analytics.blogClicks} />
-          <MetricCard title="Conversion Rate" value={`${((analytics.formSubmissions / analytics.totalSessions) * 100).toFixed(1)}%`} />
+          <MetricCard title="Conversion Rate" value={conversionRate} />
         </div>
 
         {/* Top CTAs and Pages */}
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
           <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
               Top CTAs
             </h2>
             <div className="space-y-3">
@@ -219,7 +212,7 @@ const AnalyticsDashboard = () => {
           </div>
 
           <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
               Top Pages
             </h2>
             <div className="space-y-3">
@@ -235,7 +228,7 @@ const AnalyticsDashboard = () => {
 
         {/* Recent Sessions */}
         <div className="bg-[#161711] rounded-2xl p-6">
-          <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+          <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
             Recent Sessions
           </h2>
           <div className="overflow-x-auto">
@@ -272,10 +265,10 @@ const AnalyticsDashboard = () => {
 
 const MetricCard = ({ title, value }) => (
   <div className="bg-[#161711] rounded-2xl p-6">
-    <h3 className="text-[#A8977A]/80 text-sm mb-2" style={{ fontFamily: 'Neuton, serif' }}>
+    <h3 className="text-[#A8977A]/80 text-sm mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
       {title}
     </h3>
-    <p className="text-3xl font-bold text-[#A8977A]" style={{ fontFamily: 'Syne, sans-serif' }}>
+    <p className="text-3xl font-bold text-[#A8977A]" style={{ fontFamily: 'var(--font-sans)' }}>
       {value}
     </p>
   </div>

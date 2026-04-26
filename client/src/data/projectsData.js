@@ -1,133 +1,335 @@
 import dental from '../assets/Projects/Dental.png';
 import wellness from '../assets/Projects/mental-wellness.png';
+import saarth from '../assets/Projects/saarth-companion.webp';
+import saarthSupport from '../assets/Projects/saarth-support.svg';
+import brandintelleBiHub from '../assets/Projects/brandintelle-bi-hub.svg';
+import brandintelleAiPrototyping from '../assets/Projects/brandintelle-ai-prototyping.svg';
+import brandintelleInsightOrrery from '../assets/Projects/brandintelle-insight-orrery.svg';
+import sarvodayaSupport from '../assets/Projects/sarvodaya-support.svg';
+import aakankshaSupport from '../assets/Projects/aakanksha-support.svg';
+import stockAgentSupport from '../assets/Projects/stock-agent-support.svg';
 
 export const projectsData = {
-    dental: {
-        id: 'dental',
-        title: 'Modern Dental Practice Website',
-        description: 'Transformed an outdated dental website into a professional, patient-friendly digital presence with integrated appointment booking.',
-        year: '2024',
-        industry: 'Healthcare',
-        client: 'Local Dental Practice',
-        duration: '6 weeks',
-        mainImage: dental,
-        mainImageAlt: "Modern dental practice website homepage showing clean, professional design with appointment booking interface and patient-friendly navigation",
-        
+    saarth: {
+        id: 'saarth',
+        title: 'Saarth',
+        category: 'AI Companion',
+        cardSummary: 'A reflective AI companion built for moments of uncertainty, emotional clarity, and wiser conversation.',
+        description: 'An AI companion designed for late-night uncertainty, built to offer reflection and steadiness instead of shallow agreement.',
+        year: '2025',
+        industry: 'AI Product',
+        client: 'Personal project',
+        duration: 'Independent build',
+        role: 'Concept, product thinking, interaction design, build',
+        tags: ['AI companion', 'Product thinking', 'Conversation design'],
+        mainImage: saarth,
+        mainImageAlt: 'Saarth project concept image by Yuvaan Vithlani featuring a calm, reflective AI companion built for moments of uncertainty',
+
         problem: {
-            title: 'The Professional Image Problem',
-            description: 'The dental practice was using an outdated website that didn\'t reflect their modern approach to patient care. Potential patients couldn\'t easily find basic information like services offered, insurance accepted, or office hours. Without online booking, patients had to call during business hours or wait for a callback - creating friction in the appointment process.',
+            title: 'The 2 A.M. Problem',
+            description: 'A lot of AI products feel capable but emotionally hollow. Saarth started from a more human question: what would it look like to build a companion for moments when someone is uncertain, restless, or looking for perspective rather than information?',
             challenges: [
-                'Outdated design undermined professional credibility',
-                'No online appointment booking system',
-                'Difficult to find essential practice information',
-                'Not optimized for mobile devices'
+                'Avoiding the “agreeable chatbot” trap',
+                'Designing for emotional steadiness instead of novelty',
+                'Keeping the voice reflective without sounding artificial',
+                'Building a product with personal meaning, not just technical novelty'
             ],
-            image: dental,
-            imageAlt: "Screenshot of outdated dental practice website showing poor design and lack of modern features"
+            image: saarth,
+            imageAlt: 'Concept image for Saarth showing companionship and reflective support'
         },
-        
+
         solution: {
-            title: 'The Patient-Centered Design',
-            description: 'I created a modern, professional website that puts patient needs first. The new design clearly presents services, makes insurance information easy to find, and includes an integrated booking system. Every page is designed to reduce dental anxiety through calming visuals and clear, jargon-free language.',
+            title: 'Wisdom-Led Conversation Design',
+            description: 'I shaped Saarth as a calm AI companion inspired by Lord Shri Krishna’s mindset: reflective, steady, and willing to bring clarity instead of feeding confusion. The product is meant to feel like a wise 2 a.m. friend, not another bot trying to impress you.',
             features: [
-                'Integrated online appointment booking',
-                'Mobile-responsive design for all devices',
-                'Clear service descriptions and pricing transparency',
-                'HIPAA-compliant contact forms'
+                'Conversation tone built around reflection, not flattery',
+                'Product framing rooted in emotional clarity',
+                'AI used as a companion layer, not just a utility',
+                'Live personal project that became my first serious AI build'
             ],
-            images: [dental, dental, dental]
+            images: [saarthSupport, saarthSupport, saarthSupport]
         },
-        
+
         challenge: {
-            title: 'The Technical Integration Challenge',
-            description: 'The biggest challenge was integrating a modern booking system while maintaining HIPAA compliance and ensuring the design worked seamlessly across all devices. Healthcare websites require special attention to privacy regulations and professional presentation standards.',
-            image: dental,
-            imageAlt: "Technical diagram showing HIPAA-compliant booking system integration with responsive design elements"
+            title: 'Depth Without Pretending To Be Human',
+            description: 'The hard part was not generating responses. It was defining the emotional job of the product clearly enough that every design and AI decision felt coherent. Saarth needed to feel grounded and useful without pretending to replace real human connection.',
+            image: saarthSupport,
+            imageAlt: 'Saarth concept visual representing emotional clarity and late-night reflection'
         },
-        
+
         results: {
-            title: 'Professional Digital Presence',
-            description: 'The practice now has a website that matches the quality of their patient care. Patients can book appointments 24/7, find information easily, and feel confident about the practice before their first visit. The professional appearance reinforces trust and credibility.',
+            title: 'A Distinctive First AI Product',
+            description: 'Saarth became an important turning point because it was the first project where my interest in systems, empathy, and AI came together in one product idea. It proved I care less about building flashy AI and more about building AI that feels meaningful.',
             improvements: [
-                'Professional appearance that builds patient trust',
-                '24/7 online appointment booking capability',
-                'Mobile-friendly experience for all visitors',
-                'Clear, accessible information about services and policies'
+                'Established a clearer personal direction toward AI-native product work',
+                'Sharpened my thinking around tone, trust, and product intent',
+                'Turned a philosophical idea into a usable live product',
+                'Became the strongest expression of how I want to build with AI'
             ],
-            image: dental,
-            imageAlt: "Final dental practice website showing professional design with integrated appointment booking and mobile-responsive layout"
+            image: saarthSupport,
+            imageAlt: 'Saarth project visual showing a thoughtful AI companion concept'
         }
     },
-    
-    wellness: {
-        id: 'wellness',
-        title: 'Mental Wellness Practice Website',
-        description: 'Created a welcoming, approachable website that makes seeking mental health support feel safe and judgment-free.',
+
+    brandintelle: {
+        id: 'brandintelle',
+        title: 'Current Product Work at Brandintelle',
+        category: 'Product Systems',
+        cardSummary: 'Handling BI Hub, intelligence, and insight modules inside a real product environment while bringing AI-assisted speed and structure.',
+        description: 'My current work at Brandintelle sits inside the BI Hub and intelligence layer, where I handle dense workflows, ambiguous product needs, and system-heavy modules.',
+        year: '2026',
+        industry: 'Business Intelligence',
+        client: 'Brandintelle',
+        duration: 'Ongoing',
+        role: 'Product Executive',
+        tags: ['Product systems', 'BI Hub', 'AI prototyping'],
+        mainImage: brandintelleBiHub,
+        mainImageAlt: 'Brandintelle project interface by Yuvaan Vithlani featuring product-system work across analytics, intelligence, and BI workflows',
+
+        problem: {
+            title: 'Working Inside Evolving Product Complexity',
+            description: 'I joined Brandintelle with AI implementation in mind, but the business needed product ownership in the intelligence module first. That meant stepping into dashboards, BI flows, and insight systems that required fast learning, structure, and judgment under ambiguity.',
+            challenges: [
+                'Adapting quickly to a dense business domain',
+                'Handling intelligence and analytics modules without being reduced to “the dashboard person”',
+                'Turning evolving founder direction into structured product work',
+                'Introducing AI thinking in a company still early in its adoption'
+            ],
+            image: brandintelleAiPrototyping,
+            imageAlt: 'Brandintelle interface showing complex dashboard and intelligence workflows'
+        },
+
+        solution: {
+            title: 'Structure, Clarity, and Faster Product Movement',
+            description: 'The work has involved understanding difficult systems fast, reducing ambiguity, and helping product modules become clearer and more usable. Alongside the dashboards themselves, one of my real contributions has been bringing AI into how work gets broken down, prototyped, and explained internally.',
+            features: [
+                'Handled BI Hub, intelligence, and insight-oriented product work',
+                'Contributed across ads, spends, executive, and intelligence contexts',
+                'Used AI to prototype faster and help others think more clearly',
+                'Built stronger product intuition in a real operating environment'
+            ],
+            images: [brandintelleBiHub, brandintelleAiPrototyping, brandintelleInsightOrrery]
+        },
+
+        challenge: {
+            title: 'Owning The Module Without Letting It Define Me',
+            description: 'This work is important proof of product depth, but it is not my entire identity. The challenge has been to do justice to the complexity of the role while staying honest that this is the current context I am operating in, not the only kind of work I want to be known for.',
+            image: brandintelleAiPrototyping,
+            imageAlt: 'Illustrated Brandintelle workflow showing AI-assisted prototyping and structured product thinking'
+        },
+
+        results: {
+            title: 'Professional Depth And Internal AI Momentum',
+            description: 'Brandintelle has become the strongest proof that I can work inside real complexity, not just side projects. It has also been the place where my comfort with AI started influencing how work moves around me, even before a formal AI initiative fully takes off.',
+            improvements: [
+                'Built confidence in handling dense product systems',
+                'Showed the company a faster AI-assisted way of working',
+                'Learned how to translate ambiguous scope into product structure',
+                'Added professional maturity to the broader portfolio narrative'
+            ],
+            image: brandintelleInsightOrrery,
+            imageAlt: 'Illustrated Brandintelle system map representing intelligence modules orbiting a shared product center'
+        }
+    },
+
+    sarvodaya: {
+        id: 'sarvodaya',
+        title: 'Sarvodaya Dental Clinic',
+        category: 'Client Work',
+        cardSummary: 'A cleaner, trust-building digital experience for a real clinic, built to make care feel credible and accessible.',
+        description: 'A client website focused on trust, clarity, and a smoother path from interest to appointment booking.',
+        year: '2024',
+        industry: 'Healthcare',
+        client: 'Sarvodaya Dental Clinic',
+        duration: '6 weeks',
+        role: 'Design, build, delivery',
+        tags: ['Client website', 'Trust design', 'Business presence'],
+        liveUrl: 'https://www.sarvodayadental.com/',
+        mainImage: dental,
+        mainImageAlt: 'Sarvodaya Dental Clinic website project by Yuvaan Vithlani featuring clean layout, trust-building structure, and appointment booking interface',
+
+        problem: {
+            title: 'Trust And Booking Friction',
+            description: 'The clinic needed a digital presence that felt modern, credible, and easy for patients to act on. The old experience did not do enough to build confidence or make simple tasks like understanding services and booking appointments feel easy.',
+            challenges: [
+                'Outdated design weakened perceived credibility',
+                'Important information was hard to find quickly',
+                'Booking flow lacked clarity and convenience',
+                'The experience needed to work smoothly on mobile'
+            ],
+            image: sarvodayaSupport,
+            imageAlt: 'Sarvodaya Dental Clinic website visual showing trust-focused dental website design'
+        },
+
+        solution: {
+            title: 'A Clearer Digital Front Door',
+            description: 'I redesigned the site to feel polished, calm, and direct. The structure was built around the questions a new visitor is likely to have first: what this clinic offers, why it feels trustworthy, and how easily an appointment can be booked.',
+            features: [
+                'Clean service presentation and stronger information hierarchy',
+                'Integrated booking and conversion-focused pathways',
+                'Mobile-first responsive experience',
+                'Visual language built to increase trust without clutter'
+            ],
+            images: [sarvodayaSupport, sarvodayaSupport, sarvodayaSupport]
+        },
+
+        challenge: {
+            title: 'Balancing Professionalism With Warmth',
+            description: 'Healthcare sites can easily become either too sterile or too decorative. The challenge here was getting the tone right: professional enough to build confidence, but clear and human enough to feel approachable.',
+            image: sarvodayaSupport,
+            imageAlt: 'Sarvodaya Dental Clinic project visual representing design decisions around trust and clarity'
+        },
+
+        results: {
+            title: 'A Stronger Business Presence',
+            description: 'Sarvodaya remains one of the clearest examples of client-facing execution in my portfolio. It shows I can take a real business need, understand the trust problem underneath it, and deliver a cleaner digital system around that.',
+            improvements: [
+                'More credible first impression for new patients',
+                'Simpler path from discovery to appointment intent',
+                'Cleaner design system for long-term use',
+                'Stronger proof of polished client delivery'
+            ],
+            image: sarvodayaSupport,
+            imageAlt: 'Final Sarvodaya Dental Clinic website outcome'
+        }
+    },
+
+    'stock-agent': {
+        id: 'stock-agent',
+        title: 'Multi-Agent Stock Research System',
+        category: 'AI Experiment',
+        cardSummary: 'A multi-agent decision-support workflow that researches a sector, compares companies, and narrows the space into investable candidates.',
+        description: 'A multi-agent AI system that takes a sector prompt, researches relevant companies and recent news, and returns a narrower set of high-conviction stock ideas.',
+        year: '2026',
+        industry: 'AI Systems',
+        client: 'Personal project',
+        duration: 'Experimental build',
+        role: 'System design, orchestration, prompting, output design',
+        tags: ['Multi-agent', 'Decision support', 'Research automation'],
+        mainImage: stockAgentSupport,
+        mainImageAlt: 'Multi-agent stock research project visual by Yuvaan Vithlani featuring AI decision support, company comparison, and structured analysis',
+
+        problem: {
+            title: 'Research Is Slow, Messy, And Repetitive',
+            description: 'Equity research often means spending hours gathering scattered context before any real judgment begins. I wanted to test whether a multi-agent system could take over the research-heavy part of that process and surface a smaller, more usable decision space.',
+            challenges: [
+                'Breaking research into agent-sized responsibilities',
+                'Keeping outputs structured instead of generic',
+                'Making live context and news part of the reasoning loop',
+                'Avoiding “AI hype” output that sounds smart but says little'
+            ],
+            image: stockAgentSupport,
+            imageAlt: 'Illustration of decision-making and stock analysis for a multi-agent AI workflow'
+        },
+
+        solution: {
+            title: 'Hierarchical Multi-Agent Orchestration',
+            description: 'The system takes an industry as input, researches top companies in that space, looks at their recent news and market context, and then returns a smaller set of stocks with a clearer thesis. The point was not to replace judgment, but to compress the research setup time dramatically.',
+            features: [
+                'Industry-based discovery of relevant companies',
+                'Web research and live-context collection',
+                'Agent orchestration for comparison and synthesis',
+                'Structured output that narrows options into a smaller decision set'
+            ],
+            images: [stockAgentSupport, stockAgentSupport, stockAgentSupport]
+        },
+
+        challenge: {
+            title: 'Useful Decision Support Instead Of Fancy Automation',
+            description: 'Plenty of AI finance projects look impressive but produce shallow recommendations. The real challenge here was to make the system feel like structured decision support rather than a gimmick built around the word “agent.”',
+            image: stockAgentSupport,
+            imageAlt: 'Stock research concept visual showing structured AI-driven analysis'
+        },
+
+        results: {
+            title: 'A Stronger Experiment In AI Systems Thinking',
+            description: 'This project matters less because it picks stocks and more because it sharpened how I think about decomposition, orchestration, and AI systems that help a user move from too much information toward a usable answer.',
+            improvements: [
+                'Strengthened my thinking around multi-agent decomposition',
+                'Made research-heavy workflows feel more tractable',
+                'Created a better bridge between AI experimentation and product utility',
+                'Added a second serious AI proof point beside Saarth'
+            ],
+            image: stockAgentSupport,
+            imageAlt: 'Multi-agent stock research system visual representing structured AI experimentation'
+        }
+    },
+
+    aakanksha: {
+        id: 'aakanksha',
+        title: 'Therapy With Aakanksha',
+        category: 'Client Work',
+        cardSummary: 'An empathy-led website for a therapy practice, designed to feel calm, safe, and human from the first interaction.',
+        description: 'A therapy practice website shaped around emotional sensitivity, trust, and the first-step experience of reaching out for help.',
         year: '2024',
         industry: 'Mental Health',
-        client: 'Mental Wellness Practitioner',
+        client: 'Therapy With Aakanksha',
         duration: '8 weeks',
+        role: 'Design, build, content shaping',
+        tags: ['Client website', 'Empathy-led UX', 'Trust design'],
+        liveUrl: 'https://www.therapywithaakanksha.com',
         mainImage: wellness,
-        mainImageAlt: "Mental wellness practice website homepage featuring warm, approachable design with calming colors and welcoming messaging for therapy clients",
-        
+        mainImageAlt: 'Therapy With Aakanksha website project by Yuvaan Vithlani featuring warm, calm, and approachable therapy practice design',
+
         problem: {
-            title: 'The Accessibility Barrier',
-            description: 'The mental health practitioner needed a website that would make potential clients feel comfortable reaching out. Many people seeking therapy already feel vulnerable, so the website needed to reduce barriers rather than create them. The previous site used clinical language and formal presentation that could feel intimidating to someone taking their first step toward mental health support.',
+            title: 'The First Step Needed To Feel Safe',
+            description: 'A therapy website is often part of an emotionally vulnerable moment. The challenge was to create a first impression that felt warm and reassuring rather than overly clinical, vague, or intimidating.',
             challenges: [
-                'Clinical language felt intimidating to potential clients',
-                'Unclear about what therapy actually involves',
-                'No easy way to take the first step toward booking',
-                'Design didn\'t convey warmth and approachability'
+                'Reducing anxiety around reaching out',
+                'Making therapy feel understandable and approachable',
+                'Balancing warmth with professional credibility',
+                'Designing a calmer path into contact and booking'
             ],
-            image: wellness,
-            imageAlt: "Before screenshot of clinical, intimidating mental health website with formal language and cold design"
+            image: aakankshaSupport,
+            imageAlt: 'Therapy With Aakanksha website visual focused on warmth and emotional accessibility'
         },
-        
+
         solution: {
-            title: 'The Empathy-First Approach',
-            description: 'I designed the website around the visitor\'s emotional journey, using warm, welcoming visuals and accessible language. The site explains the therapy process clearly, addresses common concerns, and provides multiple low-pressure ways to connect. Every element is designed to reduce anxiety about taking that first step.',
+            title: 'An Empathy-Led Digital Presence',
+            description: 'I structured the site around what a hesitant visitor might need most: clarity, calmness, and low-pressure ways to understand the practice before taking action. The design was intentionally soft in tone but still grounded and usable.',
             features: [
-                'Warm, approachable design that reduces anxiety',
-                'Clear explanation of the therapy process',
-                'Multiple contact options with varying commitment levels',
-                'FAQ section addressing common therapy concerns'
+                'Warm visual tone with clear information hierarchy',
+                'Simple explanation of services and process',
+                'Low-pressure pathways into contact and booking',
+                'Digital experience built around emotional trust'
             ],
-            images: [wellness, wellness, wellness]
+            images: [aakankshaSupport, aakankshaSupport, aakankshaSupport]
         },
-        
+
         challenge: {
-            title: 'The Trust and Credibility Balance',
-            description: 'Mental health websites must balance approachability with professionalism. The design needed to feel welcoming and safe while still conveying the practitioner\'s expertise and credentials. Finding the right tone and visual approach required understanding both the client\'s needs and the visitor\'s emotional state.',
-            image: wellness,
-            imageAlt: "Design mockups showing balance between professional credentials and warm, approachable mental health website design"
+            title: 'Warm Without Losing Professional Weight',
+            description: 'Therapy websites can feel either too polished to be human or too casual to inspire confidence. The challenge was to create an experience that respected the emotional sensitivity of the context while still feeling credible.',
+            image: aakankshaSupport,
+            imageAlt: 'Therapy website visual representing balance between emotional warmth and professional trust'
         },
-        
+
         results: {
-            title: 'Welcoming Digital Gateway',
-            description: 'The new website serves as a comfortable first step for people considering therapy. Visitors can learn about the process, understand what to expect, and reach out when they\'re ready - all in an environment that feels supportive rather than clinical.',
+            title: 'A Softer, More Human First Impression',
+            description: 'This project remains a good example of how I think about user empathy in practice. The value was not just in the visuals, but in shaping a digital experience that respects how someone might feel before they are ready to reach out.',
             improvements: [
-                'Approachable design that reduces therapy stigma',
-                'Clear information about the therapeutic process',
-                'Multiple ways for visitors to connect at their comfort level',
-                'Professional credibility combined with personal warmth'
+                'Reduced intimidation in the first contact experience',
+                'Created a calmer and clearer therapy brand presence',
+                'Showed stronger empathy-led design judgment',
+                'Added a second real client proof point to the portfolio'
             ],
-            image: wellness,
-            imageAlt: "Final mental wellness website showing warm, welcoming design with clear therapy information and multiple contact options"
+            image: aakankshaSupport,
+            imageAlt: 'Final Therapy With Aakanksha website outcome'
         }
     }
 };
 
-// Portfolio positioning (honest)
+export const featuredProjectOrder = ['saarth', 'brandintelle', 'sarvodaya', 'stock-agent', 'aakanksha'];
+
 export const portfolioFocus = {
-    specialization: 'Healthcare & Wellness Websites',
-    approach: 'Patient-centered design that builds trust and reduces barriers',
-    understanding: 'HIPAA compliance, patient psychology, and professional credibility requirements'
+    specialization: 'Product-minded systems thinking across client work, internal products, and AI experiments',
+    approach: 'Use systems thinking, user empathy, and AI-assisted building to turn ambiguity into clearer digital products',
+    understanding: 'Product structure, human decision-making, and the realities of shipping inside both business and personal contexts'
 };
 
 export const nextSteps = {
-    cta: 'Discuss Your Healthcare Website Needs',
-    offer: 'Free consultation to review your current digital presence',
-    value: 'Get specific recommendations for improving patient experience on your website'
+    cta: 'Build Something Thoughtful',
+    offer: 'Open to conversations around product systems, AI exploration, and meaningful digital work',
+    value: 'The strongest work usually starts with a better definition of the problem, not a rush to features'
 };
 
 export const getProjectById = (id) => {
@@ -135,5 +337,16 @@ export const getProjectById = (id) => {
 };
 
 export const getAllProjects = () => {
-    return Object.values(projectsData);
+    return featuredProjectOrder.map((id) => projectsData[id]).filter(Boolean);
+};
+
+export const getFeaturedProjects = () => {
+    return getAllProjects().map((project) => ({
+        id: project.id,
+        title: project.title,
+        category: project.category,
+        summary: project.cardSummary,
+        image: project.mainImage,
+        imageAlt: project.mainImageAlt
+    }));
 };

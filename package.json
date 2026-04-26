@@ -1,4 +1,12 @@
 {
+  "scripts": {
+    "install-all": "npm install && npm --prefix client install",
+    "client": "npm --prefix client start",
+    "api": "npx vercel dev --listen 3000",
+    "dev": "npm run api",
+    "build": "npm --prefix client run build",
+    "test": "npm --prefix client test -- --watchAll=false --runInBand"
+  },
   "dependencies": {
     "nodemailer": "^6.10.1"
   }

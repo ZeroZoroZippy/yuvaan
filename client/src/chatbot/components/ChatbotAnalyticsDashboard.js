@@ -241,14 +241,14 @@ const ChatbotAnalyticsDashboard = () => {
       <div className="max-w-7xl mx-auto">
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
-          <h1 className="text-4xl font-bold text-[#A8977A]" style={{ fontFamily: 'Syne, sans-serif' }}>
+          <h1 className="text-4xl font-bold text-[#A8977A]" style={{ fontFamily: 'var(--font-sans)' }}>
             Saarth Chatbot Analytics
           </h1>
           <div className="flex items-center gap-4">
             <button
               onClick={fetchChatbotAnalytics}
               className="bg-[#A8977A] text-[#45372B] px-4 py-2 rounded-lg hover:bg-[#A8977A]/80 transition-colors"
-              style={{ fontFamily: 'Neuton, serif' }}
+              style={{ fontFamily: 'var(--font-sans)' }}
             >
               Refresh Data
             </button>
@@ -275,7 +275,7 @@ const ChatbotAnalyticsDashboard = () => {
                   ? 'bg-[#A8977A] text-[#45372B]'
                   : 'text-[#A8977A] hover:text-white hover:bg-[#A8977A]/10'
               }`}
-              style={{ fontFamily: 'Neuton, serif' }}
+              style={{ fontFamily: 'var(--font-sans)' }}
             >
               {tab.charAt(0).toUpperCase() + tab.slice(1)}
             </button>
@@ -295,7 +295,7 @@ const ChatbotAnalyticsDashboard = () => {
             {/* Sentiment and Lead Quality */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <div className="bg-[#161711] rounded-2xl p-6">
-                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
                   Conversation Sentiment
                 </h2>
                 <div className="space-y-3">
@@ -315,7 +315,7 @@ const ChatbotAnalyticsDashboard = () => {
               </div>
 
               <div className="bg-[#161711] rounded-2xl p-6">
-                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
                   Lead Quality
                 </h2>
                 <div className="space-y-3">
@@ -338,7 +338,7 @@ const ChatbotAnalyticsDashboard = () => {
             {/* Topics and Intents */}
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
               <div className="bg-[#161711] rounded-2xl p-6">
-                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
                   Popular Topics
                 </h2>
                 <div className="space-y-3">
@@ -352,7 +352,7 @@ const ChatbotAnalyticsDashboard = () => {
               </div>
 
               <div className="bg-[#161711] rounded-2xl p-6">
-                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+                <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
                   User Intents
                 </h2>
                 <div className="space-y-3">
@@ -372,7 +372,7 @@ const ChatbotAnalyticsDashboard = () => {
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
             {/* Conversations List */}
             <div className="bg-[#161711] rounded-2xl p-6">
-              <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
                 Recent Conversations
               </h2>
               <div className="space-y-3 max-h-[60vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-[#A8977A]/30 scrollbar-track-transparent hover:scrollbar-thumb-[#A8977A]/50">
@@ -427,7 +427,7 @@ const ChatbotAnalyticsDashboard = () => {
 
             {/* Conversation Details */}
             <div className="bg-[#161711] rounded-2xl p-6">
-              <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+              <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
                 Conversation Details
               </h2>
               {selectedConversation ? (
@@ -518,7 +518,7 @@ const ChatbotAnalyticsDashboard = () => {
 
         {activeTab === 'messages' && (
           <div className="bg-[#161711] rounded-2xl p-6">
-            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h2 className="text-2xl font-bold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
               Recent Messages ({analytics.recentMessages.length})
             </h2>
             <div className="space-y-4 max-h-[70vh] overflow-y-auto pr-2 scrollbar-thin scrollbar-thumb-[#A8977A]/30 scrollbar-track-transparent hover:scrollbar-thumb-[#A8977A]/50">
@@ -602,10 +602,10 @@ const ChatbotAnalyticsDashboard = () => {
 
 const MetricCard = ({ title, value }) => (
   <div className="bg-[#161711] rounded-2xl p-6">
-    <h3 className="text-[#A8977A]/80 text-sm mb-2" style={{ fontFamily: 'Neuton, serif' }}>
+    <h3 className="text-[#A8977A]/80 text-sm mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
       {title}
     </h3>
-    <p className="text-3xl font-bold text-[#A8977A]" style={{ fontFamily: 'Syne, sans-serif' }}>
+    <p className="text-3xl font-bold text-[#A8977A]" style={{ fontFamily: 'var(--font-sans)' }}>
       {value}
     </p>
   </div>

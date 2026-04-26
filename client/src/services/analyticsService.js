@@ -807,19 +807,6 @@ class AnalyticsService {
         }
     }
 
-    // Blog Tracking
-    trackBlogInteraction(action, blogId = null, blogTitle = null) {
-        this.trackEvent('blog_interaction', {
-            action, // 'view_list', 'click_post', 'read_time'
-            blogId,
-            blogTitle
-        });
-
-        if (action === 'click_post') {
-            this.updateClickCounter('blog_clicks', blogId);
-        }
-    }
-
     // Social Media Tracking
     trackSocialClick(platform, url, context = 'footer') {
         this.trackEvent('social_click', {

@@ -179,7 +179,6 @@ const getAnalytics = async () => {
 ### Navigation Events
 - `navbar_logo` - Logo clicks
 - `navbar_about_desktop/mobile` - About page navigation
-- `navbar_blog` - Blog page navigation
 - `navbar_talk_to_saarth` - Chatbot trigger
 - `navbar_mobile_menu` - Mobile menu toggle
 
@@ -198,10 +197,6 @@ const getAnalytics = async () => {
 ### Social Media Events
 - `footer_linkedin/instagram` - Footer social links
 - `about_linkedin/instagram_link` - About page social links
-
-### Blog Events
-- `blog_post_click` - Blog post clicked
-- `blog_post_click_mobile` - Mobile blog post click
 
 ### Chatbot Events
 - `chatbot_message_send` - Message sent
@@ -228,7 +223,6 @@ const getAnalytics = async () => {
 
 3. **Content Performance**
    - Most clicked CTAs
-   - Popular blog posts
    - Project engagement rates
 
 4. **Technical Metrics**

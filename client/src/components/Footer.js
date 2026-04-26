@@ -8,7 +8,7 @@ function Footer() {
                 <div className="flex justify-between items-center mb-6">
                     {/* Left side - Name */}
                     <div>
-                        <h3 className="text-xl sm:text-2xl font-medium text-[#A8977A]" style={{ fontFamily: 'Syne, sans-serif' }}>
+                        <h3 className="text-xl sm:text-2xl font-medium text-[#A8977A]" style={{ fontFamily: 'var(--font-sans)' }}>
                             Yuvaan Vithlani
                         </h3>
                     </div>
@@ -44,7 +44,7 @@ function Footer() {
 
                 {/* Bottom section - Created by */}
                 <div className="flex justify-end">
-                    <p className="text-sm text-[#A8977A]/70" style={{ fontFamily: 'Neuton, serif' }}>
+                    <p className="text-sm text-[#A8977A]/70" style={{ fontFamily: 'var(--font-sans)' }}>
                         Created by Yuvaan Vithlani
                     </p>
                 </div>

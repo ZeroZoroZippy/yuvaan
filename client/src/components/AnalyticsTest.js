@@ -82,7 +82,7 @@ const AnalyticsTest = () => {
     <div className="min-h-screen bg-[#45372B] p-6">
       <div className="max-w-4xl mx-auto">
         <div className="bg-[#161711] rounded-2xl p-8">
-          <h1 className="text-3xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'Syne, sans-serif' }}>
+          <h1 className="text-3xl font-bold text-[#A8977A] mb-6" style={{ fontFamily: 'var(--font-sans)' }}>
             Analytics Test Dashboard
           </h1>
           
@@ -90,7 +90,7 @@ const AnalyticsTest = () => {
             <button
               onClick={runTests}
               className="bg-[#A8977A] text-[#45372B] px-6 py-3 rounded-lg font-semibold hover:bg-[#9a8a6d] transition-colors"
-              style={{ fontFamily: 'Neuton, serif' }}
+              style={{ fontFamily: 'var(--font-sans)' }}
             >
               Run Analytics Tests
             </button>
@@ -102,7 +102,7 @@ const AnalyticsTest = () => {
                   addTestResult('Firebase Enable', 'success', 'Firebase writes enabled - set up security rules first!');
                 }}
                 className="bg-orange-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-orange-700 transition-colors"
-                style={{ fontFamily: 'Neuton, serif' }}
+                style={{ fontFamily: 'var(--font-sans)' }}
               >
                 Enable Firebase (After Security Rules)
               </button>
@@ -115,7 +115,7 @@ const AnalyticsTest = () => {
                   addTestResult('Firebase Disable', 'warning', 'Firebase writes disabled - back to safe mode');
                 }}
                 className="bg-red-600 text-white px-6 py-3 rounded-lg font-semibold hover:bg-red-700 transition-colors"
-                style={{ fontFamily: 'Neuton, serif' }}
+                style={{ fontFamily: 'var(--font-sans)' }}
               >
                 Disable Firebase
               </button>
@@ -124,7 +124,7 @@ const AnalyticsTest = () => {
 
           {testResults.length > 0 && (
             <div className="space-y-4">
-              <h2 className="text-xl font-semibold text-[#A8977A] mb-4" style={{ fontFamily: 'Syne, sans-serif' }}>
+              <h2 className="text-xl font-semibold text-[#A8977A] mb-4" style={{ fontFamily: 'var(--font-sans)' }}>
                 Test Results
               </h2>
               
@@ -152,10 +152,10 @@ const AnalyticsTest = () => {
           )}
 
           <div className="mt-8 p-4 bg-[#A8977A]/10 rounded-lg">
-            <h3 className="text-lg font-semibold text-[#A8977A] mb-2" style={{ fontFamily: 'Syne, sans-serif' }}>
+            <h3 className="text-lg font-semibold text-[#A8977A] mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
               Analytics Information
             </h3>
-            <div className="text-[#A8977A]/80 text-sm space-y-1" style={{ fontFamily: 'Neuton, serif' }}>
+            <div className="text-[#A8977A]/80 text-sm space-y-1" style={{ fontFamily: 'var(--font-sans)' }}>
               <p><strong>Firebase Status:</strong> {hasFirebaseConfig ? '✅ Configured' : '⚠️ Not configured'}</p>
               <p><strong>Database Status:</strong> {db ? '✅ Connected' : '❌ Not connected'}</p>
               <p><strong>Firebase Writes:</strong> {analyticsService.enableFirebaseWrites ? '✅ Enabled' : '🔥 Disabled (Safe Mode)'}</p>

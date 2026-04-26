@@ -369,9 +369,9 @@ CRITICAL RULES:
 8. Use a friendly, approachable tone that reflects Yuvaan's personality
 
 SPECIAL INSTRUCTIONS:
-- If they ask about pricing, mention projects start around ₹35,000 but emphasize connecting with Yuvaan for specifics
+- If they ask about pricing, explain that Yuvaan prefers understanding the problem and scope before quoting specifics
 - If they want to hire or discuss projects, capture email to facilitate Yuvaan's outreach
-- If they ask about portfolio, mention Sarvodaya Dental Clinic and mental wellness projects
+- If they ask about portfolio, mention Saarth, Brandintelle, Sarvodaya Dental Clinic, Therapy With Aakanksha, and the multi-agent stock research system as relevant
 - Always position as facilitating connection with Yuvaan, not replacing him`;
 
       // Build conversation history for context (limit to last 8 messages for speed)
@@ -386,11 +386,7 @@ SPECIAL INSTRUCTIONS:
       ];
 
       // Call API with GPT-4o-mini optimized settings
-      const apiUrl = process.env.NODE_ENV === 'development' 
-        ? 'http://localhost:5001/api/chat'
-        : '/api/chat';  // Uses Vercel Function in production
-
-      const response = await fetch(apiUrl, {
+      const response = await fetch('/api/chat', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -501,8 +497,7 @@ SPECIAL INSTRUCTIONS:
     
     console.log('📧 RECORDING COMPLETE LEAD DATA:', completeLeadRecord);
     
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
-    fetch(`${apiUrl}/api/leads`, {
+    fetch('/api/leads', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',
@@ -559,8 +554,7 @@ SPECIAL INSTRUCTIONS:
 
     console.log('❓ RECORDING UNKNOWN TOPICS:', unknownTopicsData);
 
-    const apiUrl = process.env.REACT_APP_API_URL || 'http://localhost:5001';
-    fetch(`${apiUrl}/api/unknown-questions`, {
+    fetch('/api/unknown-questions', {
       method: 'POST',
       headers: { 
         'Content-Type': 'application/json',

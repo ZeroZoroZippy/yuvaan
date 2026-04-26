@@ -1,0 +1,68 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" rx="40" fill="#161711"/>
+  <rect x="36" y="36" width="1528" height="928" rx="32" fill="url(#bg)"/>
+  <g opacity="0.28">
+    <path d="M80 214C258 146 384 116 548 128C708 140 814 202 970 202C1118 202 1274 142 1520 82" stroke="#8FA278" stroke-width="2"/>
+    <path d="M80 292C264 232 428 230 586 274C748 318 860 400 1002 400C1144 400 1306 332 1520 244" stroke="#8FA278" stroke-width="2"/>
+    <path d="M80 384C262 360 420 402 580 472C706 528 842 570 1014 570C1188 570 1328 514 1520 426" stroke="#8FA278" stroke-width="2"/>
+    <path d="M80 498C244 514 388 574 552 654C686 720 850 774 1018 774C1196 774 1354 706 1520 602" stroke="#8FA278" stroke-width="2"/>
+  </g>
+  <rect x="112" y="112" width="300" height="776" rx="28" fill="#201E18" stroke="#C8A56E" stroke-opacity="0.28"/>
+  <text x="152" y="174" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="24" font-weight="700">BI HUB</text>
+  <text x="152" y="208" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">Modules stitched into one view</text>
+  <rect x="152" y="266" width="220" height="84" rx="18" fill="#2A261E"/>
+  <rect x="152" y="372" width="220" height="84" rx="18" fill="#2A261E"/>
+  <rect x="152" y="478" width="220" height="84" rx="18" fill="#2A261E"/>
+  <rect x="152" y="584" width="220" height="84" rx="18" fill="#2A261E"/>
+  <rect x="152" y="690" width="220" height="84" rx="18" fill="#2A261E"/>
+  <circle cx="188" cy="308" r="14" fill="#C8A56E"/>
+  <circle cx="188" cy="414" r="14" fill="#8FA278"/>
+  <circle cx="188" cy="520" r="14" fill="#6F8FA6"/>
+  <circle cx="188" cy="626" r="14" fill="#D78558"/>
+  <circle cx="188" cy="732" r="14" fill="#9F8BC1"/>
+  <text x="220" y="314" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Ads intelligence</text>
+  <text x="220" y="420" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Consumer signals</text>
+  <text x="220" y="526" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Spend analytics</text>
+  <text x="220" y="632" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Executive views</text>
+  <text x="220" y="738" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="20" font-weight="600">Insight engine</text>
+  <rect x="470" y="132" width="1018" height="736" rx="30" fill="#1B1B16" stroke="#C8A56E" stroke-opacity="0.18"/>
+  <rect x="530" y="192" width="420" height="220" rx="22" fill="#232119"/>
+  <text x="570" y="252" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="30" font-weight="700">Signal map</text>
+  <text x="570" y="288" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">Turning scattered inputs into readable product structure</text>
+  <path d="M594 384H882" stroke="#C3B59D" stroke-opacity="0.35" stroke-width="2"/>
+  <rect x="600" y="300" width="34" height="84" rx="7" fill="#C8A56E"/>
+  <rect x="648" y="332" width="34" height="52" rx="7" fill="#8FA278"/>
+  <rect x="696" y="314" width="34" height="70" rx="7" fill="#6F8FA6"/>
+  <rect x="744" y="344" width="34" height="40" rx="7" fill="#D78558"/>
+  <rect x="792" y="320" width="34" height="64" rx="7" fill="#A8977A"/>
+  <rect x="840" y="336" width="34" height="48" rx="7" fill="#C8A56E"/>
+  <text x="617" y="404" fill="#C3B59D" font-family="Arial, sans-serif" font-size="12" text-anchor="middle">TV</text>
+  <text x="665" y="404" fill="#C3B59D" font-family="Arial, sans-serif" font-size="12" text-anchor="middle">Digital</text>
+  <text x="713" y="404" fill="#C3B59D" font-family="Arial, sans-serif" font-size="12" text-anchor="middle">Print</text>
+  <text x="761" y="404" fill="#C3B59D" font-family="Arial, sans-serif" font-size="12" text-anchor="middle">OOH</text>
+  <text x="809" y="404" fill="#C3B59D" font-family="Arial, sans-serif" font-size="12" text-anchor="middle">Radio</text>
+  <text x="857" y="404" fill="#C3B59D" font-family="Arial, sans-serif" font-size="12" text-anchor="middle">BTL</text>
+  <rect x="1000" y="192" width="428" height="220" rx="22" fill="#232119"/>
+  <text x="1040" y="252" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="30" font-weight="700">Cross-module clarity</text>
+  <rect x="1040" y="302" width="348" height="18" rx="9" fill="#2D2B23"/>
+  <rect x="1040" y="338" width="272" height="18" rx="9" fill="#2D2B23"/>
+  <rect x="1040" y="374" width="318" height="18" rx="9" fill="#2D2B23"/>
+  <text x="1380" y="316" fill="#C3B59D" font-family="Arial, sans-serif" font-size="14" text-anchor="end">Ads vs Budget</text>
+  <text x="1304" y="352" fill="#C3B59D" font-family="Arial, sans-serif" font-size="14" text-anchor="end">Spend vs Plan</text>
+  <text x="1350" y="388" fill="#C3B59D" font-family="Arial, sans-serif" font-size="14" text-anchor="end">Consumer Signal</text>
+  <rect x="530" y="462" width="898" height="346" rx="24" fill="#232119"/>
+  <text x="570" y="522" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="30" font-weight="700">Information hierarchy</text>
+  <text x="570" y="558" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">Dense product areas reduced into one more legible operating surface</text>
+  <rect x="570" y="608" width="242" height="148" rx="18" fill="#1A1914"/>
+  <rect x="848" y="608" width="242" height="148" rx="18" fill="#1A1914"/>
+  <rect x="1126" y="608" width="242" height="148" rx="18" fill="#1A1914"/>
+  <path d="M604 706C648 684 680 650 724 642C766 634 792 640 826 620" stroke="#C8A56E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M884 704C918 664 946 640 992 636C1030 632 1066 648 1100 620" stroke="#8FA278" stroke-width="4" stroke-linecap="round"/>
+  <path d="M1160 706C1196 672 1234 630 1274 630C1308 630 1332 644 1360 620" stroke="#6F8FA6" stroke-width="4" stroke-linecap="round"/>
+  <defs>
+    <linearGradient id="bg" x1="124" y1="68" x2="1492" y2="930" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C1A15"/>
+      <stop offset="1" stop-color="#242118"/>
+    </linearGradient>
+  </defs>
+</svg>

@@ -1,38 +1,38 @@
 export const portfolioConfig = {
   personal: {
     name: "Yuvaan",
-    title: "Full-Stack Developer & UI/UX Designer",
+    title: "Product Executive, Systems Thinker & AI Explorer",
     email: "yuvaanvithlani@gmail.com", // UPDATE THIS
     linkedin: "https://www.linkedin.com/in/yuvaanvithlani/", // UPDATE THIS
-    website: "yuvaan-portfolio.com" // UPDATE THIS
+    website: "yuvaanvithlani.com"
   },
   
   expertise: {
-    primary: ["React", "Node.js", "JavaScript", "UI/UX Design"],
-    secondary: ["MongoDB", "Express", "Tailwind CSS", "Figma"],
-    experience: "3+ years in Product, Design and AI",
-    specializations: ["Web Applications", "E-commerce", "Modern UI Design"]
+    primary: ["Systems Thinking", "Product Strategy", "AI Prototyping", "User Empathy"],
+    secondary: ["React", "JavaScript", "Frontend Execution", "Workflow Design"],
+    experience: "Product work, client delivery, and active AI exploration",
+    specializations: ["Digital Products", "AI Experiments", "Client Experiences"]
   },
   
   recentProjects: [
     {
-      name: "Sarvodaya Dental Clinic",
-      description: "Complete digital transformation with modern web presence",
-      technologies: ["React", "Node.js", "MongoDB"],
-      outcome: "Improved patient engagement by 60%"
+      name: "Saarth",
+      description: "Reflective AI companion built for moments of uncertainty",
+      technologies: ["AI", "Product Thinking", "Conversation Design"],
+      outcome: "First serious AI product with a strong personal point of view"
     },
     {
-      name: "Mental Wellness Platform", 
-      description: "Comprehensive mental health tracking application",
-      technologies: ["React", "Express", "Firebase"],
-      outcome: "Streamlined user experience design"
+      name: "Brandintelle BI Hub", 
+      description: "Current product work inside intelligence and insights modules",
+      technologies: ["Product Systems", "AI-Assisted Prototyping", "Business Intelligence"],
+      outcome: "Real-world product complexity and internal AI momentum"
     }
   ],
   
   pricing: {
-    range: "Starting from INR 35,000", // ADJUST BASED ON YOUR RATES
-    consultationFee: "Free initial consultation",
-    responseTime: "4-6 hours for project inquiries"
+    range: "Scoped based on context",
+    consultationFee: "Conversation first",
+    responseTime: "Depends on current bandwidth"
   },
   
   chatbot: {

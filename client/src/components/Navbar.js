@@ -18,13 +18,6 @@ const Navbar = () => {
     closeMenu();
   };
 
-  const handleBlogClick = () => {
-    trackCTA('navbar_blog', 'navigation', { destination: '/blog', currentPage: window.location.pathname });
-    trackNavigation(window.location.pathname, '/blog', 'navbar_click');
-    navigateWithTransition('/blog', 'up');
-    closeMenu();
-  };
-
   const handleTalkToSaarthClick = () => {
     trackCTA('navbar_talk_to_saarth', 'chatbot_cta', { 
       context: 'navbar', 
@@ -45,6 +38,20 @@ const Navbar = () => {
     }
   };
 
+  const handleMobileMenuKeyDown = (event) => {
+    if (event.key !== 'Enter' && event.key !== ' ') {
+      return;
+    }
+
+    event.preventDefault();
+    trackCTA('navbar_mobile_menu', 'menu_toggle', {
+      action: isOpen ? 'close' : 'open',
+      currentPage: window.location.pathname,
+      trigger: 'keyboard'
+    });
+    toggleMenu();
+  };
+
   return (
     <>
       {/* Blur overlay for mobile menu - positioned behind navbar */}
@@ -62,7 +69,7 @@ const Navbar = () => {
               <button
                 onClick={handleLogoClick}
                 className="text-[1.5rem] font-bold text-[#A8977A] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md px-2 py-1"
-                style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}
+                style={{ fontFamily: 'var(--font-sans)' }}
               >
                 Yuvaan Vithlani
               </button>
@@ -70,9 +77,9 @@ const Navbar = () => {
               {/* Desktop Navigation */}
               <div className="hidden md:flex items-center space-x-12">
                 <a
-                  href="about"
+                  href="/about"
                   className="text-xl text-[#A8977A] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md px-2 py-1"
-                  style={{ fontFamily: 'Neuton, serif' }}
+                  style={{ fontFamily: 'var(--font-sans)' }}
                   onClick={() => {
                     trackCTA('navbar_about_desktop', 'navigation', { 
                       destination: '/about', 
@@ -85,16 +92,9 @@ const Navbar = () => {
                   About
                 </a>
                 <button
-                  onClick={handleBlogClick}
-                  className="text-xl text-[#A8977A] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md px-2 py-1"
-                  style={{ fontFamily: 'Neuton, serif' }}
-                >
-                  Blogs
-                </button>
-                <button
                   onClick={handleTalkToSaarthClick}
                   className="px-6 py-2 rounded-full bg-[#A8977A] text-xl text-[#161711] hover:bg-[#161711] hover:text-[#A8977A] transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#161711]"
-                  style={{ fontFamily: 'Neuton, serif' }}
+                  style={{ fontFamily: 'var(--font-sans)' }}
                   aria-label="Open Saarth chatbot for assistance"
                 >
                   Talk to Saarth
@@ -111,6 +111,7 @@ const Navbar = () => {
                     });
                     toggleMenu();
                   }}
+                  onKeyDown={handleMobileMenuKeyDown}
                   className="text-[#A8977A] hover:text-white focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md p-1 transition-colors duration-300"
                   aria-label="Open navigation menu"
                   aria-expanded={isOpen}
@@ -133,9 +134,9 @@ const Navbar = () => {
                 <div className={`pt-4 pb-3 space-y-1 transform transition-transform duration-200 ease-out ${isOpen ? 'translate-y-0' : '-translate-y-4'
                   }`}>
                   <a
-                    href="about"
+                    href="/about"
                     className="block px-3 py-2 text-lg text-[#A8977A] hover:text-white transition-colors duration-300 focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md"
-                    style={{ fontFamily: 'Neuton, serif' }}
+                    style={{ fontFamily: 'var(--font-sans)' }}
                     onClick={() => {
                       trackCTA('navbar_about_mobile', 'navigation', { 
                         destination: '/about', 
@@ -149,16 +150,9 @@ const Navbar = () => {
                     About
                   </a>
                   <button
-                    onClick={handleBlogClick}
-                    className="block px-3 py-2 text-lg text-[#A8977A] hover:text-white transition-colors duration-300 text-left w-full focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md"
-                    style={{ fontFamily: 'Neuton, serif' }}
-                  >
-                    Blogs
-                  </button>
-                  <button
                     onClick={handleTalkToSaarthClick}
                     className="mx-3 mt-6 px-6 py-2 rounded-full bg-[#A8977A] text-[#161711] hover:bg-[#161711] hover:text-[#A8977A] transition-colors duration-200 w-[calc(100%-1.5rem)] active:scale-95 transform focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-[#161711]"
-                    style={{ fontFamily: 'Neuton, serif' }}
+                    style={{ fontFamily: 'var(--font-sans)' }}
                     aria-label="Open Saarth chatbot for assistance"
                   >
                     Talk to Saarth

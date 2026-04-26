@@ -1,0 +1,29 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" rx="40" fill="#161711"/>
+  <rect x="36" y="36" width="1528" height="928" rx="32" fill="url(#bg)"/>
+  <rect x="136" y="136" width="1328" height="728" rx="32" fill="#1B1B16" stroke="#C8A56E" stroke-opacity="0.18"/>
+  <text x="190" y="206" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="30" font-weight="700">Multi-Agent Stock Research</text>
+  <text x="190" y="240" fill="#C3B59D" font-family="Arial, sans-serif" font-size="16">Research the sector, compare companies, compress decision time</text>
+  <circle cx="440" cy="500" r="172" stroke="#C8A56E" stroke-opacity="0.22" stroke-width="2"/>
+  <circle cx="440" cy="500" r="118" stroke="#8FA278" stroke-opacity="0.22" stroke-width="2"/>
+  <circle cx="440" cy="500" r="64" fill="#C8A56E"/>
+  <rect x="680" y="290" width="780" height="110" rx="22" fill="#232119"/>
+  <rect x="680" y="438" width="780" height="110" rx="22" fill="#232119"/>
+  <rect x="680" y="586" width="780" height="110" rx="22" fill="#232119"/>
+  <rect x="680" y="734" width="780" height="62" rx="18" fill="#2A261E"/>
+  <path d="M440 500L680 345" stroke="#C8A56E" stroke-width="4" stroke-linecap="round"/>
+  <path d="M440 500L680 493" stroke="#8FA278" stroke-width="4" stroke-linecap="round"/>
+  <path d="M440 500L680 641" stroke="#6F8FA6" stroke-width="4" stroke-linecap="round"/>
+  <circle cx="680" cy="345" r="16" fill="#C8A56E"/>
+  <circle cx="680" cy="493" r="16" fill="#8FA278"/>
+  <circle cx="680" cy="641" r="16" fill="#6F8FA6"/>
+  <text x="724" y="357" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="22" font-weight="700">sector scan</text>
+  <text x="724" y="505" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="22" font-weight="700">news + context</text>
+  <text x="724" y="653" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="22" font-weight="700">ranked shortlist</text>
+  <defs>
+    <linearGradient id="bg" x1="92" y1="82" x2="1508" y2="918" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1C1A15"/>
+      <stop offset="1" stop-color="#242118"/>
+    </linearGradient>
+  </defs>
+</svg>

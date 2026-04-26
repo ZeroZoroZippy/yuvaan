@@ -1,0 +1,32 @@
+<svg width="1600" height="1000" viewBox="0 0 1600 1000" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1600" height="1000" rx="40" fill="#161711"/>
+  <rect x="36" y="36" width="1528" height="928" rx="32" fill="#1B1A15"/>
+  <circle cx="800" cy="500" r="248" stroke="#C8A56E" stroke-opacity="0.18" stroke-width="2"/>
+  <circle cx="800" cy="500" r="180" stroke="#8FA278" stroke-opacity="0.2" stroke-width="2"/>
+  <circle cx="800" cy="500" r="112" stroke="#6F8FA6" stroke-opacity="0.22" stroke-width="2"/>
+  <circle cx="800" cy="500" r="56" fill="#C8A56E"/>
+  <circle cx="800" cy="500" r="24" fill="#F3E7D2"/>
+  <text x="96" y="148" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="34" font-weight="700">Intelligence modules orbiting one product center</text>
+  <text x="96" y="188" fill="#C3B59D" font-family="Arial, sans-serif" font-size="18">A craft-forward system view instead of generic “dashboard” imagery</text>
+  <circle cx="1024" cy="500" r="26" fill="#8FA278"/>
+  <circle cx="706" cy="654" r="22" fill="#6F8FA6"/>
+  <circle cx="880" cy="338" r="20" fill="#D78558"/>
+  <circle cx="1184" cy="500" r="30" fill="#9F8BC1"/>
+  <circle cx="550" cy="344" r="18" fill="#C8A56E"/>
+  <path d="M800 500L1024 500" stroke="#F3E7D2" stroke-opacity="0.5" stroke-width="3"/>
+  <path d="M800 500L706 654" stroke="#F3E7D2" stroke-opacity="0.5" stroke-width="3"/>
+  <path d="M800 500L880 338" stroke="#F3E7D2" stroke-opacity="0.5" stroke-width="3"/>
+  <path d="M800 500L1184 500" stroke="#F3E7D2" stroke-opacity="0.5" stroke-width="3"/>
+  <path d="M800 500L550 344" stroke="#F3E7D2" stroke-opacity="0.5" stroke-width="3"/>
+  <rect x="120" y="724" width="1360" height="164" rx="28" fill="#201E18" stroke="#C8A56E" stroke-opacity="0.18"/>
+  <rect x="176" y="774" width="204" height="62" rx="16" fill="#2A261E"/>
+  <rect x="404" y="774" width="204" height="62" rx="16" fill="#2A261E"/>
+  <rect x="632" y="774" width="204" height="62" rx="16" fill="#2A261E"/>
+  <rect x="860" y="774" width="204" height="62" rx="16" fill="#2A261E"/>
+  <rect x="1088" y="774" width="204" height="62" rx="16" fill="#2A261E"/>
+  <text x="224" y="814" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="18" font-weight="600">Research</text>
+  <text x="448" y="814" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="18" font-weight="600">Structure</text>
+  <text x="678" y="814" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="18" font-weight="600">Prototype</text>
+  <text x="908" y="814" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="18" font-weight="600">Explain</text>
+  <text x="1140" y="814" fill="#F3E7D2" font-family="Arial, sans-serif" font-size="18" font-weight="600">Refine</text>
+</svg>

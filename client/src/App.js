@@ -1,5 +1,5 @@
 import React, { useEffect, lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { HelmetProvider } from 'react-helmet-async';
 import { PageTransitionProvider } from './contexts/PageTransitionContext';
 import { MobileMenuProvider } from './contexts/MobileMenuContext';
@@ -15,8 +15,6 @@ import { db } from './config/firebase'; // Add this import for diagnostics
 const HeroPage = lazy(() => import('./pages/HeroPage'));
 const AboutPage = lazy(() => import('./pages/AboutPage'));
 const ProjectPage = lazy(() => import('./pages/ProjectPage'));
-const BlogsPage = lazy(() => import('./pages/BlogsPage'));
-const BlogPostPage = lazy(() => import('./pages/BlogPostPage'));
 const AnalyticsTest = lazy(() => import('./components/AnalyticsTest'));
 const ChatbotAnalyticsDashboard = lazy(() => import('./chatbot/components/ChatbotAnalyticsDashboard'));
 
@@ -64,8 +62,8 @@ const AppContent = () => {
           <Route path="/" element={<HeroPage />} />
           <Route path="/about" element={<AboutPage />} />
           <Route path="/projects/:projectId" element={<ProjectPage />} />
-          <Route path="/blog" element={<BlogsPage />} />
-          <Route path="/blog/:id" element={<BlogPostPage />} />
+          <Route path="/blog" element={<Navigate to="/" replace />} />
+          <Route path="/blog/:id" element={<Navigate to="/" replace />} />
           <Route path="/analytics-test" element={<AnalyticsTest />} />
           <Route path="/chatbot-analytics" element={<ChatbotAnalyticsDashboard />} />
         </Routes>

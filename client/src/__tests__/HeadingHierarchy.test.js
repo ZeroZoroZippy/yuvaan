@@ -27,7 +27,7 @@ jest.mock('../hooks/useAnalytics', () => ({
 
 jest.mock('../hooks/useMeta', () => ({
   useMeta: () => ({
-    title: 'Yuvaan Vithlani - Web Designer & Developer Portfolio | UI/UX Specialist',
+    title: 'Yuvaan Vithlani - Product Systems & AI Portfolio',
     description: 'Test description',
     keywords: 'test keywords',
     canonicalUrl: 'https://yuvaanvithlani.com/',
@@ -75,7 +75,7 @@ describe('Heading Hierarchy Tests', () => {
       renderWithProviders(<HeroPage />);
       
       const h1 = screen.getByRole('heading', { level: 1 });
-      expect(h1).toHaveTextContent('Yuvaan Vithlani - Web Designer & Developer');
+      expect(h1).toHaveTextContent('Yuvaan Vithlani - Product-Minded Systems Thinker');
     });
 
     test('heading hierarchy follows proper order without skipping levels', () => {
@@ -112,11 +112,11 @@ describe('Heading Hierarchy Tests', () => {
       expect(projectHeadings.length).toBeGreaterThan(0);
       
       // Check specific project names
-      const dentalProject = screen.getByRole('heading', { level: 3, name: /sarvodaya dental clinic/i });
-      const therapyProject = screen.getByRole('heading', { level: 3, name: /therapy with aakanksha/i });
+      const saarthProject = screen.getByRole('heading', { level: 3, name: /saarth/i });
+      const brandintelleProject = screen.getByRole('heading', { level: 3, name: /current product work at brandintelle/i });
       
-      expect(dentalProject).toBeInTheDocument();
-      expect(therapyProject).toBeInTheDocument();
+      expect(saarthProject).toBeInTheDocument();
+      expect(brandintelleProject).toBeInTheDocument();
     });
   });
 
@@ -166,7 +166,7 @@ describe('Heading Hierarchy Tests', () => {
       
       // Should have the main H1
       const mainHeading = screen.getByRole('heading', { level: 1 });
-      expect(mainHeading).toHaveTextContent('Yuvaan Vithlani - Web Designer & Developer');
+      expect(mainHeading).toHaveTextContent('Yuvaan Vithlani - Product-Minded Systems Thinker');
     });
 
     test('Projects component maintains heading hierarchy', () => {
@@ -178,7 +178,7 @@ describe('Heading Hierarchy Tests', () => {
       
       // Project titles should be H3
       const projectHeadings = screen.getAllByRole('heading', { level: 3 });
-      expect(projectHeadings.length).toBe(2); // Two projects
+      expect(projectHeadings.length).toBe(5);
       
       projectHeadings.forEach(heading => {
         expect(heading.tagName).toBe('H3');
@@ -277,9 +277,10 @@ describe('Heading Hierarchy Tests', () => {
       
       projectHeadings.forEach(heading => {
         expect(heading.tagName).toBe('H3');
-        // Should be clickable/interactive
-        expect(heading).toHaveAttribute('role', 'button');
-        expect(heading).toHaveAttribute('tabIndex', '0');
+
+        const toggleButton = heading.querySelector('button');
+        expect(toggleButton).toBeInTheDocument();
+        expect(toggleButton).toHaveAttribute('type', 'button');
       });
     });
 
@@ -289,9 +290,9 @@ describe('Heading Hierarchy Tests', () => {
       const projectHeadings = screen.getAllByRole('heading', { level: 3 });
       
       projectHeadings.forEach(heading => {
-        // Should have proper ARIA attributes for interactive headings
-        expect(heading).toHaveAttribute('aria-expanded');
-        expect(heading).toHaveAttribute('aria-label');
+        const toggleButton = heading.querySelector('button');
+        expect(toggleButton).toHaveAttribute('aria-expanded');
+        expect(toggleButton).toHaveAttribute('aria-label');
       });
     });
   });

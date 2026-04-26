@@ -15,6 +15,9 @@ function HeroPage() {
   const [animationStage, setAnimationStage] = useState(0);
   const [showContent, setShowContent] = useState(false);
   const [isContactModalOpen, setIsContactModalOpen] = useState(false);
+  const [isDesktopLayout, setIsDesktopLayout] = useState(() => (
+    typeof window !== 'undefined' ? window.innerWidth >= 1024 : true
+  ));
 
   // Get Lenis instance from context
   const lenis = useLenisContext();
@@ -50,6 +53,15 @@ function HeroPage() {
     return () => timeouts.forEach(clearTimeout);
   }, [lenis]);
 
+  useEffect(() => {
+    const handleResize = () => {
+      setIsDesktopLayout(window.innerWidth >= 1024);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
   return (
     <MetaManager
       title={metaConfig.title}
@@ -63,63 +75,63 @@ function HeroPage() {
 
       <Navbar />
       <main className="pt-24" role="main">
-        {/* Desktop Layout */}
-        <div className="hidden lg:block">
-          <div className="flex justify-start mx-4 mt-0 gap-4">
-            <div className="flex flex-col gap-4">
-              <div className={`${animationStage >= 2 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
-                <WhoAmI />
+        {isDesktopLayout ? (
+          <div>
+            <div className="flex justify-start mx-4 mt-0 gap-4">
+              <div className="flex flex-col gap-4">
+                <div className={`${animationStage >= 2 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
+                  <WhoAmI />
+                </div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className={`${animationStage >= 1 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
+                  <HeroImage />
+                </div>
+              </div>
+              <div className="flex flex-col gap-4">
+                <div className={`${animationStage >= 3 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
+                  <Projects />
+                </div>
+                <div className={`${animationStage >= 6 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
+                  <SocialMedia />
+                </div>
               </div>
             </div>
-            <div className="flex flex-col gap-4">
-              <div className={`${animationStage >= 1 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
-                <HeroImage />
+            <div className="flex justify-start mx-4 -mt-[18.75rem] gap-4">
+              <div className="flex flex-col gap-4">
+                <div className={`${animationStage >= 4 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
+                  <Testimonial />
+                </div>
               </div>
-            </div>
-            <div className="flex flex-col gap-4">
-              <div className={`${animationStage >= 3 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
-                <Projects />
-              </div>
-              <div className={`${animationStage >= 6 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
-                <SocialMedia />
-              </div>
-            </div>
-          </div>
-          <div className="flex justify-start mx-4 -mt-[18.75rem] gap-4">
-            <div className="flex flex-col gap-4">
-              <div className={`${animationStage >= 4 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
-                <Testimonial />
-              </div>
-            </div>
-            <div className="flex flex-col gap-4">
-              <div className={`${animationStage >= 5 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
-                <Contact onOpenModal={openContactModal} />
+              <div className="flex flex-col gap-4">
+                <div className={`${animationStage >= 5 ? 'animate-fade-scale-in' : 'animate-hidden'}`}>
+                  <Contact onOpenModal={openContactModal} />
+                </div>
               </div>
             </div>
           </div>
-        </div>
-
-        {/* Mobile Layout */}
-        <div className="lg:hidden px-4 space-y-4 pb-2">
-          <div className={`${animationStage >= 2 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
-            <WhoAmI />
+        ) : (
+          <div className="px-4 space-y-4 pb-2">
+            <div className={`${animationStage >= 2 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
+              <WhoAmI />
+            </div>
+            <div className={`${animationStage >= 1 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
+              <HeroImage />
+            </div>
+            <div className={`${animationStage >= 3 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
+              <Projects />
+            </div>
+            <div className={`${animationStage >= 4 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
+              <Testimonial />
+            </div>
+            <div className={`${animationStage >= 5 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
+              <Contact onOpenModal={openContactModal} />
+            </div>
+            <div className={`${animationStage >= 6 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
+              <SocialMedia />
+            </div>
           </div>
-          <div className={`${animationStage >= 1 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
-            <HeroImage />
-          </div>
-          <div className={`${animationStage >= 3 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
-            <Projects />
-          </div>
-          <div className={`${animationStage >= 4 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
-            <Testimonial />
-          </div>
-          <div className={`${animationStage >= 5 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
-            <Contact onOpenModal={openContactModal} />
-          </div>
-          <div className={`${animationStage >= 6 ? 'animate-slide-up-fade' : 'animate-hidden'}`}>
-            <SocialMedia />
-          </div>
-        </div>
+        )}
       </main>
 
       {/* Contact Modal - positioned at page level for full-screen centering */}

@@ -12,7 +12,7 @@ const LoadingFallback = ({ message = "Loading..." }) => {
                 </div>
                 
                 {/* Loading text */}
-                <h2 className="text-xl font-light text-[#A8977A] mb-2" style={{ fontFamily: 'Bubblegum Sans, sans-serif' }}>
+                <h2 className="text-xl font-light text-[#A8977A] mb-2" style={{ fontFamily: 'var(--font-sans)' }}>
                     {message}
                 </h2>
                 

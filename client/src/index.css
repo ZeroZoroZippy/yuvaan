@@ -742,9 +742,18 @@ body.transitioning {
   animation-delay: 1100ms;
 }
 
+:root {
+  --font-sans: 'Google Sans', 'Google Sans Text', 'Product Sans', 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+  --tracking-tight: -0.035em;
+  --tracking-snug: -0.02em;
+}
+
 body {
   margin: 0;
-  font-family: 'Neuton', serif;
+  font-family: var(--font-sans);
+  font-weight: 400;
+  letter-spacing: -0.01em;
+  line-height: 1.55;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
   background-color: #45372B;
@@ -779,17 +788,70 @@ html.lenis {
   pointer-events: none;
 }
 
-/* Apply Syne font to all heading tags */
+/* One type system: Google Sans everywhere with smarter weight hierarchy */
 h1, h2, h3, h4, h5, h6 {
-  font-family: 'Syne', sans-serif;
-  font-weight: 400;
+  font-family: var(--font-sans);
+  letter-spacing: var(--tracking-snug);
 }
 
-/* Apply Neuton font to all paragraph tags */
-p {
-  font-family: 'Neuton', serif;
+h1 {
+  font-weight: 700;
+  letter-spacing: var(--tracking-tight);
+}
+
+h2 {
+  font-weight: 600;
+  letter-spacing: var(--tracking-tight);
+}
+
+h3 {
+  font-weight: 600;
+}
+
+h4, h5, h6 {
+  font-weight: 500;
+}
+
+body,
+p,
+li,
+label,
+input,
+textarea,
+button,
+select,
+a {
+  font-family: var(--font-sans);
+}
+
+p,
+li,
+label,
+input,
+textarea,
+button,
+select {
   font-weight: 400;
-  font-size: 1.125rem; /* 18px base size, up from default 16px */
+  letter-spacing: -0.01em;
+}
+
+strong,
+b,
+label,
+button,
+summary {
+  font-weight: 500;
+}
+
+small,
+time,
+figcaption {
+  font-weight: 500;
+  letter-spacing: 0.08em;
+}
+
+p {
+  font-size: 1.125rem;
 }
 
 /* Responsive font sizes for paragraphs */
@@ -923,27 +985,27 @@ clamp utilities for blog cards */
 }
 
 .prose h1 {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-sans);
   color: #A8977A;
 }
 
 .prose h2 {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-sans);
   color: #A8977A;
 }
 
 .prose h3 {
-  font-family: 'Syne', sans-serif;
+  font-family: var(--font-sans);
   color: #A8977A;
 }
 
 .prose p {
-  font-family: 'Neuton', serif;
+  font-family: var(--font-sans);
   color: #A8977A;
 }
 
 .prose li {
-  font-family: 'Neuton', serif;
+  font-family: var(--font-sans);
   color: #A8977A;
 }
 

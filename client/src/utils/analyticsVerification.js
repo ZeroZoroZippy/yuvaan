@@ -59,7 +59,6 @@ export const trackedEvents = {
     'navbar_logo',
     'navbar_about_desktop',
     'navbar_about_mobile', 
-    'navbar_blog',
     'navbar_talk_to_saarth',
     'navbar_mobile_menu'
   ],
@@ -82,10 +81,6 @@ export const trackedEvents = {
     'footer_instagram',
     'about_linkedin_link',
     'about_instagram_link'
-  ],
-  blog: [
-    'blog_post_click',
-    'blog_post_click_mobile'
   ],
   chatbot: [
     'chatbot_message_send',

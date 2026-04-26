@@ -33,13 +33,13 @@ const MetaManager = ({
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Yuvaan Vithlani",
-    "jobTitle": "Web Designer & Developer",
-    "description": "Web Designer & Developer creating beautiful, functional digital experiences",
+    "jobTitle": "Product Executive",
+    "description": "Product-minded systems thinker working across digital products, client work, and AI experiments",
     "url": "https://yuvaanvithlani.com",
     "sameAs": [
       // Add social media URLs when available
     ],
-    "knowsAbout": ["Web Development", "UI/UX Design", "React", "JavaScript", "Frontend Development"]
+    "knowsAbout": ["Product Strategy", "Systems Thinking", "AI Prototyping", "User Empathy", "Frontend Development"]
   }), []);
 
   return (

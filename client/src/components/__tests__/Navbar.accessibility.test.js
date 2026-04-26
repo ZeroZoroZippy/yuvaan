@@ -98,13 +98,11 @@ describe('Navbar Accessibility Tests', () => {
 
       // Desktop navigation links
       const aboutLinks = screen.getAllByText('About');
-      const blogButtons = screen.getAllByText('Blogs');
       const chatButtons = screen.getAllByLabelText('Open Saarth chatbot for assistance');
 
       const allElements = [
         ...interactiveElements,
         ...aboutLinks,
-        ...blogButtons,
         ...chatButtons
       ];
 
