@@ -13,7 +13,8 @@ function ProjectPage() {
   const project = getProjectById(projectId);
   const allProjects = getAllProjects();
   const isBrandintelleProject = project?.id === 'brandintelle';
-  
+  const isScreenshotProject = project?.id === 'geothesis';
+
   // Get meta configuration for project page
   const metaConfig = project ? getMetaConfig(`/projects/${projectId}`, project) : getMetaConfig('/projects');
 
@@ -43,10 +44,20 @@ function ProjectPage() {
     transition: { duration: 0.6, ease: "easeOut" }
   };
 
-  const renderImageFrame = ({ src, alt, sizeClass, hover = false }) => {
+  const renderImageFrame = ({ src, alt, sizeClass, hover = false, mobileSrc }) => {
+    const coverClass = isScreenshotProject ? 'object-cover object-top' : 'object-cover';
     const imageClass = isBrandintelleProject
       ? 'relative z-10 w-full h-full object-contain p-4 md:p-6'
-      : `relative z-10 w-full h-full object-cover${hover ? ' hover:scale-105 transition-transform duration-300' : ''}`;
+      : `relative z-10 w-full h-full ${coverClass}${hover ? ' hover:scale-105 transition-transform duration-300' : ''}`;
+
+    const imgNode = mobileSrc ? (
+      <picture>
+        <source media="(max-width: 767px)" srcSet={mobileSrc} type="image/webp" />
+        <img src={src} alt={alt} className={imageClass} />
+      </picture>
+    ) : (
+      <img src={src} alt={alt} className={imageClass} />
+    );
 
     return (
       <div
@@ -73,7 +84,7 @@ function ProjectPage() {
             />
           </>
         )}
-        <img src={src} alt={alt} className={imageClass} />
+        {imgNode}
       </div>
     );
   };
@@ -227,6 +238,7 @@ function ProjectPage() {
 
             {renderImageFrame({
               src: project.problem.image,
+              mobileSrc: project.problem.mobileImage,
               alt: project.problem.imageAlt || 'Problem illustration showing challenges faced before website redesign',
               sizeClass: 'h-[300px] md:h-[340px]'
             })}
@@ -269,6 +281,7 @@ function ProjectPage() {
               <div key={index}>
                 {renderImageFrame({
                   src: image,
+                  mobileSrc: project.solution.mobileImages?.[index],
                   alt: `${project.title} solution implementation view ${index + 1} - Detailed showcase of the website design and functionality improvements`,
                   sizeClass: 'h-[250px]',
                   hover: true
@@ -295,6 +308,7 @@ function ProjectPage() {
             </p>
             {renderImageFrame({
               src: project.challenge.image,
+              mobileSrc: project.challenge.mobileImage,
               alt: project.challenge.imageAlt || 'Challenge illustration showing technical and design obstacles overcome',
               sizeClass: 'h-[300px] md:h-[340px]'
             })}
@@ -334,6 +348,7 @@ function ProjectPage() {
 
             {renderImageFrame({
               src: project.results.image,
+              mobileSrc: project.results.mobileImage,
               alt: project.results.imageAlt || 'Results illustration showing successful project outcomes and improvements',
               sizeClass: 'h-[300px] md:h-[340px]'
             })}

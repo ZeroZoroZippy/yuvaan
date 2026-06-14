@@ -2,6 +2,9 @@
 @tailwind components;
 @tailwind utilities;
 
+.no-scrollbar::-webkit-scrollbar { display: none; }
+.no-scrollbar { scrollbar-width: none; -ms-overflow-style: none; }
+
 /* Remove duplicate font imports - fonts are loaded in HTML for better performance */
 
 /* ===== OPTION 1: Fade & Scale (Current Default) ===== */

@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useAnalytics } from '../hooks/useAnalytics';
 import { usePageNavigation } from '../hooks/usePageNavigation';
@@ -10,31 +10,6 @@ function Projects() {
   const { navigateWithTransition } = usePageNavigation();
   const projects = getFeaturedProjects();
   const [openProjectId, setOpenProjectId] = useState(projects[0]?.id || null);
-  const scrollContainerRef = useRef(null);
-  const projectRefs = useRef({});
-
-  useEffect(() => {
-    if (!openProjectId || !scrollContainerRef.current) {
-      return;
-    }
-
-    const target = projectRefs.current[openProjectId];
-    if (!target) {
-      return;
-    }
-
-    setTimeout(() => {
-      const container = scrollContainerRef.current;
-      const containerRect = container.getBoundingClientRect();
-      const targetRect = target.getBoundingClientRect();
-      const scrollTop = container.scrollTop + targetRect.top - containerRect.top - 20;
-
-      container.scrollTo({
-        top: scrollTop,
-        behavior: 'smooth'
-      });
-    }, 100);
-  }, [openProjectId]);
 
   const handleToggleProject = (project) => {
     const isCurrentlyOpen = openProjectId === project.id;
@@ -121,13 +96,12 @@ function Projects() {
         </h2>
 
         <div
-          ref={scrollContainerRef}
           data-lenis-prevent
-          className="flex-1 min-h-0 space-y-4 pb-20 overflow-y-auto"
+          className="flex-1 min-h-0 space-y-4 pb-20 overflow-y-auto no-scrollbar"
           style={{
             scrollBehavior: 'smooth',
             overscrollBehavior: 'contain',
-            WebkitOverflowScrolling: 'touch'
+            WebkitOverflowScrolling: 'touch',
           }}
         >
           {projects.map((project) => {
@@ -137,9 +111,6 @@ function Projects() {
               <div
                 key={project.id}
                 className="p-3 lg:p-4 rounded-lg"
-                ref={(node) => {
-                  projectRefs.current[project.id] = node;
-                }}
               >
                 <div className="flex justify-between items-center gap-4">
                   <h3
@@ -158,26 +129,39 @@ function Projects() {
                     </button>
                   </h3>
 
-                  <button
-                    type="button"
-                    className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md p-1"
-                    aria-label={`Open ${project.title} case study`}
-                    onClick={() => handleVisitProject(project)}
-                  >
-                    <svg
-                      className="w-6 h-6 text-[#A8977A] transition-transform duration-300 ease-in-out hover:scale-110 hover:text-[#45372B]"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
+                  {isOpen ? (
+                    <button
+                      type="button"
+                      className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md p-1 flex-shrink-0"
+                      aria-label={`Open ${project.title} case study`}
+                      onClick={() => handleVisitProject(project)}
                     >
-                      <path
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        strokeWidth={1}
-                        d="M7 17L17 7M17 7H7M17 7V17"
-                      />
-                    </svg>
-                  </button>
+                      <svg
+                        className="w-6 h-6 text-[#A8977A] transition-transform duration-300 ease-in-out hover:scale-110 hover:text-[#45372B]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M7 17L17 7M17 7H7M17 7V17" />
+                      </svg>
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      className="cursor-pointer focus:outline-none focus:ring-2 focus:ring-[#A8977A] focus:ring-offset-2 focus:ring-offset-[#161711] rounded-md p-1 flex-shrink-0"
+                      aria-label={`Expand ${project.title} project details`}
+                      onClick={() => handleToggleProject(project)}
+                    >
+                      <svg
+                        className="w-6 h-6 text-[#A8977A] transition-transform duration-300 ease-in-out hover:text-[#45372B]"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1} d="M19 9l-7 7-7-7" />
+                      </svg>
+                    </button>
+                  )}
                 </div>
 
                 <AnimatePresence initial={false}>

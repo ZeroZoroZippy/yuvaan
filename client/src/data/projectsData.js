@@ -8,8 +8,90 @@ import brandintelleInsightOrrery from '../assets/Projects/brandintelle-insight-o
 import sarvodayaSupport from '../assets/Projects/sarvodaya-support.svg';
 import aakankshaSupport from '../assets/Projects/aakanksha-support.svg';
 import stockAgentSupport from '../assets/Projects/stock-agent-support.svg';
+import geothesisMain from '../assets/Projects/geothesis.webp';
+import geothesisHome from '../assets/Projects/geothesis-home.webp';
+import geothesisArchive from '../assets/Projects/geothesis-archive.webp';
+import geothesisScoreboard from '../assets/Projects/geothesis-scoreboard.webp';
+import geothesisStories from '../assets/Projects/geothesis-stories.webp';
+import geothesisHomeMobile from '../assets/Projects/geothesis-home-mobile.webp';
+import geothesisArchiveMobile from '../assets/Projects/geothesis-archive-mobile.webp';
+import geothesisScoreboardMobile from '../assets/Projects/geothesis-scoreboard-mobile.webp';
+import geothesisStoriesMobile from '../assets/Projects/geothesis-stories-mobile.webp';
 
 export const projectsData = {
+    geothesis: {
+        id: 'geothesis',
+        title: 'GeoThesis',
+        category: 'AI System',
+        cardSummary: 'A personal geopolitical market-intelligence pipeline that reads the world every morning and delivers a structured briefing to your inbox — built, deployed, and running daily.',
+        description: 'A multi-agent AI system that fetches real-world geopolitical and macro events, analyzes them into structured signal cards, and emails a plain-English morning briefing tailored for the Indian market — automated, self-healing, and live.',
+        year: '2026',
+        industry: 'AI Systems / Finance',
+        client: 'Personal project',
+        duration: 'Built in one session, live daily',
+        role: 'System design, agent orchestration, prompt engineering, deployment',
+        tags: ['Multi-agent AI', 'Market intelligence', 'Pipeline automation', 'Python', 'OpenAI', 'Perplexity'],
+        liveUrl: 'https://geothesis.vercel.app',
+        mainImage: geothesisMain,
+        mainImageAlt: 'GeoThesis AI pipeline by Yuvaan Vithlani — geopolitical market intelligence system delivering daily email briefings for Indian markets',
+
+        problem: {
+            title: 'Reading the News Takes an Hour. Understanding What It Means Takes Longer.',
+            description: 'Wars, oil shocks, central bank moves, trade disputes — these events move Indian markets. But connecting the dots between world events and sector-level impact requires time, context, and financial literacy most working professionals do not have on a Monday morning. The alternative — financial media — either buries the signal in noise or skips the "why it matters for India" layer entirely.',
+            challenges: [
+                'Geopolitical events affect Indian markets indirectly — the link is rarely explained clearly',
+                'Daily news is high volume, low signal — most stories don\'t matter for market positioning',
+                'No existing tool connected live world events to specific Indian sectors and stocks',
+                'Building a system that degrades gracefully when any single AI call fails'
+            ],
+            image: geothesisHome,
+            mobileImage: geothesisHomeMobile,
+            imageAlt: 'GeoThesis homepage — market calls with receipts, live experiment for Indian markets'
+        },
+
+        solution: {
+            title: 'Three AI Agents, One Morning Email',
+            description: 'GeoThesis runs three AI agents in sequence every morning at 8am IST. The Fetcher uses Perplexity to scan 6 categories of global events. The Analyzer uses GPT to turn raw events into structured signal cards — sector, direction, sensitivity, confidence. The Narrator writes them in plain English and assigns a market mood. The result lands in your inbox before you open a browser. Every briefing is archived, every call is graded against real closing prices a few days later.',
+            features: [
+                'Fetcher agent: Perplexity AI scanning conflicts, trade, energy, central banks, India macro, EM currency stress',
+                'Analyzer agent: structured signal cards with sector mapping, direction, sensitivity, and evidence tier',
+                'Narrator agent: plain-English briefing in a sharp analyst voice — implication first, numbers over adjectives',
+                'Signal memory: tracks recurring stories across 14 days so Day 5 of a crisis reads as Day 5, not Day 1',
+                'Thesis ledger: tracks market hypotheses over time and evaluates them against actual price moves',
+                'Novelty filter: blocks exact same-day repeat events from re-entering the briefing',
+                'Graceful degradation: if any agent fails, a fallback briefing is produced and stored',
+                'Full Supabase persistence: every run, every event, every signal card stored for longitudinal eval',
+                'Deployed on Modal with scheduled jobs at 8am, 6:30pm, and 7pm IST'
+            ],
+            images: [geothesisArchive, geothesisStories, geothesisScoreboard],
+            mobileImages: [geothesisArchiveMobile, geothesisStoriesMobile, geothesisScoreboardMobile]
+        },
+
+        challenge: {
+            title: 'Production AI That Must Not Miss a Morning',
+            description: 'The hardest part was not building the pipeline — it was making it resilient. An AI system that runs daily must handle Perplexity timeouts, OpenAI rate limits, Supabase write failures, and edge cases in structured output without silently producing garbage or skipping delivery. Every stage has independent failure handling. The briefing always sends, even when the thesis layer or signal memory fails. This is what separates a prototype from a system you actually trust.',
+            image: geothesisStories,
+            mobileImage: geothesisStoriesMobile,
+            imageAlt: 'GeoThesis Running Stories — AI tracking ongoing market narratives across multiple briefings'
+        },
+
+        results: {
+            title: 'A Live, Self-Running Intelligence System at ~$1.90/Month',
+            description: 'GeoThesis runs every morning without intervention. It has processed hundreds of world events, produced structured signal cards, and delivered briefings consistently since deployment. Every call is graded against real NSE closing prices — building a public accuracy record. The scoreboard is live. The misses stay up. The entire system costs under $2/month to operate.',
+            improvements: [
+                'Live daily operation: automated runs at 8am IST via Modal scheduled jobs',
+                'Full observability: every run stored in Supabase with pipeline status, stage-level logs, and usage data',
+                'Public scoreboard: AI market calls graded against real prices, 66%+ accuracy on decisive calls',
+                'Signal memory: briefings reference how long a situation has been running — not just what happened today',
+                'Cost: ~$1.90/month total for Perplexity + OpenAI + email delivery at personal scale',
+                'Proof of systems thinking: failure modes designed before code was written, not after first crash'
+            ],
+            image: geothesisScoreboard,
+            mobileImage: geothesisScoreboardMobile,
+            imageAlt: 'GeoThesis Scoreboard — AI market calls graded against real closing prices with public accuracy record'
+        }
+    },
+
     saarth: {
         id: 'saarth',
         title: 'Saarth',
@@ -318,7 +400,7 @@ export const projectsData = {
     }
 };
 
-export const featuredProjectOrder = ['saarth', 'brandintelle', 'sarvodaya', 'stock-agent', 'aakanksha'];
+export const featuredProjectOrder = ['geothesis', 'saarth', 'brandintelle', 'sarvodaya', 'stock-agent', 'aakanksha'];
 
 export const portfolioFocus = {
     specialization: 'Product-minded systems thinking across client work, internal products, and AI experiments',
